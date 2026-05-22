@@ -46,12 +46,7 @@ export async function collectSourceStatus(): Promise<SourceStatusReport> {
   const stats = cache.stats();
   const sources = await Promise.all(
     SOURCES.map(async (s): Promise<SourceStatus> => {
-      let reachable = false;
-      try {
-        reachable = await PINGS[s]();
-      } catch {
-        reachable = false;
-      }
+      const reachable = await PINGS[s]().catch(() => false);
       const cs = stats.perSource[s];
       return {
         source: s,
