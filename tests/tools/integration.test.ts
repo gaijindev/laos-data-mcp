@@ -32,6 +32,9 @@ function pingHandlers() {
     http.get("https://fenixservices.fao.org/faostat/api/v1/en/domains", () =>
       HttpResponse.json([]),
     ),
+    http.get("https://ghoapi.azureedge.net/api/Indicator", () =>
+      HttpResponse.json({ value: [{}] }),
+    ),
   ];
 }
 

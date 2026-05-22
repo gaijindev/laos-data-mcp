@@ -4,6 +4,7 @@ import { pingAdb } from "../adapters/adb.js";
 import { pingFaostat } from "../adapters/faostat.js";
 import { pingMekong } from "../adapters/mekong.js";
 import { pingUnicef } from "../adapters/unicef.js";
+import { pingWho } from "../adapters/who.js";
 import { pingWorldBank } from "../adapters/worldbank.js";
 import { cache } from "../cache/manager.js";
 import { SOURCE_META, SOURCES, type Source } from "../schemas/source.js";
@@ -16,6 +17,7 @@ const PINGS: Record<Source, () => Promise<boolean>> = {
   adb: pingAdb,
   laosis: laosisIsAvailable,
   faostat: pingFaostat,
+  who: pingWho,
 };
 
 const NOTES: Partial<Record<Source, string>> = {

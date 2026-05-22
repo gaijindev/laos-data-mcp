@@ -1,7 +1,15 @@
 import { z } from "zod";
 
 /** All data sources this server can talk to. */
-export const SOURCES = ["worldbank", "unicef", "adb", "mekong", "laosis", "faostat"] as const;
+export const SOURCES = [
+  "worldbank",
+  "unicef",
+  "adb",
+  "mekong",
+  "laosis",
+  "faostat",
+  "who",
+] as const;
 
 export const SourceEnum = z.enum(SOURCES);
 export type Source = z.infer<typeof SourceEnum>;
@@ -88,6 +96,16 @@ export const SOURCE_META: Record<Source, SourceMeta> = {
     kind: "indicators",
     docsUrl: "https://www.fao.org/faostat/en/#data",
   },
+  who: {
+    id: "who",
+    label: "WHO Global Health Observatory",
+    baseUrl: "https://ghoapi.azureedge.net/api",
+    cacheTtlSeconds: 43_200, // 12h
+    timeoutMs: 15_000,
+    auth: "none",
+    kind: "indicators",
+    docsUrl: "https://www.who.int/data/gho/info/gho-odata-api",
+  },
 };
 
 /** Short uppercase prefix used in normalized record IDs, e.g. "WB:SP.POP.TOTL". */
@@ -98,4 +116,5 @@ export const SOURCE_ID_PREFIX: Record<Source, string> = {
   mekong: "MEKONG",
   laosis: "LAOSIS",
   faostat: "FAOSTAT",
+  who: "WHO",
 };
