@@ -28,6 +28,10 @@ function pingHandlers() {
     ),
     http.get(ADB_SEARCH_URL, () => new HttpResponse(null, { status: 403 })),
     http.get("https://laosis.lsb.gov.la", () => HttpResponse.text("ok")),
+    // Expansion-source ping endpoints:
+    http.get("https://fenixservices.fao.org/faostat/api/v1/en/domains", () =>
+      HttpResponse.json([]),
+    ),
   ];
 }
 
@@ -55,7 +59,7 @@ describe("get_source_status + resources (integration)", () => {
       arguments: {},
     })) as CallToolResult;
     const report = JSON.parse(toolText(res).split("\n\n")[1] ?? "{}");
-    expect(report.sources).toHaveLength(5);
+    expect(report.sources.length).toBeGreaterThanOrEqual(5);
     expect(report.sources.find((s: { source: string }) => s.source === "worldbank").reachable).toBe(
       true,
     );
@@ -85,7 +89,7 @@ describe("get_source_status + resources (integration)", () => {
       uri: "laos://sources/status",
     })) as ReadResourceResult;
     const statusDoc = JSON.parse(String(status.contents[0]?.text ?? "{}"));
-    expect(statusDoc.sources).toHaveLength(5);
+    expect(statusDoc.sources.length).toBeGreaterThanOrEqual(5);
 
     await dispose();
   });

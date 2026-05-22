@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { laosisIsAvailable } from "../adapters/laosis.js";
 import { pingAdb } from "../adapters/adb.js";
+import { pingFaostat } from "../adapters/faostat.js";
 import { pingMekong } from "../adapters/mekong.js";
 import { pingUnicef } from "../adapters/unicef.js";
 import { pingWorldBank } from "../adapters/worldbank.js";
@@ -14,6 +15,7 @@ const PINGS: Record<Source, () => Promise<boolean>> = {
   mekong: pingMekong,
   adb: pingAdb,
   laosis: laosisIsAvailable,
+  faostat: pingFaostat,
 };
 
 const NOTES: Partial<Record<Source, string>> = {

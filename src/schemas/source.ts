@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 /** All data sources this server can talk to. */
-export const SOURCES = ["worldbank", "unicef", "adb", "mekong", "laosis"] as const;
+export const SOURCES = ["worldbank", "unicef", "adb", "mekong", "laosis", "faostat"] as const;
 
 export const SourceEnum = z.enum(SOURCES);
 export type Source = z.infer<typeof SourceEnum>;
@@ -78,6 +78,16 @@ export const SOURCE_META: Record<Source, SourceMeta> = {
     kind: "official",
     docsUrl: "https://laosis.lsb.gov.la/",
   },
+  faostat: {
+    id: "faostat",
+    label: "FAO FAOSTAT",
+    baseUrl: "https://fenixservices.fao.org/faostat/api/v1",
+    cacheTtlSeconds: 86_400, // 24h — data updates ~annually
+    timeoutMs: 20_000, // FAOSTAT can be slow
+    auth: "none",
+    kind: "indicators",
+    docsUrl: "https://www.fao.org/faostat/en/#data",
+  },
 };
 
 /** Short uppercase prefix used in normalized record IDs, e.g. "WB:SP.POP.TOTL". */
@@ -87,4 +97,5 @@ export const SOURCE_ID_PREFIX: Record<Source, string> = {
   adb: "ADB",
   mekong: "MEKONG",
   laosis: "LAOSIS",
+  faostat: "FAOSTAT",
 };

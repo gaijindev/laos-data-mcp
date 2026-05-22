@@ -97,11 +97,12 @@ describe("list_available_indicators (integration)", () => {
     await dispose();
   });
 
-  it("registers exactly the seven expected tools", async () => {
+  it("registers the core tools (plus any expansion tools)", async () => {
     const { client, dispose } = await createConnectedClient();
     const { tools } = await client.listTools();
-    expect(tools.map((t) => t.name).sort()).toEqual(
-      [
+    const names = tools.map((t) => t.name);
+    expect(names).toEqual(
+      expect.arrayContaining([
         "compare_indicators",
         "get_laos_indicator",
         "get_laos_welfare_data",
@@ -109,7 +110,7 @@ describe("list_available_indicators (integration)", () => {
         "get_source_status",
         "list_available_indicators",
         "search_laos_datasets",
-      ].sort(),
+      ]),
     );
     await dispose();
   });

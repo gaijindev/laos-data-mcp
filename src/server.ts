@@ -7,6 +7,7 @@ import { registerGetSourceStatusTool } from "./tools/getSourceStatus.js";
 import { registerGetWelfareDataTool } from "./tools/getWelfareData.js";
 import { registerListAvailableIndicatorsTool } from "./tools/listAvailableIndicators.js";
 import { registerSearchDatasetsTool } from "./tools/searchDatasets.js";
+import { registerGetAgricultureDataTool } from "./tools/getAgricultureData.js";
 import { registerIndicatorCatalogResource } from "./resources/indicatorCatalog.js";
 import { registerSourceSummaryResource } from "./resources/sourceSummary.js";
 import { registerPolicyBriefPrompt } from "./prompts/policyBrief.js";
@@ -61,6 +62,9 @@ export function createServer(): McpServer {
   // Source health + Lao official statistics (Laosis stub).
   registerGetSourceStatusTool(server);
   registerGetOfficialStatsTool(server);
+
+  // Expanded data sources (added incrementally).
+  registerGetAgricultureDataTool(server); // FAOSTAT
 
   // Resources: browsable indicator catalog + live source status.
   registerIndicatorCatalogResource(server);
