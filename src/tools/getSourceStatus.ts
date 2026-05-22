@@ -1,6 +1,7 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { laosisIsAvailable } from "../adapters/laosis.js";
 import { pingAdb } from "../adapters/adb.js";
+import { pingCensus } from "../adapters/census.js";
 import { pingFaostat } from "../adapters/faostat.js";
 import { pingHdx } from "../adapters/hdx.js";
 import { pingImf } from "../adapters/imf.js";
@@ -28,6 +29,7 @@ const PINGS: Record<Source, () => Promise<boolean>> = {
   wfp: pingWfp,
   osm: pingOsm,
   mrc: mrcIsAvailable,
+  census: pingCensus,
 };
 
 const NOTES: Partial<Record<Source, string>> = {
@@ -37,6 +39,7 @@ const NOTES: Partial<Record<Source, string>> = {
   hdx: "Reachability is the public CKAN catalog; HAPI indicator values need HDX_APP_ID.",
   wfp: "Requires WFP_CLIENT_ID / WFP_CLIENT_SECRET (OAuth2); reports unreachable without them.",
   mrc: "Stub: portal reachability only. Raw data needs MRC registration (MRC_SESSION_TOKEN).",
+  census: "Bundled 2015 census summary; 2025 results expected Q1–Q2 2026 (CENSUS_2025_AVAILABLE).",
 };
 
 export interface SourceStatus {

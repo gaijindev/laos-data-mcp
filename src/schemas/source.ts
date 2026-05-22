@@ -14,6 +14,7 @@ export const SOURCES = [
   "wfp",
   "osm",
   "mrc",
+  "census",
 ] as const;
 
 export const SourceEnum = z.enum(SOURCES);
@@ -161,6 +162,16 @@ export const SOURCE_META: Record<Source, SourceMeta> = {
     kind: "datasets",
     docsUrl: "https://portal.mrcmekong.org/",
   },
+  census: {
+    id: "census",
+    label: "Lao Population & Housing Census (LSB)",
+    baseUrl: "https://lsb.gov.la",
+    cacheTtlSeconds: 86_400, // 24h (data is bundled, not fetched)
+    timeoutMs: 5_000,
+    auth: "none",
+    kind: "official",
+    docsUrl: "https://lsb.gov.la/",
+  },
 };
 
 /** Short uppercase prefix used in normalized record IDs, e.g. "WB:SP.POP.TOTL". */
@@ -177,4 +188,5 @@ export const SOURCE_ID_PREFIX: Record<Source, string> = {
   wfp: "WFP",
   osm: "OSM",
   mrc: "MRC",
+  census: "CENSUS",
 };

@@ -14,6 +14,7 @@ import { registerHumanitarianTools } from "./tools/getHumanitarianData.js";
 import { registerGetFoodPricesTool } from "./tools/getFoodPrices.js";
 import { registerGetInfrastructureTool } from "./tools/getInfrastructure.js";
 import { registerSearchMekongDataTool } from "./tools/getMekongData.js";
+import { registerGetCensusDataTool } from "./tools/getCensusData.js";
 import { registerIndicatorCatalogResource } from "./resources/indicatorCatalog.js";
 import { registerSourceSummaryResource } from "./resources/sourceSummary.js";
 import { registerPolicyBriefPrompt } from "./prompts/policyBrief.js";
@@ -77,6 +78,7 @@ export function createServer(): McpServer {
   registerGetFoodPricesTool(server); // WFP VAM
   registerGetInfrastructureTool(server); // OpenStreetMap (Overpass)
   registerSearchMekongDataTool(server); // MRC (stub)
+  registerGetCensusDataTool(server); // Lao census (stub)
 
   // Resources: browsable indicator catalog + live source status.
   registerIndicatorCatalogResource(server);
