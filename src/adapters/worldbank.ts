@@ -110,6 +110,18 @@ function parseWorldBankResponse(data: unknown, code: string): IndicatorRecord[] 
   return records;
 }
 
+/** Lightweight reachability probe used by get_source_status. */
+export async function pingWorldBank(): Promise<boolean> {
+  try {
+    const data = await httpGet<unknown>("worldbank", `${BASE}/country/${COUNTRY_CODE}`, {
+      params: { format: "json" },
+    });
+    return Array.isArray(data);
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Fetch a World Bank indicator time series for Lao PDR, normalized to
  * IndicatorRecord[]. Cached per (code, startYear, endYear) with the World Bank

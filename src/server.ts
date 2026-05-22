@@ -2,6 +2,8 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { fetchUnicefIndicatorByCode } from "./adapters/unicef.js";
 import { registerCompareIndicatorsTool } from "./tools/compareIndicators.js";
 import { registerGetIndicatorTool, registerIndicatorFetcher } from "./tools/getIndicator.js";
+import { registerGetOfficialStatsTool } from "./tools/getOfficialStats.js";
+import { registerGetSourceStatusTool } from "./tools/getSourceStatus.js";
 import { registerGetWelfareDataTool } from "./tools/getWelfareData.js";
 import { registerListAvailableIndicatorsTool } from "./tools/listAvailableIndicators.js";
 import { registerSearchDatasetsTool } from "./tools/searchDatasets.js";
@@ -50,6 +52,10 @@ export function createServer(): McpServer {
   registerGetWelfareDataTool(server);
   registerSearchDatasetsTool(server);
   registerCompareIndicatorsTool(server);
+
+  // Source health + Lao official statistics (Laosis stub).
+  registerGetSourceStatusTool(server);
+  registerGetOfficialStatsTool(server);
 
   return server;
 }
