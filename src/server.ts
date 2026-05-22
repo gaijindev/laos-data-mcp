@@ -1,4 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { registerGetIndicatorTool } from "./tools/getIndicator.js";
+import { registerListAvailableIndicatorsTool } from "./tools/listAvailableIndicators.js";
 
 export const SERVER_NAME = "laos-data-mcp";
 export const SERVER_VERSION = "1.0.0";
@@ -33,8 +35,10 @@ export function createServer(): McpServer {
     { instructions: INSTRUCTIONS },
   );
 
-  // Phase 3+: registerWorldBankTools(server), registerUnicefTools(server), ...
-  // Registration helpers are wired here as each phase lands.
+  // Discovery + international time series (World Bank in Phase 3; UNICEF/ADB
+  // fetchers register into get_laos_indicator's dispatch in later phases).
+  registerListAvailableIndicatorsTool(server);
+  registerGetIndicatorTool(server);
 
   return server;
 }

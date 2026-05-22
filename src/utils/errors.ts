@@ -1,3 +1,4 @@
+import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import type { Source } from "../schemas/source.js";
 
 /** Base class for any error tied to a specific data source. */
@@ -84,15 +85,8 @@ export function toToolErrorMessage(err: unknown, ctx: ToolErrorContext = {}): st
   return `An unknown error occurred${subject ? ` while fetching${subject}` : ""}. Try: retry, or call get_source_status.`;
 }
 
-/** Shape of an MCP tool result (kept structural to avoid importing the SDK here). */
-export interface ToolResult {
-  content: { type: "text"; text: string }[];
-  isError?: boolean;
-  structuredContent?: Record<string, unknown>;
-}
-
 /** Build an `isError` MCP tool result from any thrown value. */
-export function toToolError(err: unknown, ctx: ToolErrorContext = {}): ToolResult {
+export function toToolError(err: unknown, ctx: ToolErrorContext = {}): CallToolResult {
   return {
     content: [{ type: "text", text: toToolErrorMessage(err, ctx) }],
     isError: true,

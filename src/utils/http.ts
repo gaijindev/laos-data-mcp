@@ -12,9 +12,6 @@ const DEFAULT_HEADERS = {
 /** Shared axios instance with exponential-backoff retry. */
 export const client: AxiosInstance = axios.create({
   headers: DEFAULT_HEADERS,
-  // Resolve for any status so adapters can inspect bodies (e.g. ADB's Cloudflare
-  // HTML interstitial) instead of axios throwing before we can detect it.
-  validateStatus: () => true,
 });
 
 axiosRetry(client, {
@@ -37,29 +34,27 @@ function parseRetryAfter(value: unknown): number | undefined {
 /**
  * GET against a source with that source's timeout, returning the parsed body.
  * Maps transport failures and HTTP 4xx/5xx to our typed errors so adapters can
- * stay focused on shaping data.
+ * stay focused on shaping data. 2xx/3xx (including 200-with-HTML challenge
+ * pages) resolve, so adapters can inspect the body when they need to.
  */
 export async function httpGet<T = unknown>(
   source: Source,
   url: string,
   config: AxiosRequestConfig = {},
 ): Promise<T> {
-  let status: number | undefined;
   try {
     const res = await client.get<T>(url, { timeout: timeoutFor(source), ...config });
-    status = res.status;
-    if (status === 429) {
-      throw new RateLimitError(source, parseRetryAfter(res.headers["retry-after"]));
-    }
-    if (status >= 400) {
-      throw new SourceUnavailableError(source, `HTTP ${status} from ${url}`);
-    }
     return res.data;
   } catch (err) {
-    if (err instanceof RateLimitError || err instanceof SourceUnavailableError) throw err;
     if (axios.isAxiosError(err)) {
-      const code = err.code ?? (err.response ? `HTTP ${err.response.status}` : "request failed");
-      throw new SourceUnavailableError(source, `${code} (${url})`);
+      const status = err.response?.status;
+      if (status === 429) {
+        throw new RateLimitError(source, parseRetryAfter(err.response?.headers["retry-after"]));
+      }
+      if (status !== undefined) {
+        throw new SourceUnavailableError(source, `HTTP ${status} from ${url}`);
+      }
+      throw new SourceUnavailableError(source, `${err.code ?? "request failed"} (${url})`);
     }
     throw new SourceUnavailableError(source, err instanceof Error ? err.message : String(err));
   }
