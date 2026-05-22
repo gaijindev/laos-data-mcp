@@ -5,6 +5,7 @@ import { pingFaostat } from "../adapters/faostat.js";
 import { pingHdx } from "../adapters/hdx.js";
 import { pingImf } from "../adapters/imf.js";
 import { pingMekong } from "../adapters/mekong.js";
+import { mrcIsAvailable } from "../adapters/mrc.js";
 import { pingOsm } from "../adapters/osm.js";
 import { pingUnicef } from "../adapters/unicef.js";
 import { pingWfp } from "../adapters/wfp.js";
@@ -26,6 +27,7 @@ const PINGS: Record<Source, () => Promise<boolean>> = {
   hdx: pingHdx,
   wfp: pingWfp,
   osm: pingOsm,
+  mrc: mrcIsAvailable,
 };
 
 const NOTES: Partial<Record<Source, string>> = {
@@ -34,6 +36,7 @@ const NOTES: Partial<Record<Source, string>> = {
     "No public API yet; reachability is the site only. Set LAOSIS_API_KEY once LSB grants access.",
   hdx: "Reachability is the public CKAN catalog; HAPI indicator values need HDX_APP_ID.",
   wfp: "Requires WFP_CLIENT_ID / WFP_CLIENT_SECRET (OAuth2); reports unreachable without them.",
+  mrc: "Stub: portal reachability only. Raw data needs MRC registration (MRC_SESSION_TOKEN).",
 };
 
 export interface SourceStatus {

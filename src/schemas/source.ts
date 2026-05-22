@@ -13,6 +13,7 @@ export const SOURCES = [
   "hdx",
   "wfp",
   "osm",
+  "mrc",
 ] as const;
 
 export const SourceEnum = z.enum(SOURCES);
@@ -150,6 +151,16 @@ export const SOURCE_META: Record<Source, SourceMeta> = {
     kind: "datasets",
     docsUrl: "https://wiki.openstreetmap.org/wiki/Overpass_API",
   },
+  mrc: {
+    id: "mrc",
+    label: "Mekong River Commission (MRC)",
+    baseUrl: "https://portal.mrcmekong.org",
+    cacheTtlSeconds: 86_400, // 24h
+    timeoutMs: 8_000,
+    auth: "required", // raw data needs MRC registration (MRC_SESSION_TOKEN)
+    kind: "datasets",
+    docsUrl: "https://portal.mrcmekong.org/",
+  },
 };
 
 /** Short uppercase prefix used in normalized record IDs, e.g. "WB:SP.POP.TOTL". */
@@ -165,4 +176,5 @@ export const SOURCE_ID_PREFIX: Record<Source, string> = {
   hdx: "HDX",
   wfp: "WFP",
   osm: "OSM",
+  mrc: "MRC",
 };

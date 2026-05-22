@@ -42,6 +42,7 @@ function pingHandlers() {
       HttpResponse.json({ success: true, result: { count: 0, results: [] } }),
     ),
     http.get("https://overpass-api.de/api/status", () => HttpResponse.text("Connected as: 1")),
+    http.get("https://portal.mrcmekong.org", () => HttpResponse.text("ok")),
   ];
 }
 
