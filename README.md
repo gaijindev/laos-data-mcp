@@ -1,13 +1,14 @@
 # laos-data-mcp
 
 A unified [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server that
-connects international and national data sources for **Lao PDR (Laos)** behind one
+connects **13 international and national data sources** for **Lao PDR (Laos)** behind one
 interface, normalizes their responses into a consistent schema, and exposes them as MCP
 **tools**, **resources**, and **prompts**.
 
-Instead of wiring up the World Bank, UNICEF, Open Development Mekong, ADB, and the Lao
-Statistics Bureau separately every time, researchers, policymakers, civic technologists,
-and AI agents can query Laos data through a single gateway.
+Instead of wiring up the World Bank, UNICEF, Open Development Mekong, ADB, FAOSTAT, WHO,
+IMF, HDX, WFP, OpenStreetMap, the Mekong River Commission, and the Lao Statistics Bureau
+separately every time, researchers, policymakers, civic technologists, and AI agents can
+query Laos data through a single gateway.
 
 > This project supports a broader civic-data initiative to improve data connectivity and
 > interoperability for Laos, in alignment with the country's Digital Government Strategy
@@ -68,6 +69,13 @@ Development (no build step, auto-reload):
 pnpm dev
 ```
 
+Poke the server's tools straight from the CLI (no MCP client needed). `pnpm ask` drives the real server over an in-memory transport:
+
+```bash
+pnpm ask list                                          # tools, resources, prompts
+pnpm ask call get_laos_indicator '{"indicatorCode":"SP.POP.TOTL"}'
+```
+
 Quality gates:
 
 ```bash
@@ -79,13 +87,18 @@ pnpm test:coverage     # enforces the coverage thresholds (≥80% lines)
 
 All are optional — see [`.env.example`](.env.example). Highlights:
 
-| Variable         | Default | Purpose                                                     |
-| ---------------- | ------- | ----------------------------------------------------------- |
-| `LAOSIS_API_KEY` | —       | Enables the Laosis adapter once LSB grants API access.      |
-| `CACHE_ENABLED`  | `true`  | Set `false` to disable caching (useful during development). |
-| `MCP_TRANSPORT`  | `stdio` | `stdio` (local) or `http` (remote deployment).              |
-| `MCP_HTTP_PORT`  | `3000`  | Port for the HTTP transport.                                |
-| `LOG_LEVEL`      | `info`  | `debug` \| `info` \| `warn` \| `error` (logs go to stderr). |
+| Variable                | Default | Purpose                                                     |
+| ----------------------- | ------- | ----------------------------------------------------------- |
+| `LAOSIS_API_KEY`        | —       | Enables the Laosis adapter once LSB grants API access.      |
+| `HDX_APP_ID`            | —       | Free, no login — enables HDX HAPI indicator values.         |
+| `WFP_CLIENT_ID`         | —       | WFP VAM OAuth2 client id (enables food prices).             |
+| `WFP_CLIENT_SECRET`     | —       | WFP VAM OAuth2 client secret.                               |
+| `MRC_SESSION_TOKEN`     | —       | MRC portal token (free registration) for raw MRC data.      |
+| `CENSUS_2025_AVAILABLE` | —       | Set `true` once the 2025 Lao census results are published.  |
+| `CACHE_ENABLED`         | `true`  | Set `false` to disable caching (useful during development). |
+| `MCP_TRANSPORT`         | `stdio` | `stdio` (local) or `http` (remote deployment).              |
+| `MCP_HTTP_PORT`         | `3000`  | Port for the HTTP transport.                                |
+| `LOG_LEVEL`             | `info`  | `debug` \| `info` \| `warn` \| `error` (logs go to stderr). |
 
 ## Claude integration
 
@@ -125,15 +138,24 @@ with `tsx` — no build step needed:
 
 ## Tools
 
-| Tool                        | Purpose                                               |
-| --------------------------- | ----------------------------------------------------- |
-| `list_available_indicators` | Discover valid indicator codes (catalog browse).      |
-| `get_laos_indicator`        | Time series for one indicator (World Bank / UNICEF).  |
-| `get_laos_welfare_data`     | UNICEF welfare data by topic, with disaggregation.    |
-| `search_laos_datasets`      | Search dataset files across OD Mekong + ADB.          |
-| `compare_indicators`        | Merge 2–6 indicators into one aligned table.          |
-| `get_source_status`         | Health + cache stats for all sources.                 |
-| `get_official_stats`        | Lao Statistics Bureau official-statistics categories. |
+| Tool                                | Purpose                                                          |
+| ----------------------------------- | ---------------------------------------------------------------- |
+| `list_available_indicators`         | Discover valid indicator codes (catalog browse).                 |
+| `get_laos_indicator`                | Time series for one indicator (World Bank / UNICEF / WHO / IMF). |
+| `get_laos_welfare_data`             | UNICEF welfare data by topic, with disaggregation.               |
+| `search_laos_datasets`              | Search dataset files across OD Mekong + ADB.                     |
+| `compare_indicators`                | Merge 2–6 indicators into one aligned table.                     |
+| `get_source_status`                 | Health + cache stats for all sources.                            |
+| `get_official_stats`                | Lao Statistics Bureau official-statistics categories.            |
+| `get_laos_agriculture_data`         | FAOSTAT crops/food-balance/food-security/land/forestry.          |
+| `get_laos_health_data`              | WHO Global Health Observatory indicators.                        |
+| `get_laos_macro_data`               | IMF DataMapper (WEO) macroeconomic indicators.                   |
+| `get_laos_humanitarian_data`        | HDX HAPI humanitarian indicator values (needs `HDX_APP_ID`).     |
+| `search_laos_humanitarian_datasets` | Search the HDX dataset catalog.                                  |
+| `get_laos_food_prices`              | WFP VAM market prices (needs WFP OAuth2 creds).                  |
+| `get_laos_infrastructure`           | OpenStreetMap infrastructure (hospitals, schools, …).            |
+| `search_mekong_data`                | Mekong River Commission dataset catalog (stub).                  |
+| `get_laos_census_data`              | Lao census summary figures (2015; 2025 pending).                 |
 
 ### `list_available_indicators`
 
@@ -194,6 +216,20 @@ No inputs. Returns reachability, last-fetch time, and cache hit rate per source.
 Inputs: `category?` (substring filter). Lists Lao Statistics Bureau categories plus
 Laosis live-access status (stub until `LAOSIS_API_KEY` + a documented API exist).
 
+### Expansion-source tools
+
+- **`get_laos_agriculture_data`** — `domain` (`QCL` | `FBS` | `FS` | `RL` | `FO`), `item?`, `startYear?`, `endYear?`. FAOSTAT.
+- **`get_laos_health_data`** — `indicator?` (GHO code) or `search?` (name); omit both to list key indicators. WHO GHO.
+- **`get_laos_macro_data`** — `indicator?` (IMF WEO code), `startYear?`, `endYear?`; omit indicator to list key indicators. IMF.
+- **`get_laos_humanitarian_data`** — `topic?` (`population` | `food-security` | `poverty` | `operational-presence` | `funding` | `conflict`). HDX HAPI; needs `HDX_APP_ID`.
+- **`search_laos_humanitarian_datasets`** — `query?`, `maxResults?`. HDX CKAN (no auth).
+- **`get_laos_food_prices`** — `commodity?`, `market?`, `startDate?`, `endDate?`. WFP VAM; needs `WFP_CLIENT_ID`/`WFP_CLIENT_SECRET`.
+- **`get_laos_infrastructure`** — `featureType` (`hospital` | `clinic` | `school` | `market` | `power_plant` | `river`), `province?`. OpenStreetMap.
+- **`search_mekong_data`** — `topic?`. MRC catalog (stub; raw data needs `MRC_SESSION_TOKEN`).
+- **`get_laos_census_data`** — `topic?`, `year?`. Bundled 2015 census; 2025 via `CENSUS_2025_AVAILABLE`.
+
+WHO and IMF codes also work through `get_laos_indicator` and `compare_indicators`.
+
 ## Resources
 
 | URI                         | MIME               | Content                                                           |
@@ -224,6 +260,14 @@ cite the source and year for every figure.
 | [Open Development Mekong](https://data.laos.opendevelopmentmekong.net/)                   | `data.laos.opendevelopmentmekong.net/api/3/action` | none         | Agriculture, land, environment, investment (dataset files)          | varies      | 6h        |
 | [ADB Data Library](https://data.adb.org/)                                                 | `data.adb.org/api/3/action`                        | none\*       | Finance, trade, infrastructure, SDGs                                | varies      | 12h       |
 | [Laosis (Lao Statistics Bureau)](https://laosis.lsb.gov.la/)                              | `laosis.lsb.gov.la`                                | key (future) | Official national statistics (24 categories)                        | varies      | 1h        |
+| [FAOSTAT](https://www.fao.org/faostat/en/#data)                                           | `fenixservices.fao.org/faostat/api/v1`             | none         | Crops, livestock, food balances, food security, land, forestry      | ~annual     | 24h       |
+| [WHO GHO](https://www.who.int/data/gho/info/gho-odata-api)                                | `ghoapi.azureedge.net/api`                         | none         | Health (life expectancy, malaria, TB, NCDs, sanitation, …)          | varies      | 12h       |
+| [IMF DataMapper](https://www.imf.org/external/datamapper/api/help)                        | `imf.org/external/datamapper/api/v2`               | none         | WEO macro (GDP, inflation, debt, current account)                   | ~biannual   | 24h       |
+| [HDX / HAPI](https://hapi.humdata.org/docs)                                               | `data.humdata.org` + `hapi.humdata.org/api/v1`     | optional†    | Humanitarian datasets + indicators (population, IPC, funding, …)    | varies      | 6h        |
+| [WFP VAM Data Bridges](https://api.wfp.org/)                                              | `gateway.api.wfp.org/vam-data-bridges/v1`          | OAuth2       | Market commodity prices, exchange rates, food security              | monthly     | 6h        |
+| [OpenStreetMap (Overpass)](https://wiki.openstreetmap.org/wiki/Overpass_API)              | `overpass-api.de/api/interpreter`                  | none         | Infrastructure POIs (hospitals, schools, markets, power, rivers)    | continuous  | 7d        |
+| [Mekong River Commission](https://portal.mrcmekong.org/)                                  | `portal.mrcmekong.org`                             | key‡         | Hydrology, fisheries, sediment, water quality (catalog stub)        | varies      | 24h       |
+| [Lao Census (LSB)](https://lsb.gov.la/)                                                   | bundled                                            | none         | 2015 Population & Housing Census summary (2025 pending)             | decennial   | 24h       |
 
 > **\* ADB caveat:** `data.adb.org` sits behind a Cloudflare bot challenge, so the JSON API
 > is usually unreachable from non-browser clients. `search_laos_datasets` detects this and
@@ -231,6 +275,11 @@ cite the source and year for every figure.
 
 > **UNICEF note:** the SDMX warehouse uses the ISO3 country code `LAO`; this server
 > normalizes it back to `LA` so all records share one country code.
+
+> **† HDX:** the CKAN dataset catalog needs no auth; HAPI indicator values need a free
+> `HDX_APP_ID` (no login — generate at <https://hapi.humdata.org/docs>).
+> **‡ MRC:** the adapter is a stub exposing a static catalog; raw data needs free MRC
+> registration (`MRC_SESSION_TOKEN`). **FAOSTAT** is occasionally down (Cloudflare 521).
 
 ## Requesting Laosis (LSB) access
 

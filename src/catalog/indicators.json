@@ -3,9 +3,9 @@
     "code": "LA",
     "name": "Lao PDR"
   },
-  "generatedAt": "2026-05-22T08:15:16.911Z",
-  "totalIndicators": 59,
-  "sources": ["worldbank", "unicef"],
+  "generatedAt": "2026-05-22T09:20:41.430Z",
+  "totalIndicators": 95,
+  "sources": ["worldbank", "unicef", "faostat", "who", "imf", "hdx", "wfp", "osm", "mrc", "census"],
   "categories": {
     "demography": [
       {
@@ -63,6 +63,33 @@
         "source": "unicef",
         "name": "Adolescent population (10-19)",
         "dataflow": "DM"
+      },
+      {
+        "id": "HDX:population",
+        "code": "population",
+        "source": "hdx",
+        "name": "Population (HDX HAPI)"
+      },
+      {
+        "id": "CENSUS:POP_TOTAL",
+        "code": "POP_TOTAL",
+        "source": "census",
+        "name": "Total population (2015 Census)",
+        "unit": "people"
+      },
+      {
+        "id": "CENSUS:POP_GROWTH",
+        "code": "POP_GROWTH",
+        "source": "census",
+        "name": "Annual population growth (2015 Census)",
+        "unit": "%"
+      },
+      {
+        "id": "CENSUS:URBAN_SHARE",
+        "code": "URBAN_SHARE",
+        "source": "census",
+        "name": "Urban population share (2015 Census)",
+        "unit": "%"
       }
     ],
     "health": [
@@ -131,6 +158,53 @@
         "name": "Adolescent birth rate",
         "unit": "per 1,000 women 15-19",
         "dataflow": "MNCH"
+      },
+      {
+        "id": "WHO:WHOSIS_000001",
+        "code": "WHOSIS_000001",
+        "source": "who",
+        "name": "Life expectancy at birth",
+        "unit": "years"
+      },
+      {
+        "id": "WHO:MALARIA_EST_INCIDENCE",
+        "code": "MALARIA_EST_INCIDENCE",
+        "source": "who",
+        "name": "Estimated malaria incidence",
+        "unit": "per 1000 at risk"
+      },
+      {
+        "id": "WHO:MDG_0000000020",
+        "code": "MDG_0000000020",
+        "source": "who",
+        "name": "Incidence of tuberculosis",
+        "unit": "per 100,000"
+      },
+      {
+        "id": "WHO:NCDMORT3070",
+        "code": "NCDMORT3070",
+        "source": "who",
+        "name": "Probability of dying 30-70 from NCDs",
+        "unit": "%"
+      },
+      {
+        "id": "WHO:HWF_0001",
+        "code": "HWF_0001",
+        "source": "who",
+        "name": "Medical doctors",
+        "unit": "per 10,000"
+      },
+      {
+        "id": "OSM:hospital",
+        "code": "hospital",
+        "source": "osm",
+        "name": "Hospitals (OpenStreetMap)"
+      },
+      {
+        "id": "OSM:clinic",
+        "code": "clinic",
+        "source": "osm",
+        "name": "Clinics (OpenStreetMap)"
       }
     ],
     "economy": [
@@ -175,6 +249,47 @@
         "source": "worldbank",
         "name": "Central government debt, total (% of GDP)",
         "unit": "%"
+      },
+      {
+        "id": "IMF:NGDP_RPCH",
+        "code": "NGDP_RPCH",
+        "source": "imf",
+        "name": "Real GDP growth",
+        "unit": "annual %"
+      },
+      {
+        "id": "IMF:PCPIPCH",
+        "code": "PCPIPCH",
+        "source": "imf",
+        "name": "Inflation, average consumer prices",
+        "unit": "annual %"
+      },
+      {
+        "id": "IMF:GGXWDG_NGDP",
+        "code": "GGXWDG_NGDP",
+        "source": "imf",
+        "name": "General government gross debt",
+        "unit": "% of GDP"
+      },
+      {
+        "id": "IMF:BCA_NGDPD",
+        "code": "BCA_NGDPD",
+        "source": "imf",
+        "name": "Current account balance",
+        "unit": "% of GDP"
+      },
+      {
+        "id": "IMF:PPPGDP",
+        "code": "PPPGDP",
+        "source": "imf",
+        "name": "GDP, PPP",
+        "unit": "billions intl $"
+      },
+      {
+        "id": "WFP:PriceMonthly",
+        "code": "PriceMonthly",
+        "source": "wfp",
+        "name": "Monthly market commodity prices (WFP VAM)"
       }
     ],
     "poverty": [
@@ -198,6 +313,12 @@
         "source": "worldbank",
         "name": "Poverty headcount ratio at $2.15 a day (2017 PPP) (% of population)",
         "unit": "%"
+      },
+      {
+        "id": "HDX:poverty",
+        "code": "poverty",
+        "source": "hdx",
+        "name": "Poverty rate (HDX HAPI)"
       }
     ],
     "education": [
@@ -260,6 +381,19 @@
         "name": "Out-of-school rate, primary (administrative)",
         "unit": "%",
         "dataflow": "EDUCATION"
+      },
+      {
+        "id": "OSM:school",
+        "code": "school",
+        "source": "osm",
+        "name": "Schools (OpenStreetMap)"
+      },
+      {
+        "id": "CENSUS:LITERACY_15",
+        "code": "LITERACY_15",
+        "source": "census",
+        "name": "Literacy rate 15+ (2015 Census)",
+        "unit": "%"
       }
     ],
     "wash": [
@@ -300,6 +434,13 @@
         "name": "Population using improved drinking water available when needed",
         "unit": "%",
         "dataflow": "WASH_HOUSEHOLDS"
+      },
+      {
+        "id": "WHO:WSH_SANITATION_SAFELY_MANAGED",
+        "code": "WSH_SANITATION_SAFELY_MANAGED",
+        "source": "who",
+        "name": "Safely managed sanitation services",
+        "unit": "%"
       }
     ],
     "environment": [
@@ -309,6 +450,36 @@
         "source": "worldbank",
         "name": "Forest area (% of land area)",
         "unit": "%"
+      },
+      {
+        "id": "FAOSTAT:FO",
+        "code": "FO",
+        "source": "faostat",
+        "name": "Forestry production & trade (FAOSTAT domain)"
+      },
+      {
+        "id": "OSM:river",
+        "code": "river",
+        "source": "osm",
+        "name": "Rivers (OpenStreetMap)"
+      },
+      {
+        "id": "MRC:hydrology-water-level",
+        "code": "hydrology-water-level",
+        "source": "mrc",
+        "name": "Hydrology — water level & discharge (MRC)"
+      },
+      {
+        "id": "MRC:fisheries",
+        "code": "fisheries",
+        "source": "mrc",
+        "name": "Fisheries — abundance & diversity (MRC)"
+      },
+      {
+        "id": "MRC:water-quality",
+        "code": "water-quality",
+        "source": "mrc",
+        "name": "Water quality monitoring (MRC)"
       }
     ],
     "agriculture": [
@@ -325,6 +496,18 @@
         "source": "worldbank",
         "name": "Agriculture, forestry, and fishing, value added (% of GDP)",
         "unit": "%"
+      },
+      {
+        "id": "FAOSTAT:QCL",
+        "code": "QCL",
+        "source": "faostat",
+        "name": "Crops & livestock production (FAOSTAT domain)"
+      },
+      {
+        "id": "FAOSTAT:RL",
+        "code": "RL",
+        "source": "faostat",
+        "name": "Land use (FAOSTAT domain)"
       }
     ],
     "energy": [
@@ -341,6 +524,12 @@
         "source": "worldbank",
         "name": "Renewable energy consumption (% of total final energy consumption)",
         "unit": "%"
+      },
+      {
+        "id": "OSM:power_plant",
+        "code": "power_plant",
+        "source": "osm",
+        "name": "Power plants (OpenStreetMap)"
       }
     ],
     "technology": [
@@ -463,6 +652,52 @@
         "name": "Low birth weight prevalence",
         "unit": "%",
         "dataflow": "NUTRITION"
+      },
+      {
+        "id": "FAOSTAT:FBS",
+        "code": "FBS",
+        "source": "faostat",
+        "name": "Food balances (FAOSTAT domain)"
+      },
+      {
+        "id": "FAOSTAT:FS",
+        "code": "FS",
+        "source": "faostat",
+        "name": "Food security indicators (FAOSTAT domain)"
+      },
+      {
+        "id": "HDX:food-security",
+        "code": "food-security",
+        "source": "hdx",
+        "name": "Food security / IPC (HDX HAPI)"
+      }
+    ],
+    "humanitarian": [
+      {
+        "id": "HDX:operational-presence",
+        "code": "operational-presence",
+        "source": "hdx",
+        "name": "Humanitarian operational presence (HDX HAPI)"
+      },
+      {
+        "id": "HDX:funding",
+        "code": "funding",
+        "source": "hdx",
+        "name": "Humanitarian funding (HDX HAPI)"
+      },
+      {
+        "id": "HDX:conflict",
+        "code": "conflict",
+        "source": "hdx",
+        "name": "Conflict events (HDX HAPI)"
+      }
+    ],
+    "infrastructure": [
+      {
+        "id": "OSM:market",
+        "code": "market",
+        "source": "osm",
+        "name": "Marketplaces (OpenStreetMap)"
       }
     ]
   }

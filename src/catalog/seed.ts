@@ -1,3 +1,4 @@
+import { EXPANSION_SEED } from "./seed.expansion.js";
 import { UNICEF_SEED } from "./seed.unicef.js";
 import type { CatalogEntry } from "./types.js";
 
@@ -324,5 +325,5 @@ export const WORLD_BANK_SEED: CatalogEntry[] = [
   },
 ];
 
-/** The full curated catalog: World Bank + UNICEF. */
-export const SEED_CATALOG: CatalogEntry[] = [...WORLD_BANK_SEED, ...UNICEF_SEED];
+/** The full curated catalog: World Bank + UNICEF + expansion sources. */
+export const SEED_CATALOG: CatalogEntry[] = [...WORLD_BANK_SEED, ...UNICEF_SEED, ...EXPANSION_SEED];

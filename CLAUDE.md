@@ -2,8 +2,8 @@
 
 ## What this project does
 
-MCP server exposing 5 external APIs about Lao PDR as unified tools / resources /
-prompts. See README.md for full architecture.
+MCP server exposing 13 external data sources about Lao PDR as unified tools /
+resources / prompts. See README.md for full architecture.
 
 ## Key conventions
 
@@ -26,6 +26,18 @@ prompts. See README.md for full architecture.
 3. OD Mekong CKAN (`mekong.ts`) — REST JSON, no auth.
 4. ADB (`adb.ts`) — CKAN REST JSON, no auth, but Cloudflare-protected (see gotchas).
 5. Laosis (`laosis.ts`) — STUB, activate with `LAOSIS_API_KEY`.
+6. FAOSTAT (`faostat.ts`) — REST JSON, no auth. Area code `116`. Agriculture/food/forestry.
+7. WHO GHO (`who.ts`) — OData JSON, no auth. Country `LAO`. Health indicators.
+8. IMF DataMapper (`imf.ts`) — REST JSON, no auth. Country `LAO`. WEO macro.
+9. HDX (`hdx.ts`) — CKAN (no auth) for datasets + HAPI (needs `HDX_APP_ID`) for indicators.
+10. WFP VAM (`wfp.ts`) — OAuth2 client-credentials (`WFP_CLIENT_ID`/`WFP_CLIENT_SECRET`). Market prices.
+11. OpenStreetMap (`osm.ts`) — Overpass POST, no auth. Infrastructure POIs; fixed templates only.
+12. MRC (`mrc.ts`) — STUB, static catalog; activate with `MRC_SESSION_TOKEN`.
+13. Census (`census.ts`) — STUB, bundled 2015 figures; 2025 via `CENSUS_2025_AVAILABLE`.
+
+Adding a source is additive: append it to `SOURCES`/`SOURCE_META`/`SOURCE_ID_PREFIX`
+in `src/schemas/source.ts`, add a `ping*` to `PINGS` in `getSourceStatus.ts`, and a
+fetcher/tool. Existing sources and the record schemas are never modified.
 
 ## Running locally
 
@@ -63,6 +75,15 @@ pnpm lint && pnpm typecheck && pnpm test
   HTTP clients receive an HTML interstitial, not JSON. `adb.ts` detects this and
   raises `SourceUnavailableError`; ADB is therefore best-effort. Documented in README.
 - **Laosis has no public API** — `laosis.ts` is a stub; see README for access steps.
+- **FAOSTAT** intermittently returns Cloudflare **521** (origin down); maps to
+  SourceUnavailableError. Field names are Title-Case with spaces ("Item Code", "Value").
+- **IMF DataMapper ignores the country path segment** (returns all ~229 countries) — extract
+  `values[code].LAO` client-side. WEO includes **forecast years > 2030**; filter them out.
+- **WHO GHO** uses ISO3 `LAO`; values carry `NumericValue` + `Dim1` (sex) disaggregation.
+- **HDX**: CKAN dataset search needs no auth; **HAPI indicator values need `HDX_APP_ID`**.
+- **WFP VAM** needs OAuth2 (`WFP_CLIENT_ID`/`SECRET`); token is cached + refreshed (~1h expiry).
+- **OSM Overpass** returns **HTTP 406** to clients without a proper UA/Accept (the shared
+  axios headers satisfy it). Only fixed query templates are used; province input is sanitized.
 
 ## Files to never modify without discussion
 

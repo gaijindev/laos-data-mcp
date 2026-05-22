@@ -80,17 +80,24 @@ function toTimeseries(records: IndicatorRecord[]) {
   };
 }
 
+const SOURCE_TOOL_HINTS: Partial<Record<Source, string>> = {
+  unicef: "use get_laos_welfare_data for UNICEF topics",
+  mekong: "use search_laos_datasets for dataset files",
+  adb: "use search_laos_datasets for dataset files",
+  laosis: "use get_official_stats for official-statistics categories",
+  faostat: "use get_laos_agriculture_data for FAOSTAT domains",
+  hdx: "use get_laos_humanitarian_data / search_laos_humanitarian_datasets",
+  wfp: "use get_laos_food_prices for WFP market prices",
+  osm: "use get_laos_infrastructure for OpenStreetMap features",
+  mrc: "use search_mekong_data for MRC datasets",
+  census: "use get_laos_census_data for census figures",
+};
+
 export function unsupportedSourceHint(source: Source): string {
-  if (source === "unicef") {
-    return `get_laos_indicator does not handle source "unicef" directly — use get_laos_welfare_data for UNICEF topics (education, nutrition, health, gender, wash, demography).`;
-  }
-  if (source === "mekong" || source === "adb") {
-    return `Source "${source}" provides dataset files, not indicator time series — use search_laos_datasets instead.`;
-  }
-  if (source === "laosis") {
-    return `Source "laosis" has no public API yet — use get_official_stats to see available official-statistics categories.`;
-  }
-  return `Source "${source}" is not supported by get_laos_indicator. Try source "worldbank".`;
+  const hint = SOURCE_TOOL_HINTS[source];
+  return hint
+    ? `get_laos_indicator does not handle source "${source}" directly — ${hint}.`
+    : `Source "${source}" is not supported by get_laos_indicator. Try source "worldbank".`;
 }
 
 const DESCRIPTION =

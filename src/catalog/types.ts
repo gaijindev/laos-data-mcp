@@ -19,6 +19,7 @@ export const CATEGORIES = [
   "trade",
   "governance",
   "labor",
+  "humanitarian",
 ] as const;
 
 export const CategoryEnum = z.enum(CATEGORIES);

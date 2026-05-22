@@ -1,5 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { fetchImfIndicator } from "./adapters/imf.js";
 import { fetchUnicefIndicatorByCode } from "./adapters/unicef.js";
+import { fetchWhoIndicator } from "./adapters/who.js";
 import { registerCompareIndicatorsTool } from "./tools/compareIndicators.js";
 import { registerGetIndicatorTool, registerIndicatorFetcher } from "./tools/getIndicator.js";
 import { registerGetOfficialStatsTool } from "./tools/getOfficialStats.js";
@@ -54,9 +56,14 @@ export function createServer(): McpServer {
     { instructions: INSTRUCTIONS },
   );
 
-  // Make UNICEF codes ("DATAFLOW:INDICATOR") fetchable through get_laos_indicator.
+  // Make code-based indicator sources fetchable through get_laos_indicator
+  // (and therefore compare_indicators).
   registerIndicatorFetcher("unicef", (code, startYear, endYear) =>
     fetchUnicefIndicatorByCode(code, startYear, endYear),
+  );
+  registerIndicatorFetcher("who", (code) => fetchWhoIndicator(code));
+  registerIndicatorFetcher("imf", (code, startYear, endYear) =>
+    fetchImfIndicator(code, { startYear, endYear }),
   );
 
   // Discovery + time series + UNICEF welfare + dataset search.
