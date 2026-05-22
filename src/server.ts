@@ -7,6 +7,11 @@ import { registerGetSourceStatusTool } from "./tools/getSourceStatus.js";
 import { registerGetWelfareDataTool } from "./tools/getWelfareData.js";
 import { registerListAvailableIndicatorsTool } from "./tools/listAvailableIndicators.js";
 import { registerSearchDatasetsTool } from "./tools/searchDatasets.js";
+import { registerIndicatorCatalogResource } from "./resources/indicatorCatalog.js";
+import { registerSourceSummaryResource } from "./resources/sourceSummary.js";
+import { registerPolicyBriefPrompt } from "./prompts/policyBrief.js";
+import { registerSectorComparisonPrompt } from "./prompts/sectorComparison.js";
+import { registerDataAuditPrompt } from "./prompts/dataAudit.js";
 
 export const SERVER_NAME = "laos-data-mcp";
 export const SERVER_VERSION = "1.0.0";
@@ -56,6 +61,15 @@ export function createServer(): McpServer {
   // Source health + Lao official statistics (Laosis stub).
   registerGetSourceStatusTool(server);
   registerGetOfficialStatsTool(server);
+
+  // Resources: browsable indicator catalog + live source status.
+  registerIndicatorCatalogResource(server);
+  registerSourceSummaryResource(server);
+
+  // Prompts: ready-made workflows over the tools above.
+  registerPolicyBriefPrompt(server);
+  registerSectorComparisonPrompt(server);
+  registerDataAuditPrompt(server);
 
   return server;
 }
