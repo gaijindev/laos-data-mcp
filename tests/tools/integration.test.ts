@@ -38,6 +38,9 @@ function pingHandlers() {
     http.get("https://www.imf.org/external/datamapper/api/v2/indicators/NGDP_RPCH", () =>
       HttpResponse.json({ indicators: { NGDP_RPCH: {} } }),
     ),
+    http.get("https://data.humdata.org/api/3/action/package_search", () =>
+      HttpResponse.json({ success: true, result: { count: 0, results: [] } }),
+    ),
   ];
 }
 

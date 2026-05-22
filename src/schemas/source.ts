@@ -10,6 +10,7 @@ export const SOURCES = [
   "faostat",
   "who",
   "imf",
+  "hdx",
 ] as const;
 
 export const SourceEnum = z.enum(SOURCES);
@@ -117,6 +118,16 @@ export const SOURCE_META: Record<Source, SourceMeta> = {
     kind: "indicators",
     docsUrl: "https://www.imf.org/external/datamapper/api/help",
   },
+  hdx: {
+    id: "hdx",
+    label: "Humanitarian Data Exchange (HDX / HAPI)",
+    baseUrl: "https://hapi.humdata.org/api/v1",
+    cacheTtlSeconds: 21_600, // 6h
+    timeoutMs: 15_000,
+    auth: "optional", // CKAN search needs none; HAPI needs HDX_APP_ID
+    kind: "datasets",
+    docsUrl: "https://hapi.humdata.org/docs",
+  },
 };
 
 /** Short uppercase prefix used in normalized record IDs, e.g. "WB:SP.POP.TOTL". */
@@ -129,4 +140,5 @@ export const SOURCE_ID_PREFIX: Record<Source, string> = {
   faostat: "FAOSTAT",
   who: "WHO",
   imf: "IMF",
+  hdx: "HDX",
 };
