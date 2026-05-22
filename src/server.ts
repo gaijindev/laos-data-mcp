@@ -3,6 +3,7 @@ import { fetchUnicefIndicatorByCode } from "./adapters/unicef.js";
 import { registerGetIndicatorTool, registerIndicatorFetcher } from "./tools/getIndicator.js";
 import { registerGetWelfareDataTool } from "./tools/getWelfareData.js";
 import { registerListAvailableIndicatorsTool } from "./tools/listAvailableIndicators.js";
+import { registerSearchDatasetsTool } from "./tools/searchDatasets.js";
 
 export const SERVER_NAME = "laos-data-mcp";
 export const SERVER_VERSION = "1.0.0";
@@ -42,10 +43,11 @@ export function createServer(): McpServer {
     fetchUnicefIndicatorByCode(code, startYear, endYear),
   );
 
-  // Discovery + time series + UNICEF welfare.
+  // Discovery + time series + UNICEF welfare + dataset search.
   registerListAvailableIndicatorsTool(server);
   registerGetIndicatorTool(server);
   registerGetWelfareDataTool(server);
+  registerSearchDatasetsTool(server);
 
   return server;
 }
