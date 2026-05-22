@@ -30,6 +30,8 @@ query Laos data through a single gateway.
 
 ## Overview
 
+**Coverage:** 13 data sources · 16 tools · 2 resources · 3 prompts · 95 catalog indicators.
+
 Every adapter normalizes its source into one of two shared shapes:
 
 - **`IndicatorRecord`** — a single observation: `{ id, source, indicatorCode, indicatorName,
@@ -41,8 +43,9 @@ Responses are cached in-memory with per-source TTLs, HTTP calls retry with expon
 backoff, and every tool returns human-readable errors (never raw stack traces).
 
 ```
-MCP client ──> laos-data-mcp ──> adapters ──> { World Bank, UNICEF, OD Mekong, ADB, Laosis }
-                    │                └─ normalize ─> IndicatorRecord / DatasetMetadata
+MCP client ──> laos-data-mcp ──> 13 adapters ──> World Bank · UNICEF · OD Mekong · ADB · Laosis
+                    │                             FAOSTAT · WHO · IMF · HDX · WFP · OSM · MRC · Census
+                    │             └─ normalize ──> IndicatorRecord / DatasetMetadata
                     └─ tools • resources • prompts
 ```
 
@@ -50,7 +53,9 @@ MCP client ──> laos-data-mcp ──> adapters ──> { World Bank, UNICEF, 
 
 - **Node.js 18+** (developed and tested on Node 26)
 - **[pnpm](https://pnpm.io) 10+**
-- No API keys are required for the public sources (World Bank, UNICEF, OD Mekong).
+- No API keys for the public sources (World Bank, UNICEF, OD Mekong, FAOSTAT, WHO, IMF,
+  OpenStreetMap). Optional free credentials unlock HDX HAPI (`HDX_APP_ID`), WFP VAM
+  (`WFP_CLIENT_ID`/`WFP_CLIENT_SECRET`), MRC (`MRC_SESSION_TOKEN`), and Laosis.
 
 ## Installation & setup
 
