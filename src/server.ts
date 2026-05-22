@@ -9,6 +9,7 @@ import { registerListAvailableIndicatorsTool } from "./tools/listAvailableIndica
 import { registerSearchDatasetsTool } from "./tools/searchDatasets.js";
 import { registerGetAgricultureDataTool } from "./tools/getAgricultureData.js";
 import { registerGetHealthDataTool } from "./tools/getHealthData.js";
+import { registerGetMacroDataTool } from "./tools/getMacroData.js";
 import { registerIndicatorCatalogResource } from "./resources/indicatorCatalog.js";
 import { registerSourceSummaryResource } from "./resources/sourceSummary.js";
 import { registerPolicyBriefPrompt } from "./prompts/policyBrief.js";
@@ -67,6 +68,7 @@ export function createServer(): McpServer {
   // Expanded data sources (added incrementally).
   registerGetAgricultureDataTool(server); // FAOSTAT
   registerGetHealthDataTool(server); // WHO GHO
+  registerGetMacroDataTool(server); // IMF DataMapper
 
   // Resources: browsable indicator catalog + live source status.
   registerIndicatorCatalogResource(server);

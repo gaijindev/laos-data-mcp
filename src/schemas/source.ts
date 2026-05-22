@@ -9,6 +9,7 @@ export const SOURCES = [
   "laosis",
   "faostat",
   "who",
+  "imf",
 ] as const;
 
 export const SourceEnum = z.enum(SOURCES);
@@ -106,6 +107,16 @@ export const SOURCE_META: Record<Source, SourceMeta> = {
     kind: "indicators",
     docsUrl: "https://www.who.int/data/gho/info/gho-odata-api",
   },
+  imf: {
+    id: "imf",
+    label: "IMF DataMapper (WEO)",
+    baseUrl: "https://www.imf.org/external/datamapper/api/v2",
+    cacheTtlSeconds: 86_400, // 24h — WEO updates ~twice a year
+    timeoutMs: 15_000,
+    auth: "none",
+    kind: "indicators",
+    docsUrl: "https://www.imf.org/external/datamapper/api/help",
+  },
 };
 
 /** Short uppercase prefix used in normalized record IDs, e.g. "WB:SP.POP.TOTL". */
@@ -117,4 +128,5 @@ export const SOURCE_ID_PREFIX: Record<Source, string> = {
   laosis: "LAOSIS",
   faostat: "FAOSTAT",
   who: "WHO",
+  imf: "IMF",
 };

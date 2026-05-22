@@ -35,6 +35,9 @@ function pingHandlers() {
     http.get("https://ghoapi.azureedge.net/api/Indicator", () =>
       HttpResponse.json({ value: [{}] }),
     ),
+    http.get("https://www.imf.org/external/datamapper/api/v2/indicators/NGDP_RPCH", () =>
+      HttpResponse.json({ indicators: { NGDP_RPCH: {} } }),
+    ),
   ];
 }
 

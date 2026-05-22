@@ -2,6 +2,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { laosisIsAvailable } from "../adapters/laosis.js";
 import { pingAdb } from "../adapters/adb.js";
 import { pingFaostat } from "../adapters/faostat.js";
+import { pingImf } from "../adapters/imf.js";
 import { pingMekong } from "../adapters/mekong.js";
 import { pingUnicef } from "../adapters/unicef.js";
 import { pingWho } from "../adapters/who.js";
@@ -18,6 +19,7 @@ const PINGS: Record<Source, () => Promise<boolean>> = {
   laosis: laosisIsAvailable,
   faostat: pingFaostat,
   who: pingWho,
+  imf: pingImf,
 };
 
 const NOTES: Partial<Record<Source, string>> = {
