@@ -6,6 +6,7 @@ import { pingHdx } from "../adapters/hdx.js";
 import { pingImf } from "../adapters/imf.js";
 import { pingMekong } from "../adapters/mekong.js";
 import { pingUnicef } from "../adapters/unicef.js";
+import { pingWfp } from "../adapters/wfp.js";
 import { pingWho } from "../adapters/who.js";
 import { pingWorldBank } from "../adapters/worldbank.js";
 import { cache } from "../cache/manager.js";
@@ -22,12 +23,15 @@ const PINGS: Record<Source, () => Promise<boolean>> = {
   who: pingWho,
   imf: pingImf,
   hdx: pingHdx,
+  wfp: pingWfp,
 };
 
 const NOTES: Partial<Record<Source, string>> = {
   adb: "Behind a Cloudflare bot challenge — usually unreachable from non-browser clients.",
   laosis:
     "No public API yet; reachability is the site only. Set LAOSIS_API_KEY once LSB grants access.",
+  hdx: "Reachability is the public CKAN catalog; HAPI indicator values need HDX_APP_ID.",
+  wfp: "Requires WFP_CLIENT_ID / WFP_CLIENT_SECRET (OAuth2); reports unreachable without them.",
 };
 
 export interface SourceStatus {

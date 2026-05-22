@@ -31,6 +31,21 @@ function parseRetryAfter(value: unknown): number | undefined {
   return Number.isFinite(seconds) ? seconds : undefined;
 }
 
+/** Map any transport/HTTP failure to one of our typed errors. Always throws. */
+function mapHttpError(source: Source, url: string, err: unknown): never {
+  if (axios.isAxiosError(err)) {
+    const status = err.response?.status;
+    if (status === 429) {
+      throw new RateLimitError(source, parseRetryAfter(err.response?.headers["retry-after"]));
+    }
+    if (status !== undefined) {
+      throw new SourceUnavailableError(source, `HTTP ${status} from ${url}`);
+    }
+    throw new SourceUnavailableError(source, `${err.code ?? "request failed"} (${url})`);
+  }
+  throw new SourceUnavailableError(source, err instanceof Error ? err.message : String(err));
+}
+
 /**
  * GET against a source with that source's timeout, returning the parsed body.
  * Maps transport failures and HTTP 4xx/5xx to our typed errors so adapters can
@@ -46,16 +61,21 @@ export async function httpGet<T = unknown>(
     const res = await client.get<T>(url, { timeout: timeoutFor(source), ...config });
     return res.data;
   } catch (err) {
-    if (axios.isAxiosError(err)) {
-      const status = err.response?.status;
-      if (status === 429) {
-        throw new RateLimitError(source, parseRetryAfter(err.response?.headers["retry-after"]));
-      }
-      if (status !== undefined) {
-        throw new SourceUnavailableError(source, `HTTP ${status} from ${url}`);
-      }
-      throw new SourceUnavailableError(source, `${err.code ?? "request failed"} (${url})`);
-    }
-    throw new SourceUnavailableError(source, err instanceof Error ? err.message : String(err));
+    mapHttpError(source, url, err);
+  }
+}
+
+/** POST against a source (same timeout + error mapping as httpGet). */
+export async function httpPost<T = unknown>(
+  source: Source,
+  url: string,
+  body?: unknown,
+  config: AxiosRequestConfig = {},
+): Promise<T> {
+  try {
+    const res = await client.post<T>(url, body, { timeout: timeoutFor(source), ...config });
+    return res.data;
+  } catch (err) {
+    mapHttpError(source, url, err);
   }
 }

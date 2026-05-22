@@ -11,6 +11,7 @@ export const SOURCES = [
   "who",
   "imf",
   "hdx",
+  "wfp",
 ] as const;
 
 export const SourceEnum = z.enum(SOURCES);
@@ -128,6 +129,16 @@ export const SOURCE_META: Record<Source, SourceMeta> = {
     kind: "datasets",
     docsUrl: "https://hapi.humdata.org/docs",
   },
+  wfp: {
+    id: "wfp",
+    label: "WFP VAM Data Bridges",
+    baseUrl: "https://gateway.api.wfp.org/vam-data-bridges/v1",
+    cacheTtlSeconds: 21_600, // 6h
+    timeoutMs: 15_000,
+    auth: "required", // OAuth2 client credentials (WFP_CLIENT_ID/SECRET)
+    kind: "indicators",
+    docsUrl: "https://api.wfp.org/",
+  },
 };
 
 /** Short uppercase prefix used in normalized record IDs, e.g. "WB:SP.POP.TOTL". */
@@ -141,4 +152,5 @@ export const SOURCE_ID_PREFIX: Record<Source, string> = {
   who: "WHO",
   imf: "IMF",
   hdx: "HDX",
+  wfp: "WFP",
 };
