@@ -12,6 +12,7 @@ export const SOURCES = [
   "imf",
   "hdx",
   "wfp",
+  "osm",
 ] as const;
 
 export const SourceEnum = z.enum(SOURCES);
@@ -139,6 +140,16 @@ export const SOURCE_META: Record<Source, SourceMeta> = {
     kind: "indicators",
     docsUrl: "https://api.wfp.org/",
   },
+  osm: {
+    id: "osm",
+    label: "OpenStreetMap (Overpass API)",
+    baseUrl: "https://overpass-api.de/api/interpreter",
+    cacheTtlSeconds: 604_800, // 7d — aggressive caching for the 10k/day rate limit
+    timeoutMs: 45_000, // Overpass queries can be slow
+    auth: "none",
+    kind: "datasets",
+    docsUrl: "https://wiki.openstreetmap.org/wiki/Overpass_API",
+  },
 };
 
 /** Short uppercase prefix used in normalized record IDs, e.g. "WB:SP.POP.TOTL". */
@@ -153,4 +164,5 @@ export const SOURCE_ID_PREFIX: Record<Source, string> = {
   imf: "IMF",
   hdx: "HDX",
   wfp: "WFP",
+  osm: "OSM",
 };

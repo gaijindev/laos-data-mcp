@@ -5,6 +5,7 @@ import { pingFaostat } from "../adapters/faostat.js";
 import { pingHdx } from "../adapters/hdx.js";
 import { pingImf } from "../adapters/imf.js";
 import { pingMekong } from "../adapters/mekong.js";
+import { pingOsm } from "../adapters/osm.js";
 import { pingUnicef } from "../adapters/unicef.js";
 import { pingWfp } from "../adapters/wfp.js";
 import { pingWho } from "../adapters/who.js";
@@ -24,6 +25,7 @@ const PINGS: Record<Source, () => Promise<boolean>> = {
   imf: pingImf,
   hdx: pingHdx,
   wfp: pingWfp,
+  osm: pingOsm,
 };
 
 const NOTES: Partial<Record<Source, string>> = {
