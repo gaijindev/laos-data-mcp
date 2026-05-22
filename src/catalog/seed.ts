@@ -1,3 +1,4 @@
+import { UNICEF_SEED } from "./seed.unicef.js";
 import type { CatalogEntry } from "./types.js";
 
 /**
@@ -64,8 +65,5 @@ export const WORLD_BANK_SEED: CatalogEntry[] = [
   { id: "WB:SG.GEN.PARL.ZS", source: "worldbank", code: "SG.GEN.PARL.ZS", name: "Proportion of seats held by women in national parliaments (%)", category: "gender", unit: "%" },
 ];
 
-/**
- * The full curated catalog. UNICEF entries are merged in by seed.unicef.ts in
- * Phase 4; until then this is the World Bank set.
- */
-export const SEED_CATALOG: CatalogEntry[] = [...WORLD_BANK_SEED];
+/** The full curated catalog: World Bank + UNICEF. */
+export const SEED_CATALOG: CatalogEntry[] = [...WORLD_BANK_SEED, ...UNICEF_SEED];

@@ -1,5 +1,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { registerGetIndicatorTool } from "./tools/getIndicator.js";
+import { fetchUnicefIndicatorByCode } from "./adapters/unicef.js";
+import { registerGetIndicatorTool, registerIndicatorFetcher } from "./tools/getIndicator.js";
+import { registerGetWelfareDataTool } from "./tools/getWelfareData.js";
 import { registerListAvailableIndicatorsTool } from "./tools/listAvailableIndicators.js";
 
 export const SERVER_NAME = "laos-data-mcp";
@@ -35,10 +37,15 @@ export function createServer(): McpServer {
     { instructions: INSTRUCTIONS },
   );
 
-  // Discovery + international time series (World Bank in Phase 3; UNICEF/ADB
-  // fetchers register into get_laos_indicator's dispatch in later phases).
+  // Make UNICEF codes ("DATAFLOW:INDICATOR") fetchable through get_laos_indicator.
+  registerIndicatorFetcher("unicef", (code, startYear, endYear) =>
+    fetchUnicefIndicatorByCode(code, startYear, endYear),
+  );
+
+  // Discovery + time series + UNICEF welfare.
   registerListAvailableIndicatorsTool(server);
   registerGetIndicatorTool(server);
+  registerGetWelfareDataTool(server);
 
   return server;
 }
