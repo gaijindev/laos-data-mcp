@@ -27,6 +27,11 @@ export function registerIndicatorFetcher(source: Source, fetcher: IndicatorFetch
   FETCHERS[source] = fetcher;
 }
 
+/** Look up the registered time-series fetcher for a source, if any. */
+export function lookupIndicatorFetcher(source: Source): IndicatorFetcher | undefined {
+  return FETCHERS[source];
+}
+
 const PREFIX_TO_SOURCE: Record<string, Source> = {};
 for (const s of SOURCES) {
   PREFIX_TO_SOURCE[s.toUpperCase()] = s;
@@ -75,7 +80,7 @@ function toTimeseries(records: IndicatorRecord[]) {
   };
 }
 
-function unsupportedSourceHint(source: Source): string {
+export function unsupportedSourceHint(source: Source): string {
   if (source === "unicef") {
     return `get_laos_indicator does not handle source "unicef" directly — use get_laos_welfare_data for UNICEF topics (education, nutrition, health, gender, wash, demography).`;
   }

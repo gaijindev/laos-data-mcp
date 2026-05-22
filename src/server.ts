@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { fetchUnicefIndicatorByCode } from "./adapters/unicef.js";
+import { registerCompareIndicatorsTool } from "./tools/compareIndicators.js";
 import { registerGetIndicatorTool, registerIndicatorFetcher } from "./tools/getIndicator.js";
 import { registerGetWelfareDataTool } from "./tools/getWelfareData.js";
 import { registerListAvailableIndicatorsTool } from "./tools/listAvailableIndicators.js";
@@ -48,6 +49,7 @@ export function createServer(): McpServer {
   registerGetIndicatorTool(server);
   registerGetWelfareDataTool(server);
   registerSearchDatasetsTool(server);
+  registerCompareIndicatorsTool(server);
 
   return server;
 }
