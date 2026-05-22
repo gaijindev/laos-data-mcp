@@ -48,8 +48,7 @@ export class DataParseError extends SourceError {
   readonly rawSample?: string;
   constructor(source: Source, rawResponse?: unknown) {
     super(source, `Source "${source}" returned data in an unexpected format.`);
-    this.rawSample =
-      typeof rawResponse === "string" ? rawResponse.slice(0, 300) : undefined;
+    this.rawSample = typeof rawResponse === "string" ? rawResponse.slice(0, 300) : undefined;
   }
 }
 

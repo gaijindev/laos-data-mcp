@@ -3,7 +3,12 @@ import { http, HttpResponse } from "msw";
 import { setupServer } from "msw/node";
 import { fetchWorldBankIndicator, isWorldBankCode } from "../../src/adapters/worldbank.js";
 import { cache } from "../../src/cache/manager.js";
-import { DataParseError, InvalidIndicatorError, RateLimitError } from "../../src/utils/errors.js";
+import {
+  DataParseError,
+  InvalidIndicatorError,
+  RateLimitError,
+  SourceUnavailableError,
+} from "../../src/utils/errors.js";
 import {
   WB_INDICATOR_URL,
   wbEmptyResponse,
@@ -72,6 +77,13 @@ describe("fetchWorldBankIndicator", () => {
     server.use(http.get(WB_INDICATOR_URL, () => new HttpResponse(null, { status: 429 })));
     await expect(fetchWorldBankIndicator({ indicatorCode: "SP.POP.TOTL" })).rejects.toBeInstanceOf(
       RateLimitError,
+    );
+  });
+
+  it("maps a network failure to SourceUnavailableError", async () => {
+    server.use(http.get(WB_INDICATOR_URL, () => HttpResponse.error()));
+    await expect(fetchWorldBankIndicator({ indicatorCode: "SP.POP.TOTL" })).rejects.toBeInstanceOf(
+      SourceUnavailableError,
     );
   });
 

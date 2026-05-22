@@ -97,7 +97,11 @@ function toRawDataset(pkg: CkanPackage, cfg: CkanConfig, retrievedAt: string): u
 function detectChallenge(source: Source, data: unknown): void {
   if (typeof data !== "string") return;
   const lower = data.toLowerCase();
-  if (lower.includes("just a moment") || lower.includes("cloudflare") || lower.includes("<!doctype html")) {
+  if (
+    lower.includes("just a moment") ||
+    lower.includes("cloudflare") ||
+    lower.includes("<!doctype html")
+  ) {
     throw new SourceUnavailableError(
       source,
       "blocked by a bot-protection challenge (the CKAN JSON API is not reachable from non-browser clients)",
@@ -140,7 +144,9 @@ export async function ckanPing(cfg: CkanConfig): Promise<boolean> {
     const data = await httpGet<unknown>(cfg.source, `${cfg.baseUrl}/package_search`, {
       params: { rows: 0 },
     });
-    return typeof data === "object" && data !== null && (data as CkanSearchResponse).success === true;
+    return (
+      typeof data === "object" && data !== null && (data as CkanSearchResponse).success === true
+    );
   } catch {
     return false;
   }

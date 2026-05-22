@@ -55,9 +55,7 @@ export interface DecodedObservation {
 /** True if the payload at least looks like an SDMX message (vs. an error page). */
 export function looksLikeSdmx(message: unknown): message is SdmxMessage {
   return (
-    typeof message === "object" &&
-    message !== null &&
-    ("data" in message || "structure" in message)
+    typeof message === "object" && message !== null && ("data" in message || "structure" in message)
   );
 }
 

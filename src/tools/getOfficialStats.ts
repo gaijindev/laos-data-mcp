@@ -18,7 +18,7 @@ export function registerGetOfficialStatsTool(server: McpServer): void {
         category: z
           .string()
           .optional()
-          .describe("Filter categories by a substring (e.g. \"health\", \"agriculture\")."),
+          .describe('Filter categories by a substring (e.g. "health", "agriculture").'),
       },
     },
     async ({ category }) => {
@@ -42,7 +42,9 @@ export function registerGetOfficialStatsTool(server: McpServer): void {
         ...filtered.map((c) => `- ${c}`),
       ];
       if (filtered.length === 0) {
-        lines.push(`(No category matched "${category}". Omit the filter to see all ${all.length}.)`);
+        lines.push(
+          `(No category matched "${category}". Omit the filter to see all ${all.length}.)`,
+        );
       }
       return textResult(lines.join("\n"));
     },

@@ -35,8 +35,20 @@ export function registerCompareIndicatorsTool(server: McpServer): void {
           .min(2)
           .max(6)
           .describe("2 to 6 indicators to compare."),
-        startYear: z.number().int().min(1960).max(2030).optional().describe("First year (default 2010)."),
-        endYear: z.number().int().min(1960).max(2030).optional().describe("Last year (default current year)."),
+        startYear: z
+          .number()
+          .int()
+          .min(1960)
+          .max(2030)
+          .optional()
+          .describe("First year (default 2010)."),
+        endYear: z
+          .number()
+          .int()
+          .min(1960)
+          .max(2030)
+          .optional()
+          .describe("Last year (default current year)."),
         outputFormat: z
           .enum(["table", "json", "markdown"])
           .optional()

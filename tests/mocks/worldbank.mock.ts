@@ -41,7 +41,11 @@ export const wbPopulationResponse = [
 
 /** World Bank's envelope for an unknown indicator code. */
 export const wbInvalidResponse = [
-  { message: [{ id: "120", key: "Invalid value", value: "The provided parameter value is not valid" }] },
+  {
+    message: [
+      { id: "120", key: "Invalid value", value: "The provided parameter value is not valid" },
+    ],
+  },
 ];
 
 /** Valid indicator, but no observations in range. */

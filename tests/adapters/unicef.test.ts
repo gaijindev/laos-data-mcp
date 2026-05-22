@@ -5,7 +5,13 @@ import { fetchUnicefWelfare } from "../../src/adapters/unicef.js";
 import { cache } from "../../src/cache/manager.js";
 import { DataParseError } from "../../src/utils/errors.js";
 import { decodeSdmxJson, type SdmxMessage } from "../../src/utils/sdmx.js";
-import { DATA_URL, nutritionData, nutritionDsd, UNICEF_BASE, unicefHandlers } from "../mocks/unicef.mock.js";
+import {
+  DATA_URL,
+  nutritionData,
+  nutritionDsd,
+  UNICEF_BASE,
+  unicefHandlers,
+} from "../mocks/unicef.mock.js";
 
 const server = setupServer();
 
@@ -18,7 +24,10 @@ describe("decodeSdmxJson", () => {
   it("maps observation indices to the right (unsorted) years", () => {
     const obs = decodeSdmxJson(nutritionData as unknown as SdmxMessage);
     const stuntingTotal = obs.filter(
-      (o) => o.indicatorCode === "NT_ANT_HAZ_NE2" && o.dimensions.SEX?.id === "_T" && o.dimensions.RESIDENCE?.id === "_T",
+      (o) =>
+        o.indicatorCode === "NT_ANT_HAZ_NE2" &&
+        o.dimensions.SEX?.id === "_T" &&
+        o.dimensions.RESIDENCE?.id === "_T",
     );
     expect(stuntingTotal.find((o) => o.year === 2021)?.value).toBe(33.1);
     expect(stuntingTotal.find((o) => o.year === 2020)?.value).toBe(33.0);

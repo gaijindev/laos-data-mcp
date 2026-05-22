@@ -3,7 +3,12 @@ import { COUNTRY_CODE, COUNTRY_NAME, type IndicatorRecord } from "../schemas/ind
 import { SOURCE_META } from "../schemas/source.js";
 import { DataParseError } from "../utils/errors.js";
 import { httpGet } from "../utils/http.js";
-import { decodeSdmxJson, looksLikeSdmx, type DecodedObservation, type SdmxMessage } from "../utils/sdmx.js";
+import {
+  decodeSdmxJson,
+  looksLikeSdmx,
+  type DecodedObservation,
+  type SdmxMessage,
+} from "../utils/sdmx.js";
 
 const BASE = SOURCE_META.unicef.baseUrl;
 const AGENCY = "UNICEF";

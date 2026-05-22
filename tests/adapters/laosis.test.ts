@@ -1,5 +1,9 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { getLaosisCategories, laosisHasApiKey, LAOSIS_CATEGORIES } from "../../src/adapters/laosis.js";
+import {
+  getLaosisCategories,
+  laosisHasApiKey,
+  LAOSIS_CATEGORIES,
+} from "../../src/adapters/laosis.js";
 
 describe("laosis stub", () => {
   const prev = process.env.LAOSIS_API_KEY;

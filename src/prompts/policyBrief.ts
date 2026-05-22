@@ -47,7 +47,11 @@ export function registerPolicyBriefPrompt(server: McpServer): void {
           role: "user",
           content: {
             type: "text",
-            text: policyBriefText(topic, audience, depth?.toLowerCase() === "summary" ? "summary" : "detailed"),
+            text: policyBriefText(
+              topic,
+              audience,
+              depth?.toLowerCase() === "summary" ? "summary" : "detailed",
+            ),
           },
         },
       ],

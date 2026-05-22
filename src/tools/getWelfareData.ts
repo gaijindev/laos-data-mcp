@@ -27,8 +27,20 @@ export function registerGetWelfareDataTool(server: McpServer): void {
         topic: z
           .enum(WELFARE_TOPICS as [WelfareTopic, ...WelfareTopic[]])
           .describe("Welfare topic to fetch."),
-        startYear: z.number().int().min(1960).max(2030).optional().describe("First year (default 2000)."),
-        endYear: z.number().int().min(1960).max(2030).optional().describe("Last year (default current year)."),
+        startYear: z
+          .number()
+          .int()
+          .min(1960)
+          .max(2030)
+          .optional()
+          .describe("First year (default 2000)."),
+        endYear: z
+          .number()
+          .int()
+          .min(1960)
+          .max(2030)
+          .optional()
+          .describe("Last year (default current year)."),
         disaggregation: z
           .enum(["sex", "area", "wealth", "none"])
           .optional()

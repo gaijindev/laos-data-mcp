@@ -18,7 +18,8 @@ const PINGS: Record<Source, () => Promise<boolean>> = {
 
 const NOTES: Partial<Record<Source, string>> = {
   adb: "Behind a Cloudflare bot challenge — usually unreachable from non-browser clients.",
-  laosis: "No public API yet; reachability is the site only. Set LAOSIS_API_KEY once LSB grants access.",
+  laosis:
+    "No public API yet; reachability is the site only. Set LAOSIS_API_KEY once LSB grants access.",
 };
 
 export interface SourceStatus {

@@ -9,7 +9,10 @@ import { jsonResult, textResult } from "../utils/result.js";
 
 type DatasetSource = "mekong" | "adb";
 
-const DATASET_FETCHERS: Record<DatasetSource, (q: string, n: number) => Promise<DatasetMetadata[]>> = {
+const DATASET_FETCHERS: Record<
+  DatasetSource,
+  (q: string, n: number) => Promise<DatasetMetadata[]>
+> = {
   mekong: fetchMekongDatasets,
   adb: fetchAdbDatasets,
 };
@@ -53,9 +56,7 @@ export function registerSearchDatasetsTool(server: McpServer): void {
       const ignored = [...new Set(requested.filter((s) => s !== "mekong" && s !== "adb"))];
       const chosen = datasetSources.length ? [...new Set(datasetSources)] : DEFAULT_SOURCES;
 
-      const settled = await Promise.allSettled(
-        chosen.map((s) => DATASET_FETCHERS[s](query, max)),
-      );
+      const settled = await Promise.allSettled(chosen.map((s) => DATASET_FETCHERS[s](query, max)));
 
       const datasets: DatasetMetadata[] = [];
       const notes: string[] = [];
