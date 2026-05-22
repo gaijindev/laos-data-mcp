@@ -14,6 +14,7 @@ import { pingWho } from "../adapters/who.js";
 import { pingWorldBank } from "../adapters/worldbank.js";
 import { cache } from "../cache/manager.js";
 import { SOURCE_META, SOURCES, type Source } from "../schemas/source.js";
+import { circuitSnapshot, type CircuitSnapshot } from "../utils/circuitBreaker.js";
 import { jsonResult } from "../utils/result.js";
 
 const PINGS: Record<Source, () => Promise<boolean>> = {
@@ -52,6 +53,7 @@ export interface SourceStatus {
   cacheHits: number;
   cacheMisses: number;
   hitRate: number;
+  circuit: CircuitSnapshot;
   note?: string;
 }
 
@@ -79,6 +81,7 @@ export async function collectSourceStatus(): Promise<SourceStatusReport> {
         cacheHits: cs.hits,
         cacheMisses: cs.misses,
         hitRate: Number(cs.hitRate.toFixed(2)),
+        circuit: circuitSnapshot(s),
         note: NOTES[s],
       };
     }),
