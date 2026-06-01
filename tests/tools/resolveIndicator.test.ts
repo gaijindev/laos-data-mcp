@@ -24,6 +24,13 @@ describe("resolveIndicator", () => {
     });
   });
 
+  it("resolves dotted official SDG codes to LSB SDG", () => {
+    expect(resolveIndicator("3.1.1")).toEqual({
+      source: "lsb_sdg",
+      code: "3-1-1",
+    });
+  });
+
   it("honors an explicit source override", () => {
     expect(resolveIndicator("SP.POP.TOTL", "unicef")).toEqual({
       source: "unicef",

@@ -13,7 +13,7 @@ function renderCatalog(entries: CatalogEntry[]): string {
   }
 
   const lines: string[] = [
-    `Found ${entries.length} indicator(s). Pass a \`code\` (or \`source:code\`) to get_laos_indicator / get_laos_welfare_data.`,
+    `Found ${entries.length} indicator(s). Pass a \`code\` (or \`source:code\`) to get_laos_indicator, get_laos_welfare_data, or get_laos_sdg_progress.`,
     "",
   ];
   for (const category of [...byCategory.keys()].sort()) {

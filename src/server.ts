@@ -1,5 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { fetchImfIndicator } from "./adapters/imf.js";
+import { fetchLsbSdgIndicator } from "./adapters/lsbSdg.js";
 import { fetchUnicefIndicatorByCode } from "./adapters/unicef.js";
 import { fetchWhoIndicator } from "./adapters/who.js";
 import { registerCompareIndicatorsTool } from "./tools/compareIndicators.js";
@@ -17,11 +18,13 @@ import { registerGetFoodPricesTool } from "./tools/getFoodPrices.js";
 import { registerGetInfrastructureTool } from "./tools/getInfrastructure.js";
 import { registerSearchMekongDataTool } from "./tools/getMekongData.js";
 import { registerGetCensusDataTool } from "./tools/getCensusData.js";
+import { registerGetSdgProgressTool } from "./tools/getSdgProgress.js";
 import { registerIndicatorCatalogResource } from "./resources/indicatorCatalog.js";
 import { registerSourceSummaryResource } from "./resources/sourceSummary.js";
 import { registerPolicyBriefPrompt } from "./prompts/policyBrief.js";
 import { registerSectorComparisonPrompt } from "./prompts/sectorComparison.js";
 import { registerDataAuditPrompt } from "./prompts/dataAudit.js";
+import { registerSdgProgressAuditPrompt } from "./prompts/sdgProgressAudit.js";
 
 export const SERVER_NAME = "laos-data-mcp";
 export const SERVER_VERSION = "1.0.0";
@@ -34,6 +37,7 @@ It connects five sources behind one interface and normalizes their responses:
   - Open Development Mekong (CKAN dataset catalog; no auth)
   - Asian Development Bank Data Library (CKAN; may be Cloudflare-protected)
   - Laosis / Lao Statistics Bureau (official statistics; stub unless LAOSIS_API_KEY is set)
+  - Lao Statistics Bureau SDG Platform (official SDG indicators; no auth)
 
 Typical flow:
   1. Call list_available_indicators to discover valid indicator codes.
@@ -65,6 +69,9 @@ export function createServer(): McpServer {
   registerIndicatorFetcher("imf", (code, startYear, endYear) =>
     fetchImfIndicator(code, { startYear, endYear }),
   );
+  registerIndicatorFetcher("lsb_sdg", (code, startYear, endYear) =>
+    fetchLsbSdgIndicator(code, startYear, endYear),
+  );
 
   // Discovery + time series + UNICEF welfare + dataset search.
   registerListAvailableIndicatorsTool(server);
@@ -86,6 +93,7 @@ export function createServer(): McpServer {
   registerGetInfrastructureTool(server); // OpenStreetMap (Overpass)
   registerSearchMekongDataTool(server); // MRC (stub)
   registerGetCensusDataTool(server); // Lao census (stub)
+  registerGetSdgProgressTool(server); // LSB SDG Open Data Platform
 
   // Resources: browsable indicator catalog + live source status.
   registerIndicatorCatalogResource(server);
@@ -95,6 +103,7 @@ export function createServer(): McpServer {
   registerPolicyBriefPrompt(server);
   registerSectorComparisonPrompt(server);
   registerDataAuditPrompt(server);
+  registerSdgProgressAuditPrompt(server);
 
   return server;
 }

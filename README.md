@@ -6,13 +6,13 @@
 [![MCP](https://img.shields.io/badge/MCP-server-5E5CE6)](https://modelcontextprotocol.io)
 
 A unified [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server that
-connects **13 international and national data sources** for **Lao PDR (Laos)** behind one
+connects **14 international and national data sources** for **Lao PDR (Laos)** behind one
 interface, normalizes their responses into a single consistent schema, and exposes them as
 MCP **tools**, **resources**, and **prompts**.
 
 Instead of wiring up the World Bank, UNICEF, Open Development Mekong, ADB, FAOSTAT, WHO,
-IMF, HDX, WFP, OpenStreetMap, the Mekong River Commission, and the Lao Statistics Bureau
-separately every time, researchers, policymakers, civic technologists, and AI agents can
+IMF, HDX, WFP, OpenStreetMap, the Mekong River Commission, the Lao Statistics Bureau,
+and the official Lao SDG platform separately every time, researchers, policymakers, civic technologists, and AI agents can
 query Laos data through a single gateway — in plain language, through any MCP client.
 
 ## Contents
@@ -70,13 +70,13 @@ different response shapes — before any analysis happens at all. That cost is p
 over by every researcher, journalist, NGO analyst, and student who starts from scratch.
 
 **laos-data-mcp exists to pay that cost once.** It absorbs the protocol differences, the
-country-code translation, and the per-source quirks into 13 adapters, and normalizes
+country-code translation, and the per-source quirks into 14 adapters, and normalizes
 everything into two shared shapes (`IndicatorRecord` and `DatasetMetadata`). What comes out
 is a single, predictable interface where indicators from any source can be discovered,
 fetched, and compared side by side — and, because it speaks MCP, where an AI agent can
 answer questions about Laos grounded in real, cited, source-attributed data instead of
-guessing. Adding the fourteenth source is then purely additive; it never breaks the
-thirteen already there.
+guessing. Adding another source is then purely additive; it never breaks the
+sources already there.
 
 > This project supports a broader civic-data initiative to improve data connectivity and
 > interoperability for Laos, in alignment with the country's Digital Government Strategy
@@ -86,7 +86,7 @@ thirteen already there.
 
 ## Overview
 
-**Coverage:** 13 data sources · 16 tools · 2 resources · 3 prompts · 95 catalog indicators.
+**Coverage:** 14 data sources · 17 tools · 2 resources · 4 prompts · 180 catalog indicators.
 
 Every adapter normalizes its source into one of two shared shapes:
 
@@ -99,8 +99,8 @@ Responses are cached in-memory with per-source TTLs, HTTP calls retry with expon
 backoff, and every tool returns human-readable errors (never raw stack traces).
 
 ```
-MCP client ──> laos-data-mcp ──> 13 adapters ──> World Bank · UNICEF · OD Mekong · ADB · Laosis
-                    │                             FAOSTAT · WHO · IMF · HDX · WFP · OSM · MRC · Census
+MCP client ──> laos-data-mcp ──> 14 adapters ──> World Bank · UNICEF · OD Mekong · ADB · Laosis
+                    │                             FAOSTAT · WHO · IMF · HDX · WFP · OSM · MRC · Census · LSB SDG
                     │             └─ normalize ──> IndicatorRecord / DatasetMetadata
                     └─ tools • resources • prompts
 ```
@@ -111,7 +111,7 @@ MCP client ──> laos-data-mcp ──> 13 adapters ──> World Bank · UNICE
   built server itself runs on Node 18+; CI builds and tests on Node 22.)
 - **[pnpm](https://pnpm.io) 10+**
 - No API keys for the public sources (World Bank, UNICEF, OD Mekong, FAOSTAT, WHO, IMF,
-  OpenStreetMap). Optional free credentials unlock HDX HAPI (`HDX_APP_ID`), WFP VAM
+  OpenStreetMap, LSB SDG). Optional free credentials unlock HDX HAPI (`HDX_APP_ID`), WFP VAM
   (`WFP_CLIENT_ID`/`WFP_CLIENT_SECRET`), MRC (`MRC_SESSION_TOKEN`), and Laosis.
 
 ## Installation & setup
@@ -153,7 +153,7 @@ transport, so you can exercise every tool without wiring up an MCP client first:
 
 ```bash
 pnpm ask list                                          # list all tools, resources, prompts
-pnpm ask call get_source_status '{}'                   # health + cache stats for all 13 sources
+pnpm ask call get_source_status '{}'                   # health + cache stats for all 14 sources
 pnpm ask call get_laos_indicator '{"indicatorCode":"SP.POP.TOTL"}'
 ```
 
@@ -219,7 +219,7 @@ like:
 }
 ```
 
-Because the country code, field names, and units are normalized across all 13 sources, you
+Because the country code, field names, and units are normalized across all 14 sources, you
 can merge World Bank, UNICEF, WHO, and IMF indicators in a single `compare_indicators` call
 without any per-source glue. If a source looks unreachable, call `get_source_status` to see
 which adapters are up and what is cached.
@@ -280,6 +280,7 @@ with `tsx` — no build step needed:
 | `get_laos_infrastructure`           | OpenStreetMap infrastructure (hospitals, schools, …).            |
 | `search_mekong_data`                | Mekong River Commission dataset catalog (stub).                  |
 | `get_laos_census_data`              | Lao census summary figures (2015; 2025 pending).                 |
+| `get_laos_sdg_progress`             | Official LSB SDG Platform indicators, including national SDG 18. |
 
 ### `list_available_indicators`
 
@@ -340,6 +341,16 @@ No inputs. Returns reachability, last-fetch time, and cache hit rate per source.
 Inputs: `category?` (substring filter). Lists Lao Statistics Bureau categories plus
 Laosis live-access status (stub until `LAOSIS_API_KEY` + a documented API exist).
 
+### `get_laos_sdg_progress`
+
+Inputs: `indicatorCode?` (e.g. `"3.1.1"` / `"18-1-1"`), `goal?` (1–18),
+`search?`, `startYear?`, `endYear?`, `latestOnly?`.
+
+```jsonc
+{ "indicatorCode": "3.1.1", "startYear": 2015, "endYear": 2019 }
+// → official LSB SDG IndicatorRecord[] for maternal mortality.
+```
+
 ### Expansion-source tools
 
 - **`get_laos_agriculture_data`** — `domain` (`QCL` | `FBS` | `FS` | `RL` | `FO`), `item?`, `startYear?`, `endYear?`. FAOSTAT.
@@ -351,8 +362,9 @@ Laosis live-access status (stub until `LAOSIS_API_KEY` + a documented API exist)
 - **`get_laos_infrastructure`** — `featureType` (`hospital` | `clinic` | `school` | `market` | `power_plant` | `river`), `province?`. OpenStreetMap.
 - **`search_mekong_data`** — `topic?`. MRC catalog (stub; raw data needs `MRC_SESSION_TOKEN`).
 - **`get_laos_census_data`** — `topic?`, `year?`. Bundled 2015 census; 2025 via `CENSUS_2025_AVAILABLE`.
+- **`get_laos_sdg_progress`** — `indicatorCode?`, `goal?`, `search?`, `latestOnly?`. Official LSB SDG CSV export.
 
-WHO and IMF codes also work through `get_laos_indicator` and `compare_indicators`.
+WHO, IMF, and LSB SDG codes also work through `get_laos_indicator` and `compare_indicators`.
 
 ## Resources
 
@@ -366,11 +378,12 @@ The catalog snapshot is also written to `src/catalog/indicators.json` by
 
 ## Prompts
 
-| Name                | Arguments                        | Produces                                                                                                        |
-| ------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `policy_brief`      | `topic`, `audience`, `depth?`    | A structured brief: Executive Summary → Current Situation → Key Trends → Gaps & Recommendations → Data Sources. |
-| `sector_comparison` | `sector_a`, `sector_b`, `years?` | A side-by-side comparison of two sectors using `compare_indicators`.                                            |
-| `data_audit`        | `topic`                          | An availability audit: what exists, coverage years, gaps, and next steps.                                       |
+| Name                 | Arguments                        | Produces                                                                                                        |
+| -------------------- | -------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `policy_brief`       | `topic`, `audience`, `depth?`    | A structured brief: Executive Summary → Current Situation → Key Trends → Gaps & Recommendations → Data Sources. |
+| `sector_comparison`  | `sector_a`, `sector_b`, `years?` | A side-by-side comparison of two sectors using `compare_indicators`.                                            |
+| `data_audit`         | `topic`                          | An availability audit: what exists, coverage years, gaps, and next steps.                                       |
+| `sdg_progress_audit` | `goal`, `audience?`              | A progress audit over official LSB SDG indicators plus corroborating sources.                                   |
 
 Each prompt instructs the model to gather data via the tools above before writing, and to
 cite the source and year for every figure.
@@ -392,6 +405,7 @@ cite the source and year for every figure.
 | [OpenStreetMap (Overpass)](https://wiki.openstreetmap.org/wiki/Overpass_API)              | `overpass-api.de/api/interpreter`                  | none         | Infrastructure POIs (hospitals, schools, markets, power, rivers)    | continuous  | 7d        |
 | [Mekong River Commission](https://portal.mrcmekong.org/)                                  | `portal.mrcmekong.org`                             | key‡         | Hydrology, fisheries, sediment, water quality (catalog stub)        | varies      | 24h       |
 | [Lao Census (LSB)](https://lsb.gov.la/)                                                   | bundled                                            | none         | 2015 Population & Housing Census summary (2025 pending)             | decennial   | 24h       |
+| [LSB SDG Open Data Platform](https://www.lsb.gov.la/sdg/en/)                              | `sdg-laos.github.io/data-production/en`            | none         | Official SDG indicators, including Lao national SDG 18 on UXO       | varies      | 24h       |
 
 > **\* ADB caveat:** `data.adb.org` sits behind a Cloudflare bot challenge, so the JSON API
 > is usually unreachable from non-browser clients. `search_laos_datasets` detects this and
@@ -404,6 +418,8 @@ cite the source and year for every figure.
 > `HDX_APP_ID` (no login — generate at <https://hapi.humdata.org/docs>).
 > **‡ MRC:** the adapter is a stub exposing a static catalog; raw data needs free MRC
 > registration (`MRC_SESSION_TOKEN`). **FAOSTAT** is occasionally down (Cloudflare 521).
+> **LSB SDG:** the official Open SDG CSV export currently reports "Data last updated -
+> Jun 26, 2021" on the LSB SDG homepage.
 
 ## Troubleshooting
 
@@ -438,7 +454,7 @@ To request access:
 
 Contributions are welcome — especially **new data sources** about Lao PDR, which are the
 highest-impact change and are designed to be purely additive (they never modify the
-existing 13 sources or the shared schemas). Adding one follows an 8-file recipe:
+existing 14 sources or the shared schemas). Adding one follows an 8-file recipe:
 
 1. **Adapter** — create `src/adapters/<source>.ts`. Export typed async functions that fetch
    and **normalize** into `IndicatorRecord` / `DatasetMetadata`. Never return raw API responses.

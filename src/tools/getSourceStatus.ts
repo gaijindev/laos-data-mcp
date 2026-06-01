@@ -5,6 +5,7 @@ import { pingCensus } from "../adapters/census.js";
 import { pingFaostat } from "../adapters/faostat.js";
 import { pingHdx } from "../adapters/hdx.js";
 import { pingImf } from "../adapters/imf.js";
+import { pingLsbSdg } from "../adapters/lsbSdg.js";
 import { pingMekong } from "../adapters/mekong.js";
 import { mrcIsAvailable } from "../adapters/mrc.js";
 import { pingOsm } from "../adapters/osm.js";
@@ -31,6 +32,7 @@ const PINGS: Record<Source, () => Promise<boolean>> = {
   osm: pingOsm,
   mrc: mrcIsAvailable,
   census: pingCensus,
+  lsb_sdg: pingLsbSdg,
 };
 
 const NOTES: Partial<Record<Source, string>> = {
@@ -41,6 +43,8 @@ const NOTES: Partial<Record<Source, string>> = {
   wfp: "Requires WFP_CLIENT_ID / WFP_CLIENT_SECRET (OAuth2); reports unreachable without them.",
   mrc: "Stub: portal reachability only. Raw data needs MRC registration (MRC_SESSION_TOKEN).",
   census: "Bundled 2015 census summary; 2025 results expected Q1–Q2 2026 (CENSUS_2025_AVAILABLE).",
+  lsb_sdg:
+    "Official LSB SDG Open Data Platform CSV export; site currently reports data last updated Jun 26, 2021.",
 };
 
 export interface SourceStatus {

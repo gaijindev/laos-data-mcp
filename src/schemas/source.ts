@@ -15,6 +15,7 @@ export const SOURCES = [
   "osm",
   "mrc",
   "census",
+  "lsb_sdg",
 ] as const;
 
 export const SourceEnum = z.enum(SOURCES);
@@ -172,6 +173,16 @@ export const SOURCE_META: Record<Source, SourceMeta> = {
     kind: "official",
     docsUrl: "https://lsb.gov.la/",
   },
+  lsb_sdg: {
+    id: "lsb_sdg",
+    label: "Lao Statistics Bureau SDG Platform",
+    baseUrl: "https://sdg-laos.github.io",
+    cacheTtlSeconds: 86_400, // 24h — static Open SDG data; site last update drives freshness
+    timeoutMs: 10_000,
+    auth: "none",
+    kind: "official",
+    docsUrl: "https://www.lsb.gov.la/sdg/en/",
+  },
 };
 
 /** Short uppercase prefix used in normalized record IDs, e.g. "WB:SP.POP.TOTL". */
@@ -189,4 +200,5 @@ export const SOURCE_ID_PREFIX: Record<Source, string> = {
   osm: "OSM",
   mrc: "MRC",
   census: "CENSUS",
+  lsb_sdg: "LSB_SDG",
 };

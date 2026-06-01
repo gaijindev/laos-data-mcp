@@ -8,6 +8,7 @@ import type {
 } from "@modelcontextprotocol/sdk/types.js";
 import { cache } from "../../src/cache/manager.js";
 import { createConnectedClient, toolText } from "../helpers/mcp.js";
+import { lsbSdg311Handler, lsbSdgPingHandler } from "../mocks/lsbSdg.mock.js";
 import { MEKONG_SEARCH_URL } from "../mocks/mekong.mock.js";
 import { unicefHandlers } from "../mocks/unicef.mock.js";
 
@@ -43,6 +44,7 @@ function pingHandlers() {
     ),
     http.get("https://overpass-api.de/api/status", () => HttpResponse.text("Connected as: 1")),
     http.get("https://portal.mrcmekong.org", () => HttpResponse.text("ok")),
+    lsbSdgPingHandler(),
   ];
 }
 
@@ -106,6 +108,21 @@ describe("get_source_status + resources (integration)", () => {
   });
 });
 
+describe("get_laos_sdg_progress (integration)", () => {
+  it("returns official LSB SDG records", async () => {
+    msw.use(lsbSdg311Handler());
+    const { client, dispose } = await createConnectedClient();
+    const res = (await client.callTool({
+      name: "get_laos_sdg_progress",
+      arguments: { indicatorCode: "3.1.1", startYear: 2018, endYear: 2019 },
+    })) as CallToolResult;
+    const text = toolText(res);
+    expect(text).toContain("official LSB SDG record(s)");
+    expect(text).toContain("Maternal mortality ratio");
+    await dispose();
+  });
+});
+
 describe("get_official_stats (integration)", () => {
   it("lists Laosis categories filtered by substring", async () => {
     msw.use(...pingHandlers());
@@ -126,6 +143,7 @@ describe("prompts (integration)", () => {
     expect(prompts.map((p) => p.name).sort()).toEqual([
       "data_audit",
       "policy_brief",
+      "sdg_progress_audit",
       "sector_comparison",
     ]);
 
@@ -152,6 +170,15 @@ describe("prompts (integration)", () => {
     const sectorText = sector.messages[0]?.content;
     expect(sectorText && sectorText.type === "text" ? sectorText.text : "").toContain(
       "compare_indicators",
+    );
+
+    const sdg = (await client.getPrompt({
+      name: "sdg_progress_audit",
+      arguments: { goal: "SDG 18", audience: "province officers" },
+    })) as GetPromptResult;
+    const sdgText = sdg.messages[0]?.content;
+    expect(sdgText && sdgText.type === "text" ? sdgText.text : "").toContain(
+      "get_laos_sdg_progress",
     );
 
     await dispose();
