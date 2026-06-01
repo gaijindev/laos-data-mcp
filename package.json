@@ -1,7 +1,7 @@
 {
   "name": "laos-data-mcp",
   "version": "1.0.0",
-  "description": "Unified Model Context Protocol server that connects 14 international and national data sources for Lao PDR (World Bank, UNICEF, OD Mekong, ADB, Laosis, FAOSTAT, WHO, IMF, HDX, WFP, OpenStreetMap, MRC, Census, LSB SDG) behind one normalized interface.",
+  "description": "Unified Model Context Protocol server that connects 18 international and national data sources for Lao PDR (World Bank, UNICEF, OD Mekong, ADB, Laosis, FAOSTAT, WHO, IMF, HDX, WFP, OpenStreetMap, MRC, Census, LSB SDG, UNESCO UIS, ILOSTAT, UN Comtrade, UNODC) behind one normalized interface.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {

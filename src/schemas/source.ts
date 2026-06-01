@@ -16,6 +16,10 @@ export const SOURCES = [
   "mrc",
   "census",
   "lsb_sdg",
+  "uis",
+  "ilostat",
+  "comtrade",
+  "unodc",
 ] as const;
 
 export const SourceEnum = z.enum(SOURCES);
@@ -183,6 +187,46 @@ export const SOURCE_META: Record<Source, SourceMeta> = {
     kind: "official",
     docsUrl: "https://www.lsb.gov.la/sdg/en/",
   },
+  uis: {
+    id: "uis",
+    label: "UNESCO Institute for Statistics (UIS)",
+    baseUrl: "https://api.uis.unesco.org/api/public",
+    cacheTtlSeconds: 86_400, // 24h — UIS releases are quarterly/annual
+    timeoutMs: 15_000,
+    auth: "none",
+    kind: "indicators",
+    docsUrl: "https://api.uis.unesco.org/api/public/documentation/",
+  },
+  ilostat: {
+    id: "ilostat",
+    label: "ILOSTAT (ILO Labour Statistics)",
+    baseUrl: "https://sdmx.ilo.org/rest",
+    cacheTtlSeconds: 86_400, // 24h — Lao LFS runs every few years; modelled estimates annual
+    timeoutMs: 20_000, // SDMX can be slow
+    auth: "none",
+    kind: "indicators",
+    docsUrl: "https://ilostat.ilo.org/resources/sdmx-tools/",
+  },
+  comtrade: {
+    id: "comtrade",
+    label: "UN Comtrade International Trade Statistics",
+    baseUrl: "https://comtradeapi.un.org/public/v1/preview",
+    cacheTtlSeconds: 86_400, // 24h — annual data, Lao submissions lag 1–2 years
+    timeoutMs: 12_000,
+    auth: "optional", // keyless preview works; COMTRADE_API_KEY unlocks the full data endpoint
+    kind: "indicators",
+    docsUrl: "https://comtrade.un.org/",
+  },
+  unodc: {
+    id: "unodc",
+    label: "UNODC Crime & Drug Statistics",
+    baseUrl: "https://data.unodc.org",
+    cacheTtlSeconds: 604_800, // 7d — bulk files update once or twice a year
+    timeoutMs: 15_000,
+    auth: "none",
+    kind: "indicators",
+    docsUrl: "https://data.unodc.org/",
+  },
 };
 
 /** Short uppercase prefix used in normalized record IDs, e.g. "WB:SP.POP.TOTL". */
@@ -201,4 +245,8 @@ export const SOURCE_ID_PREFIX: Record<Source, string> = {
   mrc: "MRC",
   census: "CENSUS",
   lsb_sdg: "LSB_SDG",
+  uis: "UIS",
+  ilostat: "ILO",
+  comtrade: "COMTRADE",
+  unodc: "UNODC",
 };

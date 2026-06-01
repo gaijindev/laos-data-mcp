@@ -13,6 +13,10 @@ import { pingUnicef } from "../adapters/unicef.js";
 import { pingWfp } from "../adapters/wfp.js";
 import { pingWho } from "../adapters/who.js";
 import { pingWorldBank } from "../adapters/worldbank.js";
+import { pingUis } from "../adapters/uis.js";
+import { pingIlostat } from "../adapters/ilostat.js";
+import { pingComtrade } from "../adapters/comtrade.js";
+import { pingUnodc } from "../adapters/unodc.js";
 import { cache } from "../cache/manager.js";
 import { SOURCE_META, SOURCES, type Source } from "../schemas/source.js";
 import { circuitSnapshot, type CircuitSnapshot } from "../utils/circuitBreaker.js";
@@ -33,6 +37,10 @@ const PINGS: Record<Source, () => Promise<boolean>> = {
   mrc: mrcIsAvailable,
   census: pingCensus,
   lsb_sdg: pingLsbSdg,
+  uis: pingUis,
+  ilostat: pingIlostat,
+  comtrade: pingComtrade,
+  unodc: pingUnodc,
 };
 
 const NOTES: Partial<Record<Source, string>> = {
@@ -45,6 +53,10 @@ const NOTES: Partial<Record<Source, string>> = {
   census: "Bundled 2015 census summary; 2025 results expected Q1–Q2 2026 (CENSUS_2025_AVAILABLE).",
   lsb_sdg:
     "Official LSB SDG Open Data Platform CSV export; site currently reports data last updated Jun 26, 2021.",
+  comtrade:
+    "Keyless preview endpoint (capped at 500 records/response). Set COMTRADE_API_KEY for the full data endpoint. 2017+ Lao values are UN mirror estimates.",
+  unodc:
+    "Stub: portal reachability only. UNODC has no per-country API — values are bulk Excel; Laos covers trafficking, prison, and drug treatment (no homicide/violent crime).",
 };
 
 export interface SourceStatus {

@@ -1,6 +1,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { fetchComtradeIndicator } from "./adapters/comtrade.js";
+import { fetchIlostatIndicator } from "./adapters/ilostat.js";
 import { fetchImfIndicator } from "./adapters/imf.js";
 import { fetchLsbSdgIndicator } from "./adapters/lsbSdg.js";
+import { fetchUisIndicator } from "./adapters/uis.js";
 import { fetchUnicefIndicatorByCode } from "./adapters/unicef.js";
 import { fetchWhoIndicator } from "./adapters/who.js";
 import { registerCompareIndicatorsTool } from "./tools/compareIndicators.js";
@@ -19,6 +22,10 @@ import { registerGetInfrastructureTool } from "./tools/getInfrastructure.js";
 import { registerSearchMekongDataTool } from "./tools/getMekongData.js";
 import { registerGetCensusDataTool } from "./tools/getCensusData.js";
 import { registerGetSdgProgressTool } from "./tools/getSdgProgress.js";
+import { registerGetEducationDataTool } from "./tools/getEducationData.js";
+import { registerGetLaborDataTool } from "./tools/getLaborData.js";
+import { registerGetTradeDataTool } from "./tools/getTradeData.js";
+import { registerGetCrimeDataTool } from "./tools/getCrimeData.js";
 import { registerIndicatorCatalogResource } from "./resources/indicatorCatalog.js";
 import { registerSourceSummaryResource } from "./resources/sourceSummary.js";
 import { registerPolicyBriefPrompt } from "./prompts/policyBrief.js";
@@ -31,13 +38,25 @@ export const SERVER_VERSION = "1.0.0";
 
 const INSTRUCTIONS = `laos-data-mcp is a unified data gateway for Lao PDR (Laos).
 
-It connects five sources behind one interface and normalizes their responses:
+It connects 18 sources behind one interface and normalizes their responses:
   - World Bank Indicators API (development indicators, no auth)
   - UNICEF SDMX (child welfare, health, education, nutrition, WASH; no auth)
   - Open Development Mekong (CKAN dataset catalog; no auth)
   - Asian Development Bank Data Library (CKAN; may be Cloudflare-protected)
   - Laosis / Lao Statistics Bureau (official statistics; stub unless LAOSIS_API_KEY is set)
+  - FAOSTAT (agriculture, food, forestry; no auth)
+  - WHO GHO (health indicators; no auth)
+  - IMF DataMapper (WEO macro indicators; no auth)
+  - HDX / HAPI (humanitarian datasets + indicators; HAPI needs HDX_APP_ID)
+  - WFP VAM (market food prices; OAuth2 client credentials)
+  - OpenStreetMap Overpass (infrastructure POIs; no auth)
+  - Mekong River Commission (hydrology/fisheries catalog; stub unless MRC_SESSION_TOKEN)
+  - Lao Population & Housing Census (bundled official figures)
   - Lao Statistics Bureau SDG Platform (official SDG indicators; no auth)
+  - UNESCO UIS (education indicators; no auth)
+  - ILOSTAT (labor indicators via SDMX; no auth)
+  - UN Comtrade (merchandise trade; keyless preview, optional COMTRADE_API_KEY)
+  - UNODC (crime & justice catalog; stub — bulk Excel only, no per-country API)
 
 Typical flow:
   1. Call list_available_indicators to discover valid indicator codes.
@@ -72,6 +91,15 @@ export function createServer(): McpServer {
   registerIndicatorFetcher("lsb_sdg", (code, startYear, endYear) =>
     fetchLsbSdgIndicator(code, startYear, endYear),
   );
+  registerIndicatorFetcher("uis", (code, startYear, endYear) =>
+    fetchUisIndicator(code, startYear, endYear),
+  );
+  registerIndicatorFetcher("ilostat", (code, startYear, endYear) =>
+    fetchIlostatIndicator(code, startYear, endYear),
+  );
+  registerIndicatorFetcher("comtrade", (code, startYear, endYear) =>
+    fetchComtradeIndicator(code, startYear, endYear),
+  );
 
   // Discovery + time series + UNICEF welfare + dataset search.
   registerListAvailableIndicatorsTool(server);
@@ -94,6 +122,10 @@ export function createServer(): McpServer {
   registerSearchMekongDataTool(server); // MRC (stub)
   registerGetCensusDataTool(server); // Lao census (stub)
   registerGetSdgProgressTool(server); // LSB SDG Open Data Platform
+  registerGetEducationDataTool(server); // UNESCO UIS
+  registerGetLaborDataTool(server); // ILOSTAT
+  registerGetTradeDataTool(server); // UN Comtrade
+  registerGetCrimeDataTool(server); // UNODC (stub)
 
   // Resources: browsable indicator catalog + live source status.
   registerIndicatorCatalogResource(server);

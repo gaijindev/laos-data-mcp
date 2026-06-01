@@ -91,6 +91,7 @@ const SOURCE_TOOL_HINTS: Partial<Record<Source, string>> = {
   osm: "use get_laos_infrastructure for OpenStreetMap features",
   mrc: "use search_mekong_data for MRC datasets",
   census: "use get_laos_census_data for census figures",
+  unodc: "use get_laos_crime_data for UNODC crime & justice datasets",
 };
 
 export function unsupportedSourceHint(source: Source): string {

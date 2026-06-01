@@ -70,7 +70,7 @@ different response shapes — before any analysis happens at all. That cost is p
 over by every researcher, journalist, NGO analyst, and student who starts from scratch.
 
 **laos-data-mcp exists to pay that cost once.** It absorbs the protocol differences, the
-country-code translation, and the per-source quirks into 14 adapters, and normalizes
+country-code translation, and the per-source quirks into 18 adapters, and normalizes
 everything into two shared shapes (`IndicatorRecord` and `DatasetMetadata`). What comes out
 is a single, predictable interface where indicators from any source can be discovered,
 fetched, and compared side by side — and, because it speaks MCP, where an AI agent can
@@ -86,7 +86,7 @@ sources already there.
 
 ## Overview
 
-**Coverage:** 14 data sources · 17 tools · 2 resources · 4 prompts · 180 catalog indicators.
+**Coverage:** 18 data sources · 21 tools · 2 resources · 4 prompts · 201 catalog indicators.
 
 Every adapter normalizes its source into one of two shared shapes:
 
@@ -99,8 +99,9 @@ Responses are cached in-memory with per-source TTLs, HTTP calls retry with expon
 backoff, and every tool returns human-readable errors (never raw stack traces).
 
 ```
-MCP client ──> laos-data-mcp ──> 14 adapters ──> World Bank · UNICEF · OD Mekong · ADB · Laosis
+MCP client ──> laos-data-mcp ──> 18 adapters ──> World Bank · UNICEF · OD Mekong · ADB · Laosis
                     │                             FAOSTAT · WHO · IMF · HDX · WFP · OSM · MRC · Census · LSB SDG
+                    │                             UNESCO UIS · ILOSTAT · UN Comtrade · UNODC
                     │             └─ normalize ──> IndicatorRecord / DatasetMetadata
                     └─ tools • resources • prompts
 ```
@@ -111,8 +112,9 @@ MCP client ──> laos-data-mcp ──> 14 adapters ──> World Bank · UNICE
   built server itself runs on Node 18+; CI builds and tests on Node 22.)
 - **[pnpm](https://pnpm.io) 10+**
 - No API keys for the public sources (World Bank, UNICEF, OD Mekong, FAOSTAT, WHO, IMF,
-  OpenStreetMap, LSB SDG). Optional free credentials unlock HDX HAPI (`HDX_APP_ID`), WFP VAM
-  (`WFP_CLIENT_ID`/`WFP_CLIENT_SECRET`), MRC (`MRC_SESSION_TOKEN`), and Laosis.
+  OpenStreetMap, LSB SDG, UNESCO UIS, ILOSTAT, UN Comtrade). Optional free credentials unlock
+  HDX HAPI (`HDX_APP_ID`), WFP VAM (`WFP_CLIENT_ID`/`WFP_CLIENT_SECRET`), MRC
+  (`MRC_SESSION_TOKEN`), UN Comtrade's full endpoint (`COMTRADE_API_KEY`), and Laosis.
 
 ## Installation & setup
 
@@ -153,7 +155,7 @@ transport, so you can exercise every tool without wiring up an MCP client first:
 
 ```bash
 pnpm ask list                                          # list all tools, resources, prompts
-pnpm ask call get_source_status '{}'                   # health + cache stats for all 14 sources
+pnpm ask call get_source_status '{}'                   # health + cache stats for all 18 sources
 pnpm ask call get_laos_indicator '{"indicatorCode":"SP.POP.TOTL"}'
 ```
 
@@ -219,7 +221,7 @@ like:
 }
 ```
 
-Because the country code, field names, and units are normalized across all 14 sources, you
+Because the country code, field names, and units are normalized across all 18 sources, you
 can merge World Bank, UNICEF, WHO, and IMF indicators in a single `compare_indicators` call
 without any per-source glue. If a source looks unreachable, call `get_source_status` to see
 which adapters are up and what is cached.
@@ -265,7 +267,7 @@ with `tsx` — no build step needed:
 | Tool                                | Purpose                                                          |
 | ----------------------------------- | ---------------------------------------------------------------- |
 | `list_available_indicators`         | Discover valid indicator codes (catalog browse).                 |
-| `get_laos_indicator`                | Time series for one indicator (World Bank / UNICEF / WHO / IMF). |
+| `get_laos_indicator`                | Time series for one indicator (World Bank / UNICEF / WHO / IMF / UIS / ILOSTAT / Comtrade). |
 | `get_laos_welfare_data`             | UNICEF welfare data by topic, with disaggregation.               |
 | `search_laos_datasets`              | Search dataset files across OD Mekong + ADB.                     |
 | `compare_indicators`                | Merge 2–6 indicators into one aligned table.                     |
@@ -281,6 +283,10 @@ with `tsx` — no build step needed:
 | `search_mekong_data`                | Mekong River Commission dataset catalog (stub).                  |
 | `get_laos_census_data`              | Lao census summary figures (2015; 2025 pending).                 |
 | `get_laos_sdg_progress`             | Official LSB SDG Platform indicators, including national SDG 18. |
+| `get_laos_education_data`           | UNESCO UIS education indicators (literacy, enrolment, spending).  |
+| `get_laos_labor_data`               | ILOSTAT labor indicators (LFPR, unemployment, earnings).         |
+| `get_laos_trade_data`               | UN Comtrade merchandise trade (totals + top partners).           |
+| `get_laos_crime_data`               | UNODC crime & justice dataset catalog (stub; bulk Excel).        |
 
 ### `list_available_indicators`
 
@@ -363,8 +369,13 @@ Inputs: `indicatorCode?` (e.g. `"3.1.1"` / `"18-1-1"`), `goal?` (1–18),
 - **`search_mekong_data`** — `topic?`. MRC catalog (stub; raw data needs `MRC_SESSION_TOKEN`).
 - **`get_laos_census_data`** — `topic?`, `year?`. Bundled 2015 census; 2025 via `CENSUS_2025_AVAILABLE`.
 - **`get_laos_sdg_progress`** — `indicatorCode?`, `goal?`, `search?`, `latestOnly?`. Official LSB SDG CSV export.
+- **`get_laos_education_data`** — `indicator?` (UIS code) or `search?` (name); omit both to list key indicators. UNESCO UIS.
+- **`get_laos_labor_data`** — `indicator?` (ILOSTAT dataflow) or `search?` (name); omit both to list key indicators. ILOSTAT.
+- **`get_laos_trade_data`** — `flow?` (`exports` | `imports`), `breakdown?` (`total` | `partner`), `year?`, `startYear?`, `endYear?`. UN Comtrade.
+- **`get_laos_crime_data`** — `topic?`. UNODC catalog (stub; values are bulk Excel, no per-country API).
 
-WHO, IMF, and LSB SDG codes also work through `get_laos_indicator` and `compare_indicators`.
+WHO, IMF, LSB SDG, UNESCO UIS, ILOSTAT, and UN Comtrade codes also work through
+`get_laos_indicator` and `compare_indicators`.
 
 ## Resources
 
@@ -406,6 +417,10 @@ cite the source and year for every figure.
 | [Mekong River Commission](https://portal.mrcmekong.org/)                                  | `portal.mrcmekong.org`                             | key‡         | Hydrology, fisheries, sediment, water quality (catalog stub)        | varies      | 24h       |
 | [Lao Census (LSB)](https://lsb.gov.la/)                                                   | bundled                                            | none         | 2015 Population & Housing Census summary (2025 pending)             | decennial   | 24h       |
 | [LSB SDG Open Data Platform](https://www.lsb.gov.la/sdg/en/)                              | `sdg-laos.github.io/data-production/en`            | none         | Official SDG indicators, including Lao national SDG 18 on UXO       | varies      | 24h       |
+| [UNESCO UIS](https://api.uis.unesco.org/api/public/documentation/)                        | `api.uis.unesco.org/api/public`                    | none         | Education (literacy, enrolment, out-of-school, schooling, spending) | ~quarterly  | 24h       |
+| [ILOSTAT](https://ilostat.ilo.org/resources/sdmx-tools/)                                  | `sdmx.ilo.org/rest`                                | none         | Labor (LFPR, unemployment, employment ratio, informality, earnings) | ~annual     | 24h       |
+| [UN Comtrade](https://comtrade.un.org/)                                                   | `comtradeapi.un.org/public/v1/preview`             | optional§    | Merchandise trade (exports/imports totals + partners)              | ~annual     | 24h       |
+| [UNODC](https://data.unodc.org/)                                                          | `data.unodc.org`                                   | none         | Crime & justice (trafficking, prison, drug treatment — stub)        | ~annual     | 7d        |
 
 > **\* ADB caveat:** `data.adb.org` sits behind a Cloudflare bot challenge, so the JSON API
 > is usually unreachable from non-browser clients. `search_laos_datasets` detects this and
@@ -420,6 +435,11 @@ cite the source and year for every figure.
 > registration (`MRC_SESSION_TOKEN`). **FAOSTAT** is occasionally down (Cloudflare 521).
 > **LSB SDG:** the official Open SDG CSV export currently reports "Data last updated -
 > Jun 26, 2021" on the LSB SDG homepage.
+> **§ UN Comtrade:** the keyless `/public/v1/preview` endpoint works without auth but caps
+> responses at 500 records; set `COMTRADE_API_KEY` (free registration) to use the full
+> endpoint. Lao values from 2017 onward are UN mirror estimates, flagged in the footnote.
+> **UNODC:** the adapter is a stub — UNODC has no per-country API (bulk Excel only), and Lao
+> coverage is limited to trafficking, prison, and drug-treatment data (no homicide).
 
 ## Troubleshooting
 
@@ -454,7 +474,7 @@ To request access:
 
 Contributions are welcome — especially **new data sources** about Lao PDR, which are the
 highest-impact change and are designed to be purely additive (they never modify the
-existing 14 sources or the shared schemas). Adding one follows an 8-file recipe:
+existing 18 sources or the shared schemas). Adding one follows an 8-file recipe:
 
 1. **Adapter** — create `src/adapters/<source>.ts`. Export typed async functions that fetch
    and **normalize** into `IndicatorRecord` / `DatasetMetadata`. Never return raw API responses.
