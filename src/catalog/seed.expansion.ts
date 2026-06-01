@@ -1,3 +1,4 @@
+import { LSB_SDG_INDICATORS } from "../adapters/lsbSdg.js";
 import type { CatalogEntry } from "./types.js";
 
 /**
@@ -289,4 +290,15 @@ export const EXPANSION_SEED: CatalogEntry[] = [
     category: "education",
     unit: "%",
   },
+  ...LSB_SDG_INDICATORS.map(
+    (indicator): CatalogEntry => ({
+      id: `LSB_SDG:${indicator.code}`,
+      source: "lsb_sdg",
+      code: indicator.code,
+      name: indicator.name,
+      category: indicator.category,
+      unit: indicator.unit,
+      description: "Official Lao Statistics Bureau SDG Open Data Platform indicator.",
+    }),
+  ),
 ];

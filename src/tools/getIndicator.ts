@@ -58,7 +58,7 @@ export function resolveIndicator(
   if (explicit) return { source: explicit, code: prefixSource ? rest : raw };
   if (prefixSource) return { source: prefixSource, code: rest };
 
-  const entry = findCatalogEntry(raw);
+  const entry = findCatalogEntry(raw) ?? findCatalogEntry(raw.replace(/\./g, "-"));
   if (entry) return { source: entry.source, code: entry.code };
   if (isWorldBankCode(raw)) return { source: "worldbank", code: raw };
   return { source: "worldbank", code: raw };
@@ -102,8 +102,8 @@ export function unsupportedSourceHint(source: Source): string {
 
 const DESCRIPTION =
   "Fetch time-series data for a specific development indicator for Lao PDR from " +
-  "international sources (World Bank, UNICEF, ADB). Use this when you need numeric " +
-  "trend data on population, economy, health, education, environment, or infrastructure. " +
+  "international and official sources (World Bank, UNICEF, WHO, IMF, LSB SDG). Use this " +
+  "when you need numeric trend data on population, economy, health, education, environment, or infrastructure. " +
   "Call list_available_indicators first if you do not know the code.";
 
 export function registerGetIndicatorTool(server: McpServer): void {

@@ -3,9 +3,21 @@
     "code": "LA",
     "name": "Lao PDR"
   },
-  "generatedAt": "2026-05-22T09:20:41.430Z",
-  "totalIndicators": 95,
-  "sources": ["worldbank", "unicef", "faostat", "who", "imf", "hdx", "wfp", "osm", "mrc", "census"],
+  "generatedAt": "2026-06-01T18:12:47.662Z",
+  "totalIndicators": 180,
+  "sources": [
+    "worldbank",
+    "unicef",
+    "faostat",
+    "who",
+    "imf",
+    "hdx",
+    "wfp",
+    "osm",
+    "mrc",
+    "census",
+    "lsb_sdg"
+  ],
   "categories": {
     "demography": [
       {
@@ -205,6 +217,153 @@
         "code": "clinic",
         "source": "osm",
         "name": "Clinics (OpenStreetMap)"
+      },
+      {
+        "id": "LSB_SDG:3-1-1",
+        "code": "3-1-1",
+        "source": "lsb_sdg",
+        "name": "Maternal mortality ratio [3.1.1]",
+        "unit": "Per 100,000 population"
+      },
+      {
+        "id": "LSB_SDG:3-1-2",
+        "code": "3-1-2",
+        "source": "lsb_sdg",
+        "name": "Proportion of births attended by skilled health personnel [3.1.2]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:3-2-1",
+        "code": "3-2-1",
+        "source": "lsb_sdg",
+        "name": "Infant mortality rate [3.2.1]",
+        "unit": "Per 100,000 population"
+      },
+      {
+        "id": "LSB_SDG:3-2-2",
+        "code": "3-2-2",
+        "source": "lsb_sdg",
+        "name": "Neonatal mortality rate [3.2.2]",
+        "unit": "Per 100,000 population"
+      },
+      {
+        "id": "LSB_SDG:3-3-1",
+        "code": "3-3-1",
+        "source": "lsb_sdg",
+        "name": "Number of new HIV infections per 1,000 uninfected population [3.3.1]",
+        "unit": "Number"
+      },
+      {
+        "id": "LSB_SDG:3-3-2",
+        "code": "3-3-2",
+        "source": "lsb_sdg",
+        "name": "Tuberculosis incidence [3.3.2]",
+        "unit": "Per 100,000 population"
+      },
+      {
+        "id": "LSB_SDG:3-3-3",
+        "code": "3-3-3",
+        "source": "lsb_sdg",
+        "name": "Malaria incidence per 1,000 population at risk [3.3.3]",
+        "unit": "Per 1,000 population"
+      },
+      {
+        "id": "LSB_SDG:3-3-4",
+        "code": "3-3-4",
+        "source": "lsb_sdg",
+        "name": "Prevalence of hepatitis B surface antigen (HBsAg) [3.3.4]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:3-3-5",
+        "code": "3-3-5",
+        "source": "lsb_sdg",
+        "name": "Number of people requiring interventions against neglected tropical diseases [3.3.5]",
+        "unit": "Number"
+      },
+      {
+        "id": "LSB_SDG:3-4-1",
+        "code": "3-4-1",
+        "source": "lsb_sdg",
+        "name": "Mortality rate attributed to cardiovascular disease, cancer, diabetes or chronic respiratory disease [3.4.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:3-5-2",
+        "code": "3-5-2",
+        "source": "lsb_sdg",
+        "name": "Alcohol consumption per capita (aged 15 years and older) within a calendar year [3.5.2]",
+        "unit": "Litres pure alcohol"
+      },
+      {
+        "id": "LSB_SDG:3-6-1",
+        "code": "3-6-1",
+        "source": "lsb_sdg",
+        "name": "Number of deaths rate due to road traffic injuries [3.6.1]",
+        "unit": "Per 100,000 population"
+      },
+      {
+        "id": "LSB_SDG:3-7-1",
+        "code": "3-7-1",
+        "source": "lsb_sdg",
+        "name": "Proportion of women married or in a union of reproductive age (aged 15-49 years) who have their need for family planning satisfied with modern methods [3.7.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:3-7-2",
+        "code": "3-7-2",
+        "source": "lsb_sdg",
+        "name": "Adolescent birth rate (per 1,000 women aged 15-19 years) [3.7.2]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:3-8-1",
+        "code": "3-8-1",
+        "source": "lsb_sdg",
+        "name": "Coverage of essential health services: % Antenatal care coverage (at least 4 visits)",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:3-8-2",
+        "code": "3-8-2",
+        "source": "lsb_sdg",
+        "name": "Out of pocket health expenditure as % of total health expenditure",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:3-9-2",
+        "code": "3-9-2",
+        "source": "lsb_sdg",
+        "name": "Mortality rate attributed to unsafe water, unsafe sanitation and lack of hygiene [3.9.2]",
+        "unit": "Number"
+      },
+      {
+        "id": "LSB_SDG:3-9-3",
+        "code": "3-9-3",
+        "source": "lsb_sdg",
+        "name": "Mortality rate attributed to unintentional poisonings [3.9.3]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:3-a-1",
+        "code": "3-a-1",
+        "source": "lsb_sdg",
+        "name": "Age-standardized prevalence of current tobacco use among persons aged 15 years and older [3.a.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:3-b-2",
+        "code": "3-b-2",
+        "source": "lsb_sdg",
+        "name": "Total official development assistance to medical research and basic heath sectors, gross disbursement, by recipient countries [3.b.2]",
+        "unit": "USD"
+      },
+      {
+        "id": "LSB_SDG:3-c-1",
+        "code": "3-c-1",
+        "source": "lsb_sdg",
+        "name": "Health worker distribution, by sex and type of occupation [3.c.1]",
+        "unit": "Per 1,000 population"
       }
     ],
     "economy": [
@@ -290,6 +449,118 @@
         "code": "PriceMonthly",
         "source": "wfp",
         "name": "Monthly market commodity prices (WFP VAM)"
+      },
+      {
+        "id": "LSB_SDG:8-1-1",
+        "code": "8-1-1",
+        "source": "lsb_sdg",
+        "name": "Annual growth rate of real GDP per capita [8.1.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:8-2-1",
+        "code": "8-2-1",
+        "source": "lsb_sdg",
+        "name": "Annual growth rate of real GDP per employed person [8.2.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:8-3-1",
+        "code": "8-3-1",
+        "source": "lsb_sdg",
+        "name": "Proportion of informal employment, by sector and sex (ILO harmonized estimates) [8.3.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:8-3-2",
+        "code": "8-3-2",
+        "source": "lsb_sdg",
+        "name": "Percentage of financing and loans issued to SMEs",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:8-3-3",
+        "code": "8-3-3",
+        "source": "lsb_sdg",
+        "name": "Number of SMEs owned by Lao citizens (with Lao citizens as the majority shareholders)",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:8-5-1",
+        "code": "8-5-1",
+        "source": "lsb_sdg",
+        "name": "Average hourly earnings [8.5.1]",
+        "unit": "Local currency"
+      },
+      {
+        "id": "LSB_SDG:8-5-2",
+        "code": "8-5-2",
+        "source": "lsb_sdg",
+        "name": "Unemployment rate [8.5.2]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:8-5-3",
+        "code": "8-5-3",
+        "source": "lsb_sdg",
+        "name": "Businesses owned by females",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:8-5-4",
+        "code": "8-5-4",
+        "source": "lsb_sdg",
+        "name": "Share of employed persons in the informal sector",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:8-6-1",
+        "code": "8-6-1",
+        "source": "lsb_sdg",
+        "name": "Proportion of youth not in education, employment or training [8.6.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:8-7-1",
+        "code": "8-7-1",
+        "source": "lsb_sdg",
+        "name": "Proportion of children engaged in economic activity and household chores [8.7.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:8-7-2",
+        "code": "8-7-2",
+        "source": "lsb_sdg",
+        "name": "Number of children aged 5-17 engaged in prohibited hazardous occupations and tasks, by sex and age",
+        "unit": "Number"
+      },
+      {
+        "id": "LSB_SDG:8-8-1",
+        "code": "8-8-1",
+        "source": "lsb_sdg",
+        "name": "Non-fatal occupational injuries among employees (rate) [8.8.1]",
+        "unit": "Number"
+      },
+      {
+        "id": "LSB_SDG:8-9-1",
+        "code": "8-9-1",
+        "source": "lsb_sdg",
+        "name": "Tourism direct GDP as a proportion of total GDP [8.9.1]",
+        "unit": "USD"
+      },
+      {
+        "id": "LSB_SDG:8-9-3",
+        "code": "8-9-3",
+        "source": "lsb_sdg",
+        "name": "Establishment of Tourism standards (1=to be adopted and implemented)",
+        "unit": "Number"
+      },
+      {
+        "id": "LSB_SDG:8-a-1",
+        "code": "8-a-1",
+        "source": "lsb_sdg",
+        "name": "Mean number of days to clear imports",
+        "unit": "Number"
       }
     ],
     "poverty": [
@@ -319,6 +590,34 @@
         "code": "poverty",
         "source": "hdx",
         "name": "Poverty rate (HDX HAPI)"
+      },
+      {
+        "id": "LSB_SDG:1-1-1",
+        "code": "1-1-1",
+        "source": "lsb_sdg",
+        "name": "Proportion of population below international poverty line [1.1.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:1-2-1",
+        "code": "1-2-1",
+        "source": "lsb_sdg",
+        "name": "Proportion of population living below the national poverty line [1.2.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:1-2-2",
+        "code": "1-2-2",
+        "source": "lsb_sdg",
+        "name": "Proportion of children living in child-specific multidimensional poverty [1.2.2]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:1-4-1",
+        "code": "1-4-1",
+        "source": "lsb_sdg",
+        "name": "Proportion of population living in households with access to secondary school [1.4.1]",
+        "unit": "Percent"
       }
     ],
     "education": [
@@ -394,6 +693,83 @@
         "source": "census",
         "name": "Literacy rate 15+ (2015 Census)",
         "unit": "%"
+      },
+      {
+        "id": "LSB_SDG:4-1-1",
+        "code": "4-1-1",
+        "source": "lsb_sdg",
+        "name": "Proportion of children and young people achieving a minimum proficiency level in reading and mathematics [4.1.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:4-1-2",
+        "code": "4-1-2",
+        "source": "lsb_sdg",
+        "name": "Completion rate, by sex, location, wealth quintile and education level (%) [4.1.2]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:4-1-6",
+        "code": "4-1-6",
+        "source": "lsb_sdg",
+        "name": "Children over-age for grade",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:4-2-3",
+        "code": "4-2-3",
+        "source": "lsb_sdg",
+        "name": "Gross early childhood enrolment ratio",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:4-3-3",
+        "code": "4-3-3",
+        "source": "lsb_sdg",
+        "name": "Participation rate in technical-vocational education programmes (15-24 years-old)",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:4-3-4",
+        "code": "4-3-4",
+        "source": "lsb_sdg",
+        "name": "Percentage lower secondary/upper secondary school graduates enrolled in vocational & training school",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:4-5-1-a",
+        "code": "4-5-1-a",
+        "source": "lsb_sdg",
+        "name": "Gender parity indices for gross enrolment",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:4-5-1-b",
+        "code": "4-5-1-b",
+        "source": "lsb_sdg",
+        "name": "Gender parity indices for completion",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:4-6-1",
+        "code": "4-6-1",
+        "source": "lsb_sdg",
+        "name": "Proportion of population achieving at least a fixed level of proficiency in functional skills [4.6.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:4-b-1",
+        "code": "4-b-1",
+        "source": "lsb_sdg",
+        "name": "Total official flows for scholarships, by recipient countries [4.b.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:4-c-1",
+        "code": "4-c-1",
+        "source": "lsb_sdg",
+        "name": "Proportion of teachers who have received at least the minimum organized teacher training pre-service or in-service required for teaching at the relevant level in a given country [4.c.1]",
+        "unit": "Percent"
       }
     ],
     "wash": [
@@ -480,6 +856,20 @@
         "code": "water-quality",
         "source": "mrc",
         "name": "Water quality monitoring (MRC)"
+      },
+      {
+        "id": "LSB_SDG:13-1-1",
+        "code": "13-1-1",
+        "source": "lsb_sdg",
+        "name": "Number of people affected by disaster [1.5.1, 11.5.1, 13.1.1]",
+        "unit": "Per 100,000 population"
+      },
+      {
+        "id": "LSB_SDG:13-3-3",
+        "code": "13-3-3",
+        "source": "lsb_sdg",
+        "name": "Number of provinces with capacity to report on the situation of climate change",
+        "unit": "Number"
       }
     ],
     "agriculture": [
@@ -610,6 +1000,62 @@
         "source": "unicef",
         "name": "Maternity leave benefits",
         "dataflow": "GENDER"
+      },
+      {
+        "id": "LSB_SDG:5-1-1",
+        "code": "5-1-1",
+        "source": "lsb_sdg",
+        "name": "Legal frameworks that promote, enforce and monitor gender equality (percentage of achievement, 0 - 100) -- Area 1: overarching legal frameworks and public life. [5.1.1]",
+        "unit": "Number"
+      },
+      {
+        "id": "LSB_SDG:5-2-1",
+        "code": "5-2-1",
+        "source": "lsb_sdg",
+        "name": "Proportion of ever-partnered women and girls subjected to physical and sexual violence by a current or former intimate partner in the previous 12 months [5.2.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:5-3-1",
+        "code": "5-3-1",
+        "source": "lsb_sdg",
+        "name": "Proportion of women aged 20-24 years who were married or in a union before age 15 [5.3.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:5-3-4",
+        "code": "5-3-4",
+        "source": "lsb_sdg",
+        "name": "Percentage of women aged 15-49 years who gave birth by aged 15",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:5-4-1",
+        "code": "5-4-1",
+        "source": "lsb_sdg",
+        "name": "Proportion of time spent on unpaid domestic chores and care work [5.4.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:5-5-1",
+        "code": "5-5-1",
+        "source": "lsb_sdg",
+        "name": "Proportion of seats held by women in national parliaments (% of total number of seats) [5.5.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:5-5-2",
+        "code": "5-5-2",
+        "source": "lsb_sdg",
+        "name": "Percentage of women in decision making positions /leadership positions in government sector by central, province and district in the following positions_Deputy Division Head",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:5-b-1",
+        "code": "5-b-1",
+        "source": "lsb_sdg",
+        "name": "Proportion of individuals who own a mobile telephone [5.b.1]",
+        "unit": "Percent"
       }
     ],
     "nutrition": [
@@ -670,6 +1116,48 @@
         "code": "food-security",
         "source": "hdx",
         "name": "Food security / IPC (HDX HAPI)"
+      },
+      {
+        "id": "LSB_SDG:2-1-1",
+        "code": "2-1-1",
+        "source": "lsb_sdg",
+        "name": "Prevalence of undernourishment [2.1.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:2-1-4",
+        "code": "2-1-4",
+        "source": "lsb_sdg",
+        "name": "Food production [2.1.4]",
+        "unit": "Metric Tons"
+      },
+      {
+        "id": "LSB_SDG:2-2-1",
+        "code": "2-2-1",
+        "source": "lsb_sdg",
+        "name": "Proportion of children moderately or severely stunted [2.2.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:2-2-2",
+        "code": "2-2-2",
+        "source": "lsb_sdg",
+        "name": "Proportion of children moderately or severely wasted [2.2.2]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:2-a-1",
+        "code": "2-a-1",
+        "source": "lsb_sdg",
+        "name": "Agriculture share of Government Expenditure [2.a.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:2-c-1",
+        "code": "2-c-1",
+        "source": "lsb_sdg",
+        "name": "Indicator of Food Price Anomalies (IFPA) [2.c.1]",
+        "unit": "Number"
       }
     ],
     "humanitarian": [
@@ -690,6 +1178,48 @@
         "code": "conflict",
         "source": "hdx",
         "name": "Conflict events (HDX HAPI)"
+      },
+      {
+        "id": "LSB_SDG:18-1-1",
+        "code": "18-1-1",
+        "source": "lsb_sdg",
+        "name": "Number of reported UXO casualties-Total",
+        "unit": "Number"
+      },
+      {
+        "id": "LSB_SDG:18-1-2",
+        "code": "18-1-2",
+        "source": "lsb_sdg",
+        "name": "Percentage of population in contaminated villages with information on Confirmed Hazardous Areas in their village (disaggregated by age group, sex and persons with disabilities) [18.1.2 ]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:18-2-1",
+        "code": "18-2-1",
+        "source": "lsb_sdg",
+        "name": "Percentage of high priority hazardous areas remaining to be cleared (disaggregated by village poverty levels) [18.2.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:18-2-2",
+        "code": "18-2-2",
+        "source": "lsb_sdg",
+        "name": "Number of villages defined as 'poor' with Confirmed Hazardous Areas remaining to be cleared [18.2.2 ]",
+        "unit": "Number"
+      },
+      {
+        "id": "LSB_SDG:18-3-1",
+        "code": "18-3-1",
+        "source": "lsb_sdg",
+        "name": "Proportion of registered active age UXO survivors unable to earn sufficient income with access to basic income security [18.3.1 ]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:18-3-2",
+        "code": "18-3-2",
+        "source": "lsb_sdg",
+        "name": "Percentage of registered UXO survivors mainstreamed into health, education and employment services [18.3.2 ]",
+        "unit": "Percent"
       }
     ],
     "infrastructure": [
@@ -698,6 +1228,85 @@
         "code": "market",
         "source": "osm",
         "name": "Marketplaces (OpenStreetMap)"
+      }
+    ],
+    "governance": [
+      {
+        "id": "LSB_SDG:17-1-1",
+        "code": "17-1-1",
+        "source": "lsb_sdg",
+        "name": "Total government revenue as a proportion of GDP [17.1.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:17-1-2",
+        "code": "17-1-2",
+        "source": "lsb_sdg",
+        "name": "Proportion of domestic budget funded by domestic taxes [17.1.2]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:17-3-1",
+        "code": "17-3-1",
+        "source": "lsb_sdg",
+        "name": "Foreign direct investment (FDI) inflows [17.3.1]",
+        "unit": "USD"
+      },
+      {
+        "id": "LSB_SDG:17-6-1",
+        "code": "17-6-1",
+        "source": "lsb_sdg",
+        "name": "Fixed broadband subscriptions per 100 inhabitants [17.6.1]",
+        "unit": "Per 100 population"
+      },
+      {
+        "id": "LSB_SDG:17-7-1",
+        "code": "17-7-1",
+        "source": "lsb_sdg",
+        "name": "Number of science and/or technology cooperation agreements and programmes between countries, by type of cooperation (Increase number of agreements with other counties and international organisations to 100 agreements and implementing 80% in 2020)",
+        "unit": "Number"
+      },
+      {
+        "id": "LSB_SDG:17-8-1",
+        "code": "17-8-1",
+        "source": "lsb_sdg",
+        "name": "Internet users per 100 inhabitants [17.8.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:17-8-2",
+        "code": "17-8-2",
+        "source": "lsb_sdg",
+        "name": "Percentage of population registered as internet users through landline and wireless",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:17-8-3",
+        "code": "17-8-3",
+        "source": "lsb_sdg",
+        "name": "Percentage of mobile phone users with internet access.",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:17-11-1",
+        "code": "17-11-1",
+        "source": "lsb_sdg",
+        "name": "Developing countries' and least developed countries' share of global merchandise exports [17.11.1]",
+        "unit": "Percent"
+      },
+      {
+        "id": "LSB_SDG:17-19-2",
+        "code": "17-19-2",
+        "source": "lsb_sdg",
+        "name": "Proportion of countries that have conducted at least one population and housing census in the last 10 years [17.19.2]",
+        "unit": "Number"
+      },
+      {
+        "id": "LSB_SDG:17-19-3",
+        "code": "17-19-3",
+        "source": "lsb_sdg",
+        "name": "Number of death registration recorded",
+        "unit": "Number"
       }
     ]
   }

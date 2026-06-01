@@ -2,7 +2,7 @@
 
 ## What this project does
 
-MCP server exposing 13 external data sources about Lao PDR as unified tools /
+MCP server exposing 14 external data sources about Lao PDR as unified tools /
 resources / prompts. See README.md for full architecture.
 
 ## Key conventions
@@ -34,6 +34,9 @@ resources / prompts. See README.md for full architecture.
 11. OpenStreetMap (`osm.ts`) — Overpass POST, no auth. Infrastructure POIs; fixed templates only.
 12. MRC (`mrc.ts`) — STUB, static catalog; activate with `MRC_SESSION_TOKEN`.
 13. Census (`census.ts`) — STUB, bundled 2015 figures; 2025 via `CENSUS_2025_AVAILABLE`.
+14. LSB SDG Platform (`lsbSdg.ts`) — official Open SDG CSV export, no auth. Country `LA`.
+    Powers `get_laos_sdg_progress` + the `sdg_progress_audit` prompt; resolves dotted
+    SDG codes (e.g. `3.1.1`) in `get_laos_indicator`. **Stale: export last updated 2021-06-26.**
 
 Adding a source is additive: append it to `SOURCES`/`SOURCE_META`/`SOURCE_ID_PREFIX`
 in `src/schemas/source.ts`, add a `ping*` to `PINGS` in `getSourceStatus.ts`, and a
@@ -84,6 +87,10 @@ pnpm lint && pnpm typecheck && pnpm test
 - **WFP VAM** needs OAuth2 (`WFP_CLIENT_ID`/`SECRET`); token is cached + refreshed (~1h expiry).
 - **OSM Overpass** returns **HTTP 406** to clients without a proper UA/Accept (the shared
   axios headers satisfy it). Only fixed query templates are used; province input is sanitized.
+- **LSB SDG** is an Open SDG CSV export served from GitHub Pages. Indicator codes are
+  dotted on the platform (`3.1.1`) but stored dash-normalized in records (`3-1-1`); both
+  forms resolve. The export is **official but stale — last updated 2021-06-26** per the
+  homepage, so prefer fresher sources for recent years where they exist.
 
 ## Files to never modify without discussion
 
