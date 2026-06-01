@@ -2,7 +2,7 @@
 
 ## What this project does
 
-MCP server exposing 13 external data sources about Lao PDR as unified tools /
+MCP server exposing 18 external data sources about Lao PDR as unified tools /
 resources / prompts. See README.md for full architecture.
 
 ## Key conventions
@@ -34,6 +34,12 @@ resources / prompts. See README.md for full architecture.
 11. OpenStreetMap (`osm.ts`) — Overpass POST, no auth. Infrastructure POIs; fixed templates only.
 12. MRC (`mrc.ts`) — STUB, static catalog; activate with `MRC_SESSION_TOKEN`.
 13. Census (`census.ts`) — STUB, bundled 2015 figures; 2025 via `CENSUS_2025_AVAILABLE`.
+14. LSB SDG (`lsbSdg.ts`) — Open SDG static CSV/JSON export, no auth. Official SDG indicators.
+15. UNESCO UIS (`uis.ts`) — REST JSON, no auth. Country `LAO`. Education indicators.
+16. ILOSTAT (`ilostat.ts`) — SDMX-JSON, no auth. REF_AREA `LAO`. Labor indicators.
+17. UN Comtrade (`comtrade.ts`) — REST JSON, keyless preview (optional `COMTRADE_API_KEY`).
+    Reporter `418`. Trade exports/imports.
+18. UNODC (`unodc.ts`) — STUB, static catalog; no per-country API (bulk Excel only). Crime/justice.
 
 Adding a source is additive: append it to `SOURCES`/`SOURCE_META`/`SOURCE_ID_PREFIX`
 in `src/schemas/source.ts`, add a `ping*` to `PINGS` in `getSourceStatus.ts`, and a
@@ -84,6 +90,20 @@ pnpm lint && pnpm typecheck && pnpm test
 - **WFP VAM** needs OAuth2 (`WFP_CLIENT_ID`/`SECRET`); token is cached + refreshed (~1h expiry).
 - **OSM Overpass** returns **HTTP 406** to clients without a proper UA/Accept (the shared
   axios headers satisfy it). Only fixed query templates are used; province input is sanitized.
+- **UNESCO UIS** uses ISO3 `LAO`; envelope is `{ records, hints, indicatorMetadata }`.
+  Codes are UPPERCASE/case-sensitive; an unknown code returns **HTTP 200 with `hints`**, not a
+  4xx. There is **no `unit` field** — parse it from the trailing `(...)` of the metadata name.
+- **ILOSTAT** is SDMX-JSON but has **no `INDICATOR` dimension** (the dataflow id is the indicator),
+  so the shared `utils/sdmx.ts` decoder does not apply — `ilostat.ts` has its own decoder. REF_AREA
+  is `LAO` (normalize to `LA`); requires `Accept: application/vnd.sdmx.data+json;version=1.0`;
+  HTTP 404 means "no data" (treated as `[]`). Apply `UNIT_MULT` (×10^n) and map `UNIT_MEASURE`.
+- **UN Comtrade**: use the **keyless `/public/v1/preview` endpoint** (capped at 500 records/response;
+  `COMTRADE_API_KEY` unlocks the full endpoint). Reporter is **M49 `418`**; pass `motCode=0` or rows
+  duplicate per transport mode; `primaryValue` is the USD value. **2017+ Lao values are UN mirror
+  estimates** (`isReported=false`) — flagged in the footnote.
+- **UNODC has no per-country API** — crime stats are bulk Excel only, with date-stamped URLs.
+  `unodc.ts` is a static-catalog stub. Lao coverage is thin: trafficking (GLOTIP), prison (CTS),
+  and drug treatment (WDR annex) only — **no homicide or violent-crime data for Laos**.
 
 ## Files to never modify without discussion
 

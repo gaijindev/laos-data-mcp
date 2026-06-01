@@ -38,13 +38,25 @@ export const SERVER_VERSION = "1.0.0";
 
 const INSTRUCTIONS = `laos-data-mcp is a unified data gateway for Lao PDR (Laos).
 
-It connects five sources behind one interface and normalizes their responses:
+It connects 18 sources behind one interface and normalizes their responses:
   - World Bank Indicators API (development indicators, no auth)
   - UNICEF SDMX (child welfare, health, education, nutrition, WASH; no auth)
   - Open Development Mekong (CKAN dataset catalog; no auth)
   - Asian Development Bank Data Library (CKAN; may be Cloudflare-protected)
   - Laosis / Lao Statistics Bureau (official statistics; stub unless LAOSIS_API_KEY is set)
+  - FAOSTAT (agriculture, food, forestry; no auth)
+  - WHO GHO (health indicators; no auth)
+  - IMF DataMapper (WEO macro indicators; no auth)
+  - HDX / HAPI (humanitarian datasets + indicators; HAPI needs HDX_APP_ID)
+  - WFP VAM (market food prices; OAuth2 client credentials)
+  - OpenStreetMap Overpass (infrastructure POIs; no auth)
+  - Mekong River Commission (hydrology/fisheries catalog; stub unless MRC_SESSION_TOKEN)
+  - Lao Population & Housing Census (bundled official figures)
   - Lao Statistics Bureau SDG Platform (official SDG indicators; no auth)
+  - UNESCO UIS (education indicators; no auth)
+  - ILOSTAT (labor indicators via SDMX; no auth)
+  - UN Comtrade (merchandise trade; keyless preview, optional COMTRADE_API_KEY)
+  - UNODC (crime & justice catalog; stub — bulk Excel only, no per-country API)
 
 Typical flow:
   1. Call list_available_indicators to discover valid indicator codes.
