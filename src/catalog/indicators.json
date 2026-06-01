@@ -1,0 +1,704 @@
+{
+  "country": {
+    "code": "LA",
+    "name": "Lao PDR"
+  },
+  "generatedAt": "2026-05-22T09:20:41.430Z",
+  "totalIndicators": 95,
+  "sources": ["worldbank", "unicef", "faostat", "who", "imf", "hdx", "wfp", "osm", "mrc", "census"],
+  "categories": {
+    "demography": [
+      {
+        "id": "WB:SP.POP.TOTL",
+        "code": "SP.POP.TOTL",
+        "source": "worldbank",
+        "name": "Population, total",
+        "unit": "people"
+      },
+      {
+        "id": "WB:SP.POP.GROW",
+        "code": "SP.POP.GROW",
+        "source": "worldbank",
+        "name": "Population growth (annual %)",
+        "unit": "%"
+      },
+      {
+        "id": "WB:SP.URB.TOTL.IN.ZS",
+        "code": "SP.URB.TOTL.IN.ZS",
+        "source": "worldbank",
+        "name": "Urban population (% of total)",
+        "unit": "%"
+      },
+      {
+        "id": "WB:SP.DYN.TFRT.IN",
+        "code": "SP.DYN.TFRT.IN",
+        "source": "worldbank",
+        "name": "Fertility rate, total (births per woman)",
+        "unit": "births per woman"
+      },
+      {
+        "id": "UNICEF:DM:DM_POP_TOT",
+        "code": "DM:DM_POP_TOT",
+        "source": "unicef",
+        "name": "Total population (UNICEF)",
+        "dataflow": "DM"
+      },
+      {
+        "id": "UNICEF:DM:DM_POP_U5",
+        "code": "DM:DM_POP_U5",
+        "source": "unicef",
+        "name": "Population under age 5",
+        "dataflow": "DM"
+      },
+      {
+        "id": "UNICEF:DM:DM_POP_U18",
+        "code": "DM:DM_POP_U18",
+        "source": "unicef",
+        "name": "Population under age 18",
+        "dataflow": "DM"
+      },
+      {
+        "id": "UNICEF:DM:DM_POP_ADLCNT",
+        "code": "DM:DM_POP_ADLCNT",
+        "source": "unicef",
+        "name": "Adolescent population (10-19)",
+        "dataflow": "DM"
+      },
+      {
+        "id": "HDX:population",
+        "code": "population",
+        "source": "hdx",
+        "name": "Population (HDX HAPI)"
+      },
+      {
+        "id": "CENSUS:POP_TOTAL",
+        "code": "POP_TOTAL",
+        "source": "census",
+        "name": "Total population (2015 Census)",
+        "unit": "people"
+      },
+      {
+        "id": "CENSUS:POP_GROWTH",
+        "code": "POP_GROWTH",
+        "source": "census",
+        "name": "Annual population growth (2015 Census)",
+        "unit": "%"
+      },
+      {
+        "id": "CENSUS:URBAN_SHARE",
+        "code": "URBAN_SHARE",
+        "source": "census",
+        "name": "Urban population share (2015 Census)",
+        "unit": "%"
+      }
+    ],
+    "health": [
+      {
+        "id": "WB:SP.DYN.LE00.IN",
+        "code": "SP.DYN.LE00.IN",
+        "source": "worldbank",
+        "name": "Life expectancy at birth, total (years)",
+        "unit": "years"
+      },
+      {
+        "id": "WB:SH.DYN.MORT",
+        "code": "SH.DYN.MORT",
+        "source": "worldbank",
+        "name": "Mortality rate, under-5 (per 1,000 live births)",
+        "unit": "per 1,000 live births"
+      },
+      {
+        "id": "WB:SP.DYN.IMRT.IN",
+        "code": "SP.DYN.IMRT.IN",
+        "source": "worldbank",
+        "name": "Mortality rate, infant (per 1,000 live births)",
+        "unit": "per 1,000 live births"
+      },
+      {
+        "id": "WB:SH.STA.MMRT",
+        "code": "SH.STA.MMRT",
+        "source": "worldbank",
+        "name": "Maternal mortality ratio (per 100,000 live births)",
+        "unit": "per 100,000 live births"
+      },
+      {
+        "id": "WB:SH.XPD.CHEX.GD.ZS",
+        "code": "SH.XPD.CHEX.GD.ZS",
+        "source": "worldbank",
+        "name": "Current health expenditure (% of GDP)",
+        "unit": "%"
+      },
+      {
+        "id": "WB:SH.IMM.MEAS",
+        "code": "SH.IMM.MEAS",
+        "source": "worldbank",
+        "name": "Immunization, measles (% of children ages 12-23 months)",
+        "unit": "%"
+      },
+      {
+        "id": "UNICEF:MNCH:MNCH_ANC1",
+        "code": "MNCH:MNCH_ANC1",
+        "source": "unicef",
+        "name": "Antenatal care, at least 1 visit",
+        "unit": "%",
+        "dataflow": "MNCH"
+      },
+      {
+        "id": "UNICEF:MNCH:MNCH_ANC4",
+        "code": "MNCH:MNCH_ANC4",
+        "source": "unicef",
+        "name": "Antenatal care, at least 4 visits",
+        "unit": "%",
+        "dataflow": "MNCH"
+      },
+      {
+        "id": "UNICEF:MNCH:MNCH_ABR",
+        "code": "MNCH:MNCH_ABR",
+        "source": "unicef",
+        "name": "Adolescent birth rate",
+        "unit": "per 1,000 women 15-19",
+        "dataflow": "MNCH"
+      },
+      {
+        "id": "WHO:WHOSIS_000001",
+        "code": "WHOSIS_000001",
+        "source": "who",
+        "name": "Life expectancy at birth",
+        "unit": "years"
+      },
+      {
+        "id": "WHO:MALARIA_EST_INCIDENCE",
+        "code": "MALARIA_EST_INCIDENCE",
+        "source": "who",
+        "name": "Estimated malaria incidence",
+        "unit": "per 1000 at risk"
+      },
+      {
+        "id": "WHO:MDG_0000000020",
+        "code": "MDG_0000000020",
+        "source": "who",
+        "name": "Incidence of tuberculosis",
+        "unit": "per 100,000"
+      },
+      {
+        "id": "WHO:NCDMORT3070",
+        "code": "NCDMORT3070",
+        "source": "who",
+        "name": "Probability of dying 30-70 from NCDs",
+        "unit": "%"
+      },
+      {
+        "id": "WHO:HWF_0001",
+        "code": "HWF_0001",
+        "source": "who",
+        "name": "Medical doctors",
+        "unit": "per 10,000"
+      },
+      {
+        "id": "OSM:hospital",
+        "code": "hospital",
+        "source": "osm",
+        "name": "Hospitals (OpenStreetMap)"
+      },
+      {
+        "id": "OSM:clinic",
+        "code": "clinic",
+        "source": "osm",
+        "name": "Clinics (OpenStreetMap)"
+      }
+    ],
+    "economy": [
+      {
+        "id": "WB:NY.GDP.MKTP.CD",
+        "code": "NY.GDP.MKTP.CD",
+        "source": "worldbank",
+        "name": "GDP (current US$)",
+        "unit": "USD"
+      },
+      {
+        "id": "WB:NY.GDP.PCAP.CD",
+        "code": "NY.GDP.PCAP.CD",
+        "source": "worldbank",
+        "name": "GDP per capita (current US$)",
+        "unit": "USD"
+      },
+      {
+        "id": "WB:NY.GDP.MKTP.KD.ZG",
+        "code": "NY.GDP.MKTP.KD.ZG",
+        "source": "worldbank",
+        "name": "GDP growth (annual %)",
+        "unit": "%"
+      },
+      {
+        "id": "WB:FP.CPI.TOTL.ZG",
+        "code": "FP.CPI.TOTL.ZG",
+        "source": "worldbank",
+        "name": "Inflation, consumer prices (annual %)",
+        "unit": "%"
+      },
+      {
+        "id": "WB:BX.KLT.DINV.CD.WD",
+        "code": "BX.KLT.DINV.CD.WD",
+        "source": "worldbank",
+        "name": "Foreign direct investment, net inflows (BoP, current US$)",
+        "unit": "USD"
+      },
+      {
+        "id": "WB:GC.DOD.TOTL.GD.ZS",
+        "code": "GC.DOD.TOTL.GD.ZS",
+        "source": "worldbank",
+        "name": "Central government debt, total (% of GDP)",
+        "unit": "%"
+      },
+      {
+        "id": "IMF:NGDP_RPCH",
+        "code": "NGDP_RPCH",
+        "source": "imf",
+        "name": "Real GDP growth",
+        "unit": "annual %"
+      },
+      {
+        "id": "IMF:PCPIPCH",
+        "code": "PCPIPCH",
+        "source": "imf",
+        "name": "Inflation, average consumer prices",
+        "unit": "annual %"
+      },
+      {
+        "id": "IMF:GGXWDG_NGDP",
+        "code": "GGXWDG_NGDP",
+        "source": "imf",
+        "name": "General government gross debt",
+        "unit": "% of GDP"
+      },
+      {
+        "id": "IMF:BCA_NGDPD",
+        "code": "BCA_NGDPD",
+        "source": "imf",
+        "name": "Current account balance",
+        "unit": "% of GDP"
+      },
+      {
+        "id": "IMF:PPPGDP",
+        "code": "PPPGDP",
+        "source": "imf",
+        "name": "GDP, PPP",
+        "unit": "billions intl $"
+      },
+      {
+        "id": "WFP:PriceMonthly",
+        "code": "PriceMonthly",
+        "source": "wfp",
+        "name": "Monthly market commodity prices (WFP VAM)"
+      }
+    ],
+    "poverty": [
+      {
+        "id": "WB:SI.POV.NAHC",
+        "code": "SI.POV.NAHC",
+        "source": "worldbank",
+        "name": "Poverty headcount ratio at national poverty lines (% of population)",
+        "unit": "%"
+      },
+      {
+        "id": "WB:SI.POV.GINI",
+        "code": "SI.POV.GINI",
+        "source": "worldbank",
+        "name": "Gini index",
+        "unit": "index"
+      },
+      {
+        "id": "WB:SI.POV.DDAY",
+        "code": "SI.POV.DDAY",
+        "source": "worldbank",
+        "name": "Poverty headcount ratio at $2.15 a day (2017 PPP) (% of population)",
+        "unit": "%"
+      },
+      {
+        "id": "HDX:poverty",
+        "code": "poverty",
+        "source": "hdx",
+        "name": "Poverty rate (HDX HAPI)"
+      }
+    ],
+    "education": [
+      {
+        "id": "WB:SE.ADT.LITR.ZS",
+        "code": "SE.ADT.LITR.ZS",
+        "source": "worldbank",
+        "name": "Literacy rate, adult total (% of people ages 15 and above)",
+        "unit": "%"
+      },
+      {
+        "id": "WB:SE.PRM.ENRR",
+        "code": "SE.PRM.ENRR",
+        "source": "worldbank",
+        "name": "School enrollment, primary (% gross)",
+        "unit": "%"
+      },
+      {
+        "id": "WB:SE.SEC.ENRR",
+        "code": "SE.SEC.ENRR",
+        "source": "worldbank",
+        "name": "School enrollment, secondary (% gross)",
+        "unit": "%"
+      },
+      {
+        "id": "WB:SE.XPD.TOTL.GD.ZS",
+        "code": "SE.XPD.TOTL.GD.ZS",
+        "source": "worldbank",
+        "name": "Government expenditure on education, total (% of GDP)",
+        "unit": "%"
+      },
+      {
+        "id": "UNICEF:EDUCATION:ED_ANAR_L1",
+        "code": "EDUCATION:ED_ANAR_L1",
+        "source": "unicef",
+        "name": "Adjusted net attendance rate, primary",
+        "unit": "%",
+        "dataflow": "EDUCATION"
+      },
+      {
+        "id": "UNICEF:EDUCATION:ED_ANAR_L2",
+        "code": "EDUCATION:ED_ANAR_L2",
+        "source": "unicef",
+        "name": "Adjusted net attendance rate, lower secondary",
+        "unit": "%",
+        "dataflow": "EDUCATION"
+      },
+      {
+        "id": "UNICEF:EDUCATION:ED_ANAR_L3",
+        "code": "EDUCATION:ED_ANAR_L3",
+        "source": "unicef",
+        "name": "Adjusted net attendance rate, upper secondary",
+        "unit": "%",
+        "dataflow": "EDUCATION"
+      },
+      {
+        "id": "UNICEF:EDUCATION:ED_ROFST_L1_ADM",
+        "code": "EDUCATION:ED_ROFST_L1_ADM",
+        "source": "unicef",
+        "name": "Out-of-school rate, primary (administrative)",
+        "unit": "%",
+        "dataflow": "EDUCATION"
+      },
+      {
+        "id": "OSM:school",
+        "code": "school",
+        "source": "osm",
+        "name": "Schools (OpenStreetMap)"
+      },
+      {
+        "id": "CENSUS:LITERACY_15",
+        "code": "LITERACY_15",
+        "source": "census",
+        "name": "Literacy rate 15+ (2015 Census)",
+        "unit": "%"
+      }
+    ],
+    "wash": [
+      {
+        "id": "WB:SH.H2O.BASW.ZS",
+        "code": "SH.H2O.BASW.ZS",
+        "source": "worldbank",
+        "name": "People using at least basic drinking water services (% of population)",
+        "unit": "%"
+      },
+      {
+        "id": "WB:SH.STA.BASS.ZS",
+        "code": "SH.STA.BASS.ZS",
+        "source": "worldbank",
+        "name": "People using at least basic sanitation services (% of population)",
+        "unit": "%"
+      },
+      {
+        "id": "UNICEF:WASH_HOUSEHOLDS:WS_PPL_S-ALB",
+        "code": "WASH_HOUSEHOLDS:WS_PPL_S-ALB",
+        "source": "unicef",
+        "name": "Population using at least basic sanitation services",
+        "unit": "%",
+        "dataflow": "WASH_HOUSEHOLDS"
+      },
+      {
+        "id": "UNICEF:WASH_HOUSEHOLDS:WS_PPL_W-P",
+        "code": "WASH_HOUSEHOLDS:WS_PPL_W-P",
+        "source": "unicef",
+        "name": "Population using piped drinking water sources",
+        "unit": "%",
+        "dataflow": "WASH_HOUSEHOLDS"
+      },
+      {
+        "id": "UNICEF:WASH_HOUSEHOLDS:WS_PPL_W-AVA",
+        "code": "WASH_HOUSEHOLDS:WS_PPL_W-AVA",
+        "source": "unicef",
+        "name": "Population using improved drinking water available when needed",
+        "unit": "%",
+        "dataflow": "WASH_HOUSEHOLDS"
+      },
+      {
+        "id": "WHO:WSH_SANITATION_SAFELY_MANAGED",
+        "code": "WSH_SANITATION_SAFELY_MANAGED",
+        "source": "who",
+        "name": "Safely managed sanitation services",
+        "unit": "%"
+      }
+    ],
+    "environment": [
+      {
+        "id": "WB:AG.LND.FRST.ZS",
+        "code": "AG.LND.FRST.ZS",
+        "source": "worldbank",
+        "name": "Forest area (% of land area)",
+        "unit": "%"
+      },
+      {
+        "id": "FAOSTAT:FO",
+        "code": "FO",
+        "source": "faostat",
+        "name": "Forestry production & trade (FAOSTAT domain)"
+      },
+      {
+        "id": "OSM:river",
+        "code": "river",
+        "source": "osm",
+        "name": "Rivers (OpenStreetMap)"
+      },
+      {
+        "id": "MRC:hydrology-water-level",
+        "code": "hydrology-water-level",
+        "source": "mrc",
+        "name": "Hydrology — water level & discharge (MRC)"
+      },
+      {
+        "id": "MRC:fisheries",
+        "code": "fisheries",
+        "source": "mrc",
+        "name": "Fisheries — abundance & diversity (MRC)"
+      },
+      {
+        "id": "MRC:water-quality",
+        "code": "water-quality",
+        "source": "mrc",
+        "name": "Water quality monitoring (MRC)"
+      }
+    ],
+    "agriculture": [
+      {
+        "id": "WB:AG.LND.AGRI.ZS",
+        "code": "AG.LND.AGRI.ZS",
+        "source": "worldbank",
+        "name": "Agricultural land (% of land area)",
+        "unit": "%"
+      },
+      {
+        "id": "WB:NV.AGR.TOTL.ZS",
+        "code": "NV.AGR.TOTL.ZS",
+        "source": "worldbank",
+        "name": "Agriculture, forestry, and fishing, value added (% of GDP)",
+        "unit": "%"
+      },
+      {
+        "id": "FAOSTAT:QCL",
+        "code": "QCL",
+        "source": "faostat",
+        "name": "Crops & livestock production (FAOSTAT domain)"
+      },
+      {
+        "id": "FAOSTAT:RL",
+        "code": "RL",
+        "source": "faostat",
+        "name": "Land use (FAOSTAT domain)"
+      }
+    ],
+    "energy": [
+      {
+        "id": "WB:EG.ELC.ACCS.ZS",
+        "code": "EG.ELC.ACCS.ZS",
+        "source": "worldbank",
+        "name": "Access to electricity (% of population)",
+        "unit": "%"
+      },
+      {
+        "id": "WB:EG.FEC.RNEW.ZS",
+        "code": "EG.FEC.RNEW.ZS",
+        "source": "worldbank",
+        "name": "Renewable energy consumption (% of total final energy consumption)",
+        "unit": "%"
+      },
+      {
+        "id": "OSM:power_plant",
+        "code": "power_plant",
+        "source": "osm",
+        "name": "Power plants (OpenStreetMap)"
+      }
+    ],
+    "technology": [
+      {
+        "id": "WB:IT.NET.USER.ZS",
+        "code": "IT.NET.USER.ZS",
+        "source": "worldbank",
+        "name": "Individuals using the Internet (% of population)",
+        "unit": "%"
+      },
+      {
+        "id": "WB:IT.CEL.SETS.P2",
+        "code": "IT.CEL.SETS.P2",
+        "source": "worldbank",
+        "name": "Mobile cellular subscriptions (per 100 people)",
+        "unit": "per 100 people"
+      }
+    ],
+    "trade": [
+      {
+        "id": "WB:NE.EXP.GNFS.ZS",
+        "code": "NE.EXP.GNFS.ZS",
+        "source": "worldbank",
+        "name": "Exports of goods and services (% of GDP)",
+        "unit": "%"
+      },
+      {
+        "id": "WB:NE.IMP.GNFS.ZS",
+        "code": "NE.IMP.GNFS.ZS",
+        "source": "worldbank",
+        "name": "Imports of goods and services (% of GDP)",
+        "unit": "%"
+      }
+    ],
+    "labor": [
+      {
+        "id": "WB:SL.UEM.TOTL.ZS",
+        "code": "SL.UEM.TOTL.ZS",
+        "source": "worldbank",
+        "name": "Unemployment, total (% of total labor force) (modeled ILO estimate)",
+        "unit": "%"
+      }
+    ],
+    "gender": [
+      {
+        "id": "WB:SL.TLF.CACT.FE.ZS",
+        "code": "SL.TLF.CACT.FE.ZS",
+        "source": "worldbank",
+        "name": "Labor force participation rate, female (% of female population ages 15+) (modeled ILO)",
+        "unit": "%"
+      },
+      {
+        "id": "WB:SG.GEN.PARL.ZS",
+        "code": "SG.GEN.PARL.ZS",
+        "source": "worldbank",
+        "name": "Proportion of seats held by women in national parliaments (%)",
+        "unit": "%"
+      },
+      {
+        "id": "UNICEF:GENDER:GN_LF_PTCPN",
+        "code": "GENDER:GN_LF_PTCPN",
+        "source": "unicef",
+        "name": "Labour force participation rate",
+        "unit": "%",
+        "dataflow": "GENDER"
+      },
+      {
+        "id": "UNICEF:GENDER:GN_UNMPLY",
+        "code": "GENDER:GN_UNMPLY",
+        "source": "unicef",
+        "name": "Labour force unemployment rate",
+        "unit": "%",
+        "dataflow": "GENDER"
+      },
+      {
+        "id": "UNICEF:GENDER:GN_MTNTY_LV_BNFTS",
+        "code": "GENDER:GN_MTNTY_LV_BNFTS",
+        "source": "unicef",
+        "name": "Maternity leave benefits",
+        "dataflow": "GENDER"
+      }
+    ],
+    "nutrition": [
+      {
+        "id": "UNICEF:NUTRITION:NT_ANT_HAZ_NE2",
+        "code": "NUTRITION:NT_ANT_HAZ_NE2",
+        "source": "unicef",
+        "name": "Stunting prevalence (height-for-age <-2 SD)",
+        "unit": "%",
+        "dataflow": "NUTRITION"
+      },
+      {
+        "id": "UNICEF:NUTRITION:NT_ANT_WHZ_NE2",
+        "code": "NUTRITION:NT_ANT_WHZ_NE2",
+        "source": "unicef",
+        "name": "Wasting prevalence (weight-for-height <-2 SD)",
+        "unit": "%",
+        "dataflow": "NUTRITION"
+      },
+      {
+        "id": "UNICEF:NUTRITION:NT_ANT_WHZ_PO2",
+        "code": "NUTRITION:NT_ANT_WHZ_PO2",
+        "source": "unicef",
+        "name": "Overweight prevalence (weight-for-height >+2 SD)",
+        "unit": "%",
+        "dataflow": "NUTRITION"
+      },
+      {
+        "id": "UNICEF:NUTRITION:NT_BF_EXBF",
+        "code": "NUTRITION:NT_BF_EXBF",
+        "source": "unicef",
+        "name": "Exclusive breastfeeding (0-5 months)",
+        "unit": "%",
+        "dataflow": "NUTRITION"
+      },
+      {
+        "id": "UNICEF:NUTRITION:NT_BW_LBW",
+        "code": "NUTRITION:NT_BW_LBW",
+        "source": "unicef",
+        "name": "Low birth weight prevalence",
+        "unit": "%",
+        "dataflow": "NUTRITION"
+      },
+      {
+        "id": "FAOSTAT:FBS",
+        "code": "FBS",
+        "source": "faostat",
+        "name": "Food balances (FAOSTAT domain)"
+      },
+      {
+        "id": "FAOSTAT:FS",
+        "code": "FS",
+        "source": "faostat",
+        "name": "Food security indicators (FAOSTAT domain)"
+      },
+      {
+        "id": "HDX:food-security",
+        "code": "food-security",
+        "source": "hdx",
+        "name": "Food security / IPC (HDX HAPI)"
+      }
+    ],
+    "humanitarian": [
+      {
+        "id": "HDX:operational-presence",
+        "code": "operational-presence",
+        "source": "hdx",
+        "name": "Humanitarian operational presence (HDX HAPI)"
+      },
+      {
+        "id": "HDX:funding",
+        "code": "funding",
+        "source": "hdx",
+        "name": "Humanitarian funding (HDX HAPI)"
+      },
+      {
+        "id": "HDX:conflict",
+        "code": "conflict",
+        "source": "hdx",
+        "name": "Conflict events (HDX HAPI)"
+      }
+    ],
+    "infrastructure": [
+      {
+        "id": "OSM:market",
+        "code": "market",
+        "source": "osm",
+        "name": "Marketplaces (OpenStreetMap)"
+      }
+    ]
+  }
+}

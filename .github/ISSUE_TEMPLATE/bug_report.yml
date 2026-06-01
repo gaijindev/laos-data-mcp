@@ -1,0 +1,92 @@
+name: Bug report
+description: Report incorrect data, a failing tool, or a reproducible project bug.
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve laos-data-mcp. For security issues, do not open a public issue; follow SECURITY.md instead.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the bug and the behavior you expected instead.
+      placeholder: The get_laos_indicator tool returned...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include the command, MCP client request, or minimal code path that triggers the bug.
+      placeholder: |
+        1. Run `pnpm ask call ...`
+        2. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+      description: Paste the error message, tool response, or relevant log output. Remove any credentials first.
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+      description: What should the tool, adapter, resource, or prompt have returned?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Adapter or upstream data source
+        - MCP tool behavior
+        - MCP resource or prompt behavior
+        - Cache, HTTP, or transport
+        - Catalog or documentation
+        - Tests, build, or developer tooling
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: source
+    attributes:
+      label: Data source, tool, or indicator
+      description: Name the source, tool, indicator code, dataset URL, or leave blank if not relevant.
+      placeholder: "World Bank / get_laos_indicator / SP.POP.TOTL"
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include versions and runtime details that may matter.
+      value: |
+        - OS:
+        - Node.js:
+        - pnpm:
+        - MCP client:
+        - laos-data-mcp version or commit:
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add screenshots, links to upstream docs, or notes about intermittent upstream failures.
+    validations:
+      required: false

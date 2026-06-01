@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "laos-data": {
+      "command": "npx",
+      "args": ["tsx", "src/index.ts"]
+    }
+  }
+}

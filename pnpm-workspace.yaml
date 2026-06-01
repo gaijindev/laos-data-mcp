@@ -1,0 +1,7 @@
+# pnpm 10+ reads build-script approvals from here (no longer from package.json).
+# esbuild ships a prebuilt platform binary; approving its build silences the
+# install-time prompt. msw only needs its Node server here (not the browser
+# service worker), so its build script is not required.
+allowBuilds:
+  esbuild: true
+  msw: false

@@ -1,0 +1,84 @@
+{
+  "name": "laos-data-mcp",
+  "version": "1.0.0",
+  "description": "Unified Model Context Protocol server that connects 13 international and national data sources for Lao PDR (World Bank, UNICEF, OD Mekong, ADB, Laosis, FAOSTAT, WHO, IMF, HDX, WFP, OpenStreetMap, MRC, Census) behind one normalized interface.",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "laos-data-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "refresh-catalog": "tsx scripts/refreshCatalog.ts",
+    "ask": "tsx scripts/ask.ts"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "laos",
+    "lao-pdr",
+    "open-data",
+    "world-bank",
+    "unicef",
+    "sdmx",
+    "ckan",
+    "civic-data"
+  ],
+  "author": "Aaron Chanthavong (Laos Civic Data Initiative)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gaijindev/laos-data-mcp.git"
+  },
+  "homepage": "https://github.com/gaijindev/laos-data-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/gaijindev/laos-data-mcp/issues"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.1.2",
+      "onFail": "download"
+    }
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "axios": "^1.16.1",
+    "axios-retry": "^4.5.0",
+    "dotenv": "^17.4.2",
+    "fast-xml-parser": "^5.8.0",
+    "node-cache": "^5.1.2",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^25.9.1",
+    "@vitest/coverage-v8": "^4.1.7",
+    "eslint": "^10.4.0",
+    "eslint-config-prettier": "^10.1.8",
+    "msw": "^2.14.6",
+    "prettier": "^3.8.3",
+    "tsx": "^4.22.3",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.4",
+    "vitest": "^4.1.7"
+  }
+}

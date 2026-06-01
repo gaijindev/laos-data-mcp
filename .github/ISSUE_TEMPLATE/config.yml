@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/gaijindev/laos-data-mcp/security/advisories/new
+    about: Report vulnerabilities privately through GitHub Security Advisories.
+  - name: Contributor guide
+    url: https://github.com/gaijindev/laos-data-mcp/blob/main/CONTRIBUTING.md
+    about: Read the development setup, quality gate, and new data source recipe.

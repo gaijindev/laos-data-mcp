@@ -1,0 +1,91 @@
+# laos-data-mcp — Project Context for Codex
+
+## What this project does
+
+MCP server exposing 13 external data sources about Lao PDR as unified tools /
+resources / prompts. See README.md for full architecture.
+
+## Key conventions
+
+- All adapters in `src/adapters/` must return normalized schemas from `src/schemas/`.
+- Never return raw API responses from tools — always normalize first.
+- All tool handlers must use try/catch and return human-readable errors (use
+  `toToolError()` from `src/utils/errors.ts`), never raw stack traces.
+- Cache every external API call through `src/cache/manager.ts`.
+- Use Zod for ALL input validation — no manual type checking.
+- ESM only (`"type": "module"`). Relative imports MUST end in `.js` (NodeNext).
+- This is **Zod v4**: use top-level format validators (`z.url()`, `z.iso.datetime()`),
+  not the deprecated `z.string().url()` / `z.string().datetime()` method forms.
+- On the stdio transport, **never write to stdout** — it is the JSON-RPC channel.
+  Log via `src/utils/logger.ts` (stderr only).
+
+## Active data sources
+
+1. World Bank (`worldbank.ts`) — REST JSON, no auth. Country code `LA`.
+2. UNICEF SDMX (`unicef.ts`) — SDMX-JSON/XML, no auth. Country code `LAO` (ISO3).
+3. OD Mekong CKAN (`mekong.ts`) — REST JSON, no auth.
+4. ADB (`adb.ts`) — CKAN REST JSON, no auth, but Cloudflare-protected (see gotchas).
+5. Laosis (`laosis.ts`) — STUB, activate with `LAOSIS_API_KEY`.
+6. FAOSTAT (`faostat.ts`) — REST JSON, no auth. Area code `116`. Agriculture/food/forestry.
+7. WHO GHO (`who.ts`) — OData JSON, no auth. Country `LAO`. Health indicators.
+8. IMF DataMapper (`imf.ts`) — REST JSON, no auth. Country `LAO`. WEO macro.
+9. HDX (`hdx.ts`) — CKAN (no auth) for datasets + HAPI (needs `HDX_APP_ID`) for indicators.
+10. WFP VAM (`wfp.ts`) — OAuth2 client-credentials (`WFP_CLIENT_ID`/`WFP_CLIENT_SECRET`). Market prices.
+11. OpenStreetMap (`osm.ts`) — Overpass POST, no auth. Infrastructure POIs; fixed templates only.
+12. MRC (`mrc.ts`) — STUB, static catalog; activate with `MRC_SESSION_TOKEN`.
+13. Census (`census.ts`) — STUB, bundled 2015 figures; 2025 via `CENSUS_2025_AVAILABLE`.
+
+Adding a source is additive: append it to `SOURCES`/`SOURCE_META`/`SOURCE_ID_PREFIX`
+in `src/schemas/source.ts`, add a `ping*` to `PINGS` in `getSourceStatus.ts`, and a
+fetcher/tool. Existing sources and the record schemas are never modified.
+
+## Running locally
+
+```
+pnpm install && pnpm build && pnpm start
+```
+
+Dev (no build step): `pnpm dev`
+
+## Running tests
+
+```
+pnpm test             # all tests
+pnpm test:watch       # watch mode
+pnpm test:coverage    # with coverage report (80% line threshold)
+```
+
+## Before committing
+
+```
+pnpm lint && pnpm typecheck && pnpm test
+```
+
+## Known gotchas (verified against live APIs 2026-05)
+
+- **World Bank returns a double-array**: `response.data[0]` is paging metadata,
+  `response.data[1]` is the actual records array. Records use string `date`,
+  numeric (nullable) `value`, and `indicator.id` / `country.id`.
+- **UNICEF SDMX uses ISO3 `LAO`, not `LA`** — normalize back to `LA` on output.
+  SDMX-JSON encodes series by dimension index (e.g. key `"0:1:1:2:..."`), so you
+  must decode against `data.structures[].dimensions` — see `utils/sdmx.ts`.
+- **OD Mekong CKAN** wraps every response in `{ success: boolean, result: ... }`
+  and returns multilingual fields (`*_translated.{en,...}`).
+- **ADB (data.adb.org) is behind a Cloudflare "Just a moment…" challenge.** Plain
+  HTTP clients receive an HTML interstitial, not JSON. `adb.ts` detects this and
+  raises `SourceUnavailableError`; ADB is therefore best-effort. Documented in README.
+- **Laosis has no public API** — `laosis.ts` is a stub; see README for access steps.
+- **FAOSTAT** intermittently returns Cloudflare **521** (origin down); maps to
+  SourceUnavailableError. Field names are Title-Case with spaces ("Item Code", "Value").
+- **IMF DataMapper ignores the country path segment** (returns all ~229 countries) — extract
+  `values[code].LAO` client-side. WEO includes **forecast years > 2030**; filter them out.
+- **WHO GHO** uses ISO3 `LAO`; values carry `NumericValue` + `Dim1` (sex) disaggregation.
+- **HDX**: CKAN dataset search needs no auth; **HAPI indicator values need `HDX_APP_ID`**.
+- **WFP VAM** needs OAuth2 (`WFP_CLIENT_ID`/`SECRET`); token is cached + refreshed (~1h expiry).
+- **OSM Overpass** returns **HTTP 406** to clients without a proper UA/Accept (the shared
+  axios headers satisfy it). Only fixed query templates are used; province input is sanitized.
+
+## Files to never modify without discussion
+
+- `src/schemas/` — shared schemas; changing them ripples across every adapter.
+- `AGENTS.md` — update via explicit instruction only.

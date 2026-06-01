@@ -1,0 +1,106 @@
+name: New data source
+description: Propose adding a Laos-relevant data source or adapter.
+title: "[Data source]: "
+labels: ["data-source", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        New sources are the highest-impact contribution to laos-data-mcp. The best proposals include official docs, example Laos queries, licensing notes, and any access requirements.
+
+  - type: input
+    id: source_name
+    attributes:
+      label: Source name
+      description: Name the organization, portal, API, or dataset collection.
+      placeholder: "Example: Lao Statistics Bureau, FAOSTAT, HDX HAPI"
+    validations:
+      required: true
+
+  - type: input
+    id: source_url
+    attributes:
+      label: Source URL
+      description: Link to the portal, API docs, or dataset catalog.
+      placeholder: "https://..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: relevance
+    attributes:
+      label: Why this belongs in laos-data-mcp
+      description: Explain the Laos coverage and who would use this data.
+      placeholder: This source covers Lao PDR indicators for...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: source_type
+    attributes:
+      label: Source type
+      options:
+        - Indicator time series
+        - Dataset catalog or downloads
+        - Geospatial or infrastructure data
+        - Official national statistics
+        - Humanitarian or operational data
+        - Other or mixed
+    validations:
+      required: true
+
+  - type: textarea
+    id: example_data
+    attributes:
+      label: Example Laos data available
+      description: List example indicators, dataset titles, endpoints, or query parameters.
+      placeholder: |
+        - Indicator:
+        - Laos country code or filter:
+        - Example endpoint:
+    validations:
+      required: true
+
+  - type: dropdown
+    id: access
+    attributes:
+      label: Access requirements
+      options:
+        - Public, no credentials
+        - Public with free API key or registration
+        - OAuth2 or token-based access
+        - Restricted, paid, or permissioned
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: license
+    attributes:
+      label: License and reuse terms
+      description: Link or summarize the source license, attribution terms, and any redistribution limits.
+    validations:
+      required: false
+
+  - type: textarea
+    id: quirks
+    attributes:
+      label: Known quirks or risks
+      description: Note rate limits, unstable endpoints, bot protection, unusual country codes, missing docs, or format issues.
+    validations:
+      required: false
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Implementation notes
+      description: If you plan to implement this, map it to the 8-file recipe in CONTRIBUTING.md.
+      placeholder: |
+        - Adapter:
+        - Source registry:
+        - Tool or fetcher:
+        - Catalog:
+        - Tests:
+        - Docs:
+    validations:
+      required: false
