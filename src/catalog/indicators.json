@@ -3,8 +3,8 @@
     "code": "LA",
     "name": "Lao PDR"
   },
-  "generatedAt": "2026-06-01T18:12:47.662Z",
-  "totalIndicators": 180,
+  "generatedAt": "2026-06-01T19:07:34.370Z",
+  "totalIndicators": 201,
   "sources": [
     "worldbank",
     "unicef",
@@ -16,6 +16,10 @@
     "osm",
     "mrc",
     "census",
+    "uis",
+    "ilostat",
+    "comtrade",
+    "unodc",
     "lsb_sdg"
   ],
   "categories": {
@@ -217,6 +221,12 @@
         "code": "clinic",
         "source": "osm",
         "name": "Clinics (OpenStreetMap)"
+      },
+      {
+        "id": "UNODC:drug-treatment",
+        "code": "drug-treatment",
+        "source": "unodc",
+        "name": "Drug treatment admissions (World Drug Report)"
       },
       {
         "id": "LSB_SDG:3-1-1",
@@ -695,6 +705,61 @@
         "unit": "%"
       },
       {
+        "id": "UIS:LR.AG15T99",
+        "code": "LR.AG15T99",
+        "source": "uis",
+        "name": "Adult literacy rate, population 15+ years",
+        "unit": "%"
+      },
+      {
+        "id": "UIS:LR.AG15T24",
+        "code": "LR.AG15T24",
+        "source": "uis",
+        "name": "Youth literacy rate, population 15-24 years",
+        "unit": "%"
+      },
+      {
+        "id": "UIS:NERT.1.CP",
+        "code": "NERT.1.CP",
+        "source": "uis",
+        "name": "Net enrolment rate, primary",
+        "unit": "%"
+      },
+      {
+        "id": "UIS:NERT.2.CP",
+        "code": "NERT.2.CP",
+        "source": "uis",
+        "name": "Net enrolment rate, lower secondary",
+        "unit": "%"
+      },
+      {
+        "id": "UIS:NERT.3.CP",
+        "code": "NERT.3.CP",
+        "source": "uis",
+        "name": "Net enrolment rate, upper secondary",
+        "unit": "%"
+      },
+      {
+        "id": "UIS:ROFST.1.CP",
+        "code": "ROFST.1.CP",
+        "source": "uis",
+        "name": "Out-of-school rate, primary school age",
+        "unit": "%"
+      },
+      {
+        "id": "UIS:MYS.1T8.AG25T99",
+        "code": "MYS.1T8.AG25T99",
+        "source": "uis",
+        "name": "Mean years of schooling, population 25+ years"
+      },
+      {
+        "id": "UIS:XGDP.FSGOV",
+        "code": "XGDP.FSGOV",
+        "source": "uis",
+        "name": "Government expenditure on education",
+        "unit": "% of GDP"
+      },
+      {
         "id": "LSB_SDG:4-1-1",
         "code": "4-1-1",
         "source": "lsb_sdg",
@@ -952,6 +1017,34 @@
         "source": "worldbank",
         "name": "Imports of goods and services (% of GDP)",
         "unit": "%"
+      },
+      {
+        "id": "COMTRADE:LA_TOTAL_EXPORTS",
+        "code": "LA_TOTAL_EXPORTS",
+        "source": "comtrade",
+        "name": "Total merchandise exports, Lao PDR",
+        "unit": "USD"
+      },
+      {
+        "id": "COMTRADE:LA_TOTAL_IMPORTS",
+        "code": "LA_TOTAL_IMPORTS",
+        "source": "comtrade",
+        "name": "Total merchandise imports, Lao PDR",
+        "unit": "USD"
+      },
+      {
+        "id": "COMTRADE:LA_EXPORTS_BY_PARTNER",
+        "code": "LA_EXPORTS_BY_PARTNER",
+        "source": "comtrade",
+        "name": "Merchandise exports by partner country (top partners)",
+        "unit": "USD"
+      },
+      {
+        "id": "COMTRADE:LA_IMPORTS_BY_PARTNER",
+        "code": "LA_IMPORTS_BY_PARTNER",
+        "source": "comtrade",
+        "name": "Merchandise imports by partner country (top partners)",
+        "unit": "USD"
       }
     ],
     "labor": [
@@ -960,6 +1053,48 @@
         "code": "SL.UEM.TOTL.ZS",
         "source": "worldbank",
         "name": "Unemployment, total (% of total labor force) (modeled ILO estimate)",
+        "unit": "%"
+      },
+      {
+        "id": "ILO:DF_EAP_DWAP_SEX_AGE_RT",
+        "code": "DF_EAP_DWAP_SEX_AGE_RT",
+        "source": "ilostat",
+        "name": "Labour force participation rate (15+)",
+        "unit": "%"
+      },
+      {
+        "id": "ILO:DF_UNE_DEAP_SEX_AGE_RT",
+        "code": "DF_UNE_DEAP_SEX_AGE_RT",
+        "source": "ilostat",
+        "name": "Unemployment rate (15+)",
+        "unit": "%"
+      },
+      {
+        "id": "ILO:DF_EMP_DWAP_SEX_AGE_RT",
+        "code": "DF_EMP_DWAP_SEX_AGE_RT",
+        "source": "ilostat",
+        "name": "Employment-to-population ratio (15+)",
+        "unit": "%"
+      },
+      {
+        "id": "ILO:DF_EMP_NIFL_SEX_RT",
+        "code": "DF_EMP_NIFL_SEX_RT",
+        "source": "ilostat",
+        "name": "Informal employment rate",
+        "unit": "%"
+      },
+      {
+        "id": "ILO:DF_EAR_EMTA_SEX_NB",
+        "code": "DF_EAR_EMTA_SEX_NB",
+        "source": "ilostat",
+        "name": "Average monthly earnings of employees",
+        "unit": "LAK"
+      },
+      {
+        "id": "ILO:DF_EAP_2WAP_SEX_AGE_RT",
+        "code": "DF_EAP_2WAP_SEX_AGE_RT",
+        "source": "ilostat",
+        "name": "Labour force participation rate, ILO modelled estimate (15+)",
         "unit": "%"
       }
     ],
@@ -1231,6 +1366,18 @@
       }
     ],
     "governance": [
+      {
+        "id": "UNODC:trafficking-in-persons",
+        "code": "trafficking-in-persons",
+        "source": "unodc",
+        "name": "Detected victims of trafficking in persons (GLOTIP)"
+      },
+      {
+        "id": "UNODC:prison-population",
+        "code": "prison-population",
+        "source": "unodc",
+        "name": "Prison population — persons held & rate (CTS)"
+      },
       {
         "id": "LSB_SDG:17-1-1",
         "code": "17-1-1",

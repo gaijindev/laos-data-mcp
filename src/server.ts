@@ -1,6 +1,9 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { fetchComtradeIndicator } from "./adapters/comtrade.js";
+import { fetchIlostatIndicator } from "./adapters/ilostat.js";
 import { fetchImfIndicator } from "./adapters/imf.js";
 import { fetchLsbSdgIndicator } from "./adapters/lsbSdg.js";
+import { fetchUisIndicator } from "./adapters/uis.js";
 import { fetchUnicefIndicatorByCode } from "./adapters/unicef.js";
 import { fetchWhoIndicator } from "./adapters/who.js";
 import { registerCompareIndicatorsTool } from "./tools/compareIndicators.js";
@@ -19,6 +22,10 @@ import { registerGetInfrastructureTool } from "./tools/getInfrastructure.js";
 import { registerSearchMekongDataTool } from "./tools/getMekongData.js";
 import { registerGetCensusDataTool } from "./tools/getCensusData.js";
 import { registerGetSdgProgressTool } from "./tools/getSdgProgress.js";
+import { registerGetEducationDataTool } from "./tools/getEducationData.js";
+import { registerGetLaborDataTool } from "./tools/getLaborData.js";
+import { registerGetTradeDataTool } from "./tools/getTradeData.js";
+import { registerGetCrimeDataTool } from "./tools/getCrimeData.js";
 import { registerIndicatorCatalogResource } from "./resources/indicatorCatalog.js";
 import { registerSourceSummaryResource } from "./resources/sourceSummary.js";
 import { registerPolicyBriefPrompt } from "./prompts/policyBrief.js";
@@ -72,6 +79,15 @@ export function createServer(): McpServer {
   registerIndicatorFetcher("lsb_sdg", (code, startYear, endYear) =>
     fetchLsbSdgIndicator(code, startYear, endYear),
   );
+  registerIndicatorFetcher("uis", (code, startYear, endYear) =>
+    fetchUisIndicator(code, startYear, endYear),
+  );
+  registerIndicatorFetcher("ilostat", (code, startYear, endYear) =>
+    fetchIlostatIndicator(code, startYear, endYear),
+  );
+  registerIndicatorFetcher("comtrade", (code, startYear, endYear) =>
+    fetchComtradeIndicator(code, startYear, endYear),
+  );
 
   // Discovery + time series + UNICEF welfare + dataset search.
   registerListAvailableIndicatorsTool(server);
@@ -94,6 +110,10 @@ export function createServer(): McpServer {
   registerSearchMekongDataTool(server); // MRC (stub)
   registerGetCensusDataTool(server); // Lao census (stub)
   registerGetSdgProgressTool(server); // LSB SDG Open Data Platform
+  registerGetEducationDataTool(server); // UNESCO UIS
+  registerGetLaborDataTool(server); // ILOSTAT
+  registerGetTradeDataTool(server); // UN Comtrade
+  registerGetCrimeDataTool(server); // UNODC (stub)
 
   // Resources: browsable indicator catalog + live source status.
   registerIndicatorCatalogResource(server);
