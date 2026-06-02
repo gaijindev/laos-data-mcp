@@ -10,7 +10,8 @@ export const ILOSTAT_LFPR_URL = `${ILOSTAT_BASE}/data/ILO,${ILOSTAT_LFPR_DATAFLO
  */
 export const ilostatLfprResponse = {
   meta: {
-    schema: "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/master/data-message/tools/schemas/1.0/sdmx-json-data-schema.json",
+    schema:
+      "https://raw.githubusercontent.com/sdmx-twg/sdmx-json/master/data-message/tools/schemas/1.0/sdmx-json-data-schema.json",
     id: "ilo_response",
     prepared: "2024-01-01T00:00:00",
     sender: { id: "ILO" },
@@ -81,16 +82,12 @@ export const ilostatLfprResponse = {
           {
             id: "UNIT_MEASURE",
             name: "Unit of measure",
-            values: [
-              { id: "PT", name: "Percentage" },
-            ],
+            values: [{ id: "PT", name: "Percentage" }],
           },
           {
             id: "UNIT_MULT",
             name: "Unit multiplier",
-            values: [
-              { id: "0", name: "Units" },
-            ],
+            values: [{ id: "0", name: "Units" }],
           },
         ],
         observation: [],

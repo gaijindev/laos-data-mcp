@@ -93,8 +93,7 @@ export function registerGetTradeDataTool(server: McpServer): void {
         }
 
         // breakdown === "total"
-        const indicatorCode =
-          resolvedFlow === "exports" ? "LA_TOTAL_EXPORTS" : "LA_TOTAL_IMPORTS";
+        const indicatorCode = resolvedFlow === "exports" ? "LA_TOTAL_EXPORTS" : "LA_TOTAL_IMPORTS";
         const records = await fetchComtradeIndicator(indicatorCode, startYear, endYear);
         if (records.length === 0) {
           return textResult(

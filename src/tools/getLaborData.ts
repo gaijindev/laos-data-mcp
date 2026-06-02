@@ -33,9 +33,7 @@ export function registerGetLaborDataTool(server: McpServer): void {
         indicator: z
           .string()
           .optional()
-          .describe(
-            "ILOSTAT dataflow code, e.g. DF_EAP_DWAP_SEX_AGE_RT.",
-          ),
+          .describe("ILOSTAT dataflow code, e.g. DF_EAP_DWAP_SEX_AGE_RT."),
         search: z
           .string()
           .optional()

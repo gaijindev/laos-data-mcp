@@ -26,7 +26,7 @@ export function registerDataAuditPrompt(server: McpServer): void {
     {
       title: "Laos data availability audit",
       description:
-        "Audit what data is available, missing, or outdated for a given topic across all five connected sources.",
+        "Audit what data is available, missing, or outdated for a given topic across connected sources.",
       argsSchema: {
         topic: z.string().describe('Topic to audit, e.g. "maternal health" or "forestry".'),
       },

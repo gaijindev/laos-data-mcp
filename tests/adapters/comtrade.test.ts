@@ -66,9 +66,7 @@ describe("fetchComtradeIndicator — LA_TOTAL_EXPORTS", () => {
   });
 
   it("returns [] when data array is empty", async () => {
-    server.use(
-      http.get(COMTRADE_URL, () => HttpResponse.json({ count: 0, data: [], error: "" })),
-    );
+    server.use(http.get(COMTRADE_URL, () => HttpResponse.json({ count: 0, data: [], error: "" })));
     const records = await fetchComtradeIndicator("LA_TOTAL_EXPORTS", 2021, 2022);
     expect(records).toEqual([]);
   });
@@ -176,9 +174,7 @@ describe("fetchComtradePartners", () => {
   });
 
   it("returns [] when data is empty", async () => {
-    server.use(
-      http.get(COMTRADE_URL, () => HttpResponse.json({ count: 0, data: [], error: "" })),
-    );
+    server.use(http.get(COMTRADE_URL, () => HttpResponse.json({ count: 0, data: [], error: "" })));
     const records = await fetchComtradePartners("X", 2022);
     expect(records).toEqual([]);
   });

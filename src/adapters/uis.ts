@@ -104,7 +104,9 @@ export async function fetchUisIndicator(
       if (year < sy || year > ey) continue;
 
       const value =
-        typeof row.value === "number" && Number.isFinite(row.value) && !NULL_MAGNITUDES.has(row.magnitude ?? "")
+        typeof row.value === "number" &&
+        Number.isFinite(row.value) &&
+        !NULL_MAGNITUDES.has(row.magnitude ?? "")
           ? row.value
           : null;
 

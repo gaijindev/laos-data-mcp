@@ -28,7 +28,7 @@ const validDataset = {
 };
 
 describe("SourceEnum", () => {
-  it("accepts all five known sources", () => {
+  it("accepts known source ids", () => {
     for (const s of ["worldbank", "unicef", "adb", "mekong", "laosis"]) {
       expect(SourceEnum.parse(s)).toBe(s);
     }

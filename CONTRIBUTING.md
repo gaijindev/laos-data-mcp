@@ -36,7 +36,7 @@ pnpm dev               # run from source, no build step
 Every change must pass the same gate that CI enforces. Run it before opening a PR:
 
 ```bash
-pnpm lint && pnpm typecheck && pnpm test
+pnpm lint && pnpm typecheck && pnpm test && pnpm build
 pnpm format:check      # Prettier — run `pnpm format` to auto-fix
 pnpm test:coverage     # enforces ≥80% line coverage
 ```
@@ -68,7 +68,7 @@ full list and the per-source gotchas verified against the live APIs.
 ## Adding a data source (the 8-file recipe)
 
 Adding a source is **additive** — it appends to the registries and never modifies the
-existing 13 sources or the shared record schemas.
+existing 18 sources or the shared record schemas.
 
 1. **Adapter** — create `src/adapters/<source>.ts`. Export typed async functions that fetch
    and **normalize** into `IndicatorRecord` / `DatasetMetadata`.

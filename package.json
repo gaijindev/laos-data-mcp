@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Unified Model Context Protocol server that connects 18 international and national data sources for Lao PDR (World Bank, UNICEF, OD Mekong, ADB, Laosis, FAOSTAT, WHO, IMF, HDX, WFP, OpenStreetMap, MRC, Census, LSB SDG, UNESCO UIS, ILOSTAT, UN Comtrade, UNODC) behind one normalized interface.",
   "type": "module",
+  "packageManager": "pnpm@11.2.2",
   "main": "dist/index.js",
   "bin": {
     "laos-data-mcp": "dist/index.js"
@@ -51,13 +52,6 @@
   "homepage": "https://github.com/gaijindev/laos-data-mcp#readme",
   "bugs": {
     "url": "https://github.com/gaijindev/laos-data-mcp/issues"
-  },
-  "devEngines": {
-    "packageManager": {
-      "name": "pnpm",
-      "version": "^11.1.2",
-      "onFail": "download"
-    }
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
