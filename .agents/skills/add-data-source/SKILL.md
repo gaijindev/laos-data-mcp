@@ -5,7 +5,7 @@ description: >-
   wants to integrate a new API/dataset about Lao PDR (e.g. ILO, UNESCO UIS, ITU,
   UNDP HDI, UN Comtrade, ReliefWeb) as an MCP tool, or says "add a source",
   "wire up <provider>", or "expose <dataset>". Encodes the project's additive
-  8-file recipe and house conventions so the new source matches the existing 13.
+  8-file recipe and house conventions so the new source matches the existing 18.
 ---
 
 # Add a data source to laos-data-mcp
@@ -84,7 +84,7 @@ mention the proposed lines to the user rather than editing silently.
 Run the full gate and confirm green before reporting completion:
 
 ```
-pnpm lint && pnpm typecheck && pnpm test
+pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm format:check
 ```
 
 Then sanity-check the wiring offline:

@@ -5,8 +5,8 @@ import { breakerFor, circuitEnabled } from "./circuitBreaker.js";
 import { RateLimitError, SourceError, SourceUnavailableError } from "./errors.js";
 
 const DEFAULT_HEADERS = {
-  // Replace the contact with your own when deploying — some sources ask for one.
-  "User-Agent": "laos-data-mcp/1.0 (civic-data-initiative; contact: contact@laos-data-mcp.example)",
+  // Some upstreams reject placeholder contact domains; use the public project URL.
+  "User-Agent": "laos-data-mcp/1.0 (https://github.com/gaijindev/laos-data-mcp)",
   Accept: "application/json",
 };
 

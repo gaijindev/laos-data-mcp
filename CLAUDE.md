@@ -64,10 +64,16 @@ pnpm test:coverage    # with coverage report (80% line threshold)
 ## Before committing
 
 ```
-pnpm lint && pnpm typecheck && pnpm test
+pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm format:check
 ```
 
-## Known gotchas (verified against live APIs 2026-05)
+For coverage threshold verification:
+
+```
+pnpm test:coverage
+```
+
+## Known gotchas (verified against live APIs 2026-06)
 
 - **World Bank returns a double-array**: `response.data[0]` is paging metadata,
   `response.data[1]` is the actual records array. Records use string `date`,
@@ -88,8 +94,10 @@ pnpm lint && pnpm typecheck && pnpm test
 - **WHO GHO** uses ISO3 `LAO`; values carry `NumericValue` + `Dim1` (sex) disaggregation.
 - **HDX**: CKAN dataset search needs no auth; **HAPI indicator values need `HDX_APP_ID`**.
 - **WFP VAM** needs OAuth2 (`WFP_CLIENT_ID`/`SECRET`); token is cached + refreshed (~1h expiry).
-- **OSM Overpass** returns **HTTP 406** to clients without a proper UA/Accept (the shared
-  axios headers satisfy it). Only fixed query templates are used; province input is sanitized.
+- **OSM Overpass** returns **HTTP 406** to clients with placeholder contact domains in the
+  User-Agent or Brotli (`br`) compression. The shared HTTP client uses the project URL as
+  User-Agent, and `osm.ts` overrides `Accept-Encoding` to `gzip, deflate`. Only fixed query
+  templates are used; province input is sanitized.
 - **UNESCO UIS** uses ISO3 `LAO`; envelope is `{ records, hints, indicatorMetadata }`.
   Codes are UPPERCASE/case-sensitive; an unknown code returns **HTTP 200 with `hints`**, not a
   4xx. There is **no `unit` field** — parse it from the trailing `(...)` of the metadata name.

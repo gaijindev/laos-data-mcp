@@ -69,17 +69,14 @@ describe("fetchIlostatIndicator", () => {
 
   it("falls back to default key when an unknown code is requested", async () => {
     server.use(
-      http.get(
-        new RegExp(`${ILOSTAT_BASE}/data/ILO,UNKNOWN_CODE,1\\.0/`),
-        () => HttpResponse.json({
+      http.get(new RegExp(`${ILOSTAT_BASE}/data/ILO,UNKNOWN_CODE,1\\.0/`), () =>
+        HttpResponse.json({
           data: {
             dataSets: [{ series: {} }],
             structure: {
               name: "Unknown Indicator",
               dimensions: {
-                series: [
-                  { id: "REF_AREA", values: [{ id: "LAO", name: "Lao PDR" }] },
-                ],
+                series: [{ id: "REF_AREA", values: [{ id: "LAO", name: "Lao PDR" }] }],
                 observation: [{ id: "TIME_PERIOD", values: [] }],
               },
               attributes: { series: [], observation: [] },

@@ -6,6 +6,13 @@ import { httpGet, httpPost } from "../utils/http.js";
 const INTERPRETER = SOURCE_META.osm.baseUrl;
 const STATUS_URL = "https://overpass-api.de/api/status";
 const DEFAULT_LIMIT = 200;
+const OVERPASS_HEADERS = {
+  "Accept-Encoding": "gzip, deflate",
+};
+const OVERPASS_FORM_HEADERS = {
+  ...OVERPASS_HEADERS,
+  "Content-Type": "application/x-www-form-urlencoded",
+};
 
 /**
  * Allowed feature types -> fixed Overpass tag selectors. Only these pre-built
@@ -87,7 +94,7 @@ export async function fetchOsmInfrastructure(
       "osm",
       INTERPRETER,
       new URLSearchParams({ data: query }),
-      { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
+      { headers: OVERPASS_FORM_HEADERS },
     );
     if (!data || typeof data !== "object" || !Array.isArray(data.elements)) {
       throw new DataParseError("osm", JSON.stringify(data).slice(0, 200));
@@ -118,7 +125,10 @@ export async function fetchOsmInfrastructure(
 /** Reachability probe via the Overpass status endpoint. */
 export async function pingOsm(): Promise<boolean> {
   try {
-    const status = await httpGet<unknown>("osm", STATUS_URL, { responseType: "text" });
+    const status = await httpGet<unknown>("osm", STATUS_URL, {
+      headers: OVERPASS_HEADERS,
+      responseType: "text",
+    });
     return typeof status === "string" && status.length > 0;
   } catch {
     return false;

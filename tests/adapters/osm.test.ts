@@ -13,10 +13,16 @@ afterAll(() => server.close());
 beforeEach(() => cache.reset());
 
 /** Capture the Overpass query that the adapter posts. */
-function capturingHandler(ref: { query: string }) {
+function capturingHandler(ref: {
+  query: string;
+  acceptEncoding?: string | null;
+  userAgent?: string | null;
+}) {
   return http.post(OVERPASS_URL, async ({ request }) => {
     const body = await request.text();
     ref.query = new URLSearchParams(body).get("data") ?? "";
+    ref.acceptEncoding = request.headers.get("accept-encoding");
+    ref.userAgent = request.headers.get("user-agent");
     return HttpResponse.json(overpassHospitalsResponse);
   });
 }
@@ -39,6 +45,16 @@ describe("fetchOsmInfrastructure", () => {
     expect(result.area).toBe("Vientiane");
     expect(ref.query).toContain('["admin_level"="4"]["name"~"Vientiane",i]');
     expect(ref.query).toContain('["amenity"="school"]');
+  });
+
+  it("uses Overpass-compatible request headers", async () => {
+    const ref = { query: "", acceptEncoding: "", userAgent: "" };
+    server.use(capturingHandler(ref));
+    await fetchOsmInfrastructure("hospital");
+    expect(ref.acceptEncoding).toBe("gzip, deflate");
+    expect(ref.acceptEncoding).not.toContain("br");
+    expect(ref.userAgent).toContain("github.com/gaijindev/laos-data-mcp");
+    expect(ref.userAgent).not.toContain(".example");
   });
 
   it("sanitizes province input to prevent Overpass QL injection", async () => {
