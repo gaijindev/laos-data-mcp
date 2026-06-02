@@ -1,10 +1,12 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { fetchComtradeIndicator } from "./adapters/comtrade.js";
+import { fetchData360Indicator } from "./adapters/data360.js";
 import { fetchIlostatIndicator } from "./adapters/ilostat.js";
 import { fetchImfIndicator } from "./adapters/imf.js";
 import { fetchLsbSdgIndicator } from "./adapters/lsbSdg.js";
 import { fetchUisIndicator } from "./adapters/uis.js";
 import { fetchUnicefIndicatorByCode } from "./adapters/unicef.js";
+import { fetchUnSdgIndicator } from "./adapters/unSdg.js";
 import { fetchWhoIndicator } from "./adapters/who.js";
 import { registerCompareIndicatorsTool } from "./tools/compareIndicators.js";
 import { registerGetIndicatorTool, registerIndicatorFetcher } from "./tools/getIndicator.js";
@@ -26,6 +28,9 @@ import { registerGetEducationDataTool } from "./tools/getEducationData.js";
 import { registerGetLaborDataTool } from "./tools/getLaborData.js";
 import { registerGetTradeDataTool } from "./tools/getTradeData.js";
 import { registerGetCrimeDataTool } from "./tools/getCrimeData.js";
+import { registerGetGlobalSdgDataTool } from "./tools/getGlobalSdgData.js";
+import { registerGetGovernanceDataTool } from "./tools/getGovernanceData.js";
+import { registerSearchLegalTextsTool } from "./tools/searchLegalTexts.js";
 import { registerIndicatorCatalogResource } from "./resources/indicatorCatalog.js";
 import { registerSourceSummaryResource } from "./resources/sourceSummary.js";
 import { registerPolicyBriefPrompt } from "./prompts/policyBrief.js";
@@ -38,7 +43,7 @@ export const SERVER_VERSION = "1.0.0";
 
 const INSTRUCTIONS = `laos-data-mcp is a unified data gateway for Lao PDR (Laos).
 
-It connects 18 sources behind one interface and normalizes their responses:
+It connects 21 sources behind one interface and normalizes their responses:
   - World Bank Indicators API (development indicators, no auth)
   - UNICEF SDMX (child welfare, health, education, nutrition, WASH; no auth)
   - Open Development Mekong (CKAN dataset catalog; no auth)
@@ -57,6 +62,9 @@ It connects 18 sources behind one interface and normalizes their responses:
   - ILOSTAT (labor indicators via SDMX; no auth)
   - UN Comtrade (merchandise trade; keyless preview, optional COMTRADE_API_KEY)
   - UNODC (crime & justice catalog; stub — bulk Excel only, no per-country API)
+  - UN Global SDG Indicators Database (food/agriculture, housing/community, law/crime/justice)
+  - FAOLEX (legal texts, laws, regulations, policies; no auth)
+  - World Bank Data360 (governance and rule-of-law indicators; no auth)
 
 Typical flow:
   1. Call list_available_indicators to discover valid indicator codes.
@@ -100,6 +108,12 @@ export function createServer(): McpServer {
   registerIndicatorFetcher("comtrade", (code, startYear, endYear) =>
     fetchComtradeIndicator(code, startYear, endYear),
   );
+  registerIndicatorFetcher("un_sdg", (code, startYear, endYear) =>
+    fetchUnSdgIndicator(code, startYear, endYear),
+  );
+  registerIndicatorFetcher("data360", (code, startYear, endYear) =>
+    fetchData360Indicator(code, startYear, endYear),
+  );
 
   // Discovery + time series + UNICEF welfare + dataset search.
   registerListAvailableIndicatorsTool(server);
@@ -126,6 +140,9 @@ export function createServer(): McpServer {
   registerGetLaborDataTool(server); // ILOSTAT
   registerGetTradeDataTool(server); // UN Comtrade
   registerGetCrimeDataTool(server); // UNODC (stub)
+  registerGetGlobalSdgDataTool(server); // UN Global SDG Indicators
+  registerSearchLegalTextsTool(server); // FAOLEX legal texts
+  registerGetGovernanceDataTool(server); // World Bank Data360
 
   // Resources: browsable indicator catalog + live source status.
   registerIndicatorCatalogResource(server);

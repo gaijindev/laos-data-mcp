@@ -2,7 +2,7 @@
 
 ## What this project does
 
-MCP server exposing 18 external data sources about Lao PDR as unified tools /
+MCP server exposing 21 external data sources about Lao PDR as unified tools /
 resources / prompts. See README.md for full architecture.
 
 ## Key conventions
@@ -42,6 +42,15 @@ resources / prompts. See README.md for full architecture.
 17. UN Comtrade (`comtrade.ts`) — REST JSON, keyless preview (optional `COMTRADE_API_KEY`).
     Reporter `418`. Trade exports/imports.
 18. UNODC (`unodc.ts`) — STUB, static catalog; no per-country API (bulk Excel only). Crime/justice.
+19. UN Global SDG (`unSdg.ts`) — REST JSON, no auth. M49 area code `418`.
+    Food/agriculture, housing/community, law/crime/justice SDG indicators. Powers
+    `get_laos_global_sdg_data` and resolves curated SDG codes in `get_laos_indicator`.
+20. FAOLEX (`faolex.ts`) — official legal-text search backend, no auth. Country `LAO`.
+    Lao laws, regulations, policies, and agreements as normalized `DatasetMetadata`.
+    Powers `search_laos_legal_texts`; also selectable in `search_laos_datasets`.
+21. World Bank Data360 (`data360.ts`) — REST JSON, no auth. REF*AREA `LAO`.
+    Governance and rule-of-law indicators. Powers `get_laos_governance_data`
+    and resolves curated `GOV_WGI*\*`codes in`get_laos_indicator`.
 
 Adding a source is additive: append it to `SOURCES`/`SOURCE_META`/`SOURCE_ID_PREFIX`
 in `src/schemas/source.ts`, add a `ping*` to `PINGS` in `getSourceStatus.ts`, and a
@@ -119,6 +128,20 @@ pnpm test:coverage
 - **UNODC has no per-country API** — crime stats are bulk Excel only, with date-stamped URLs.
   `unodc.ts` is a static-catalog stub. Lao coverage is thin: trafficking (GLOTIP), prison
   (CTS), and drug treatment (WDR annex) only — **no homicide or violent-crime data for Laos**.
+- **UN Global SDG** uses **M49 `418`**, not `LA`/`LAO`; normalize back to `LA`.
+  `/Indicator/Data` and `/Series/Data` envelopes are paginated and values are strings.
+  Some Lao indicators legitimately return `totalElements: 0`; treat that as `[]`, not an
+  error. Units live in `attributes.Units`, and response-level attribute/dimension lookup
+  tables must be decoded for human-readable units/footnotes.
+- **FAOLEX** is an official FAOLEX search backend but **not a formally documented public API**.
+  It requires `POST` with `Content-Type: text/plain` and a JSON-string body containing the
+  embedded `searchApplicationId`. Query construction must stay scoped to `country:("LAO")`.
+  Metadata arrives as arrays of `{ name, textValues }`; prefer English fields (`*En`), join
+  multi-part abstracts, and build direct PDFs as `https://faolex.fao.org/docs/pdf/<file>`.
+- **World Bank Data360** is separate from the existing World Bank Indicators API.
+  Governance calls use `REF_AREA=LAO`; WGI indicators need `COMP_BREAKDOWN_1=WGI_EST` to
+  avoid duplicate estimate/standard-error/percentile rows. `/data` returns `{ count, value }`,
+  `OBS_VALUE` is usually a numeric string, and `UNIT_MULT` must be applied.
 
 ## Files to never modify without discussion
 

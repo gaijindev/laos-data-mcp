@@ -1,13 +1,14 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { fetchAdbDatasets } from "../adapters/adb.js";
+import { searchFaolexLegalTexts } from "../adapters/faolex.js";
 import { fetchMekongDatasets } from "../adapters/mekong.js";
 import type { DatasetMetadata } from "../schemas/dataset.js";
 import { SourceEnum } from "../schemas/source.js";
 import { toToolErrorMessage } from "../utils/errors.js";
 import { jsonResult, textResult } from "../utils/result.js";
 
-type DatasetSource = "mekong" | "adb";
+type DatasetSource = "mekong" | "adb" | "faolex";
 
 const DATASET_FETCHERS: Record<
   DatasetSource,
@@ -15,13 +16,14 @@ const DATASET_FETCHERS: Record<
 > = {
   mekong: fetchMekongDatasets,
   adb: fetchAdbDatasets,
+  faolex: (query, maxResults) => searchFaolexLegalTexts(query, "all", maxResults),
 };
 
 const DEFAULT_SOURCES: DatasetSource[] = ["mekong", "adb"];
 
 const DESCRIPTION =
   "Search for datasets about Lao PDR across the Open Development Mekong platform and " +
-  "the ADB Data Library. Returns dataset titles, descriptions, topics, formats, and " +
+  "the ADB Data Library, with optional FAOLEX legal-text search. Returns dataset titles, descriptions, topics, formats, and " +
   "download URLs. Use when you need raw data files rather than pre-processed indicators. " +
   "(ADB is behind a bot challenge and is best-effort.)";
 
@@ -36,7 +38,9 @@ export function registerSearchDatasetsTool(server: McpServer): void {
         sources: z
           .array(SourceEnum)
           .optional()
-          .describe('Sources to search (only "mekong" and "adb" apply). Default: both.'),
+          .describe(
+            'Sources to search (only "mekong", "adb", and "faolex" apply). Default: mekong + adb.',
+          ),
         topics: z.array(z.string()).optional().describe("Filter results to these topic tags."),
         maxResults: z
           .number()
@@ -51,9 +55,11 @@ export function registerSearchDatasetsTool(server: McpServer): void {
       const max = Math.min(Math.max(maxResults ?? 10, 1), 50);
       const requested = sources ?? DEFAULT_SOURCES;
       const datasetSources = requested.filter(
-        (s): s is DatasetSource => s === "mekong" || s === "adb",
+        (s): s is DatasetSource => s === "mekong" || s === "adb" || s === "faolex",
       );
-      const ignored = [...new Set(requested.filter((s) => s !== "mekong" && s !== "adb"))];
+      const ignored = [
+        ...new Set(requested.filter((s) => s !== "mekong" && s !== "adb" && s !== "faolex")),
+      ];
       const chosen = datasetSources.length ? [...new Set(datasetSources)] : DEFAULT_SOURCES;
 
       const settled = await Promise.allSettled(chosen.map((s) => DATASET_FETCHERS[s](query, max)));

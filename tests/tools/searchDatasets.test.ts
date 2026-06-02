@@ -4,6 +4,7 @@ import { setupServer } from "msw/node";
 import type { CallToolResult } from "@modelcontextprotocol/sdk/types.js";
 import { cache } from "../../src/cache/manager.js";
 import { createConnectedClient, toolText } from "../helpers/mcp.js";
+import { faolexHandler } from "../mocks/faolex.mock.js";
 import { mekongSearchHandler } from "../mocks/mekong.mock.js";
 
 const ADB_SEARCH_URL = "https://data.adb.org/api/3/action/package_search";
@@ -45,6 +46,19 @@ describe("search_laos_datasets (integration)", () => {
     // Only the "Forest cover" dataset is tagged environment.
     expect(text).toContain("Forest cover");
     expect(text).not.toContain("Rice production by province");
+    await dispose();
+  });
+
+  it("searches FAOLEX when explicitly requested as a dataset source", async () => {
+    msw.use(faolexHandler());
+    const { client, dispose } = await createConnectedClient();
+    const res = (await client.callTool({
+      name: "search_laos_datasets",
+      arguments: { query: "mining", sources: ["faolex"], maxResults: 5 },
+    })) as CallToolResult;
+    const text = toolText(res);
+    expect(text).toContain("Found");
+    expect(text).toContain("Mining Law");
     await dispose();
   });
 });

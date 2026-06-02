@@ -2,7 +2,9 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { laosisIsAvailable } from "../adapters/laosis.js";
 import { pingAdb } from "../adapters/adb.js";
 import { pingCensus } from "../adapters/census.js";
+import { pingData360 } from "../adapters/data360.js";
 import { pingFaostat } from "../adapters/faostat.js";
+import { pingFaolex } from "../adapters/faolex.js";
 import { pingHdx } from "../adapters/hdx.js";
 import { pingImf } from "../adapters/imf.js";
 import { pingLsbSdg } from "../adapters/lsbSdg.js";
@@ -17,6 +19,7 @@ import { pingUis } from "../adapters/uis.js";
 import { pingIlostat } from "../adapters/ilostat.js";
 import { pingComtrade } from "../adapters/comtrade.js";
 import { pingUnodc } from "../adapters/unodc.js";
+import { pingUnSdg } from "../adapters/unSdg.js";
 import { cache } from "../cache/manager.js";
 import { SOURCE_META, SOURCES, type Source } from "../schemas/source.js";
 import { circuitSnapshot, type CircuitSnapshot } from "../utils/circuitBreaker.js";
@@ -41,6 +44,9 @@ const PINGS: Record<Source, () => Promise<boolean>> = {
   ilostat: pingIlostat,
   comtrade: pingComtrade,
   unodc: pingUnodc,
+  un_sdg: pingUnSdg,
+  faolex: pingFaolex,
+  data360: pingData360,
 };
 
 const NOTES: Partial<Record<Source, string>> = {
@@ -57,6 +63,12 @@ const NOTES: Partial<Record<Source, string>> = {
     "Keyless preview endpoint (capped at 500 records/response). Set COMTRADE_API_KEY for the full data endpoint. 2017+ Lao values are UN mirror estimates.",
   unodc:
     "Stub: portal reachability only. UNODC has no per-country API — values are bulk Excel; Laos covers trafficking, prison, and drug treatment (no homicide/violent crime).",
+  un_sdg:
+    "UN global SDG API uses M49 area code 418 for Lao PDR. Some SDG indicators have no Lao observations and return an empty data array.",
+  faolex:
+    "FAOLEX legal-text search is an official site backend but not a formally documented public API; scoped to country LAO.",
+  data360:
+    "World Bank Data360 governance indicators use ISO3 REF_AREA=LAO and annual WGI estimate breakdowns.",
 };
 
 export interface SourceStatus {

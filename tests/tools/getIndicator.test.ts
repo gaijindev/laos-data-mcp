@@ -10,6 +10,8 @@ import {
   wbInvalidResponse,
   wbSuccessHandler,
 } from "../mocks/worldbank.mock.js";
+import { data360Handler } from "../mocks/data360.mock.js";
+import { unSdgDataHandler } from "../mocks/unSdg.mock.js";
 
 const msw = setupServer();
 beforeAll(() => msw.listen({ onUnhandledRequest: "error" }));
@@ -72,6 +74,32 @@ describe("get_laos_indicator (integration)", () => {
     await dispose();
   });
 
+  it("auto-routes cataloged UN SDG indicators", async () => {
+    msw.use(unSdgDataHandler());
+    const { client, dispose } = await createConnectedClient();
+    const res = (await client.callTool({
+      name: "get_laos_indicator",
+      arguments: { indicatorCode: "UN_SDG:11.1.1", startYear: 2018, endYear: 2020 },
+    })) as CallToolResult;
+    const text = toolText(res);
+    expect(text).toContain("from un_sdg");
+    expect(text).toContain("urban population living in slums");
+    await dispose();
+  });
+
+  it("auto-routes cataloged Data360 indicators", async () => {
+    msw.use(data360Handler());
+    const { client, dispose } = await createConnectedClient();
+    const res = (await client.callTool({
+      name: "get_laos_indicator",
+      arguments: { indicatorCode: "DATA360:GOV_WGI_RL", startYear: 2023, endYear: 2024 },
+    })) as CallToolResult;
+    const text = toolText(res);
+    expect(text).toContain("from data360");
+    expect(text).toContain("Rule of law");
+    await dispose();
+  });
+
   it("redirects dataset sources to the right tool", async () => {
     const { client, dispose } = await createConnectedClient();
     const res = (await client.callTool({
@@ -108,6 +136,8 @@ describe("list_available_indicators (integration)", () => {
         "get_laos_welfare_data",
         "get_official_stats",
         "get_source_status",
+        "get_laos_global_sdg_data",
+        "get_laos_governance_data",
         "list_available_indicators",
         "search_laos_datasets",
       ]),

@@ -20,6 +20,9 @@ export const SOURCES = [
   "ilostat",
   "comtrade",
   "unodc",
+  "un_sdg",
+  "faolex",
+  "data360",
 ] as const;
 
 export const SourceEnum = z.enum(SOURCES);
@@ -227,6 +230,36 @@ export const SOURCE_META: Record<Source, SourceMeta> = {
     kind: "indicators",
     docsUrl: "https://data.unodc.org/",
   },
+  un_sdg: {
+    id: "un_sdg",
+    label: "UN Global SDG Indicators Database",
+    baseUrl: "https://unstats.un.org/SDGAPI/v1/sdg",
+    cacheTtlSeconds: 86_400, // 24h — global SDG releases are periodic
+    timeoutMs: 20_000,
+    auth: "none",
+    kind: "indicators",
+    docsUrl: "https://unstats.un.org/sdgapi/swagger/",
+  },
+  faolex: {
+    id: "faolex",
+    label: "FAOLEX Legal Text Search",
+    baseUrl: "https://fao-faolex-prod.appspot.com/api/query",
+    cacheTtlSeconds: 86_400, // 24h — legal corpus updates periodically
+    timeoutMs: 20_000,
+    auth: "none",
+    kind: "datasets",
+    docsUrl: "https://www.fao.org/faolex/en/",
+  },
+  data360: {
+    id: "data360",
+    label: "World Bank Data360 API",
+    baseUrl: "https://data360api.worldbank.org/data360",
+    cacheTtlSeconds: 86_400, // 24h — governance indicators update annually
+    timeoutMs: 15_000,
+    auth: "none",
+    kind: "indicators",
+    docsUrl: "https://data360.worldbank.org/en/api",
+  },
 };
 
 /** Short uppercase prefix used in normalized record IDs, e.g. "WB:SP.POP.TOTL". */
@@ -249,4 +282,7 @@ export const SOURCE_ID_PREFIX: Record<Source, string> = {
   ilostat: "ILO",
   comtrade: "COMTRADE",
   unodc: "UNODC",
+  un_sdg: "UN_SDG",
+  faolex: "FAOLEX",
+  data360: "DATA360",
 };

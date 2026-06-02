@@ -1,4 +1,6 @@
 import { LSB_SDG_INDICATORS } from "../adapters/lsbSdg.js";
+import { KEY_DATA360_INDICATORS } from "../adapters/data360.js";
+import { KEY_UN_SDG_INDICATORS } from "../adapters/unSdg.js";
 import type { CatalogEntry } from "./types.js";
 
 /**
@@ -461,6 +463,56 @@ export const EXPANSION_SEED: CatalogEntry[] = [
     name: "Drug treatment admissions (World Drug Report)",
     category: "health",
   },
+
+  // FAOLEX legal texts (query via search_laos_legal_texts or search_laos_datasets)
+  {
+    id: "FAOLEX:LAO:LEGISLATION",
+    source: "faolex",
+    code: 'country:("LAO") typeOfTextEn:("Legislation")',
+    name: "Lao legislation in FAOLEX",
+    category: "governance",
+    description: "FAOLEX legal-text search for Lao PDR legislation.",
+  },
+  {
+    id: "FAOLEX:LAO:REGULATION",
+    source: "faolex",
+    code: 'country:("LAO") typeOfTextEn:("Regulation")',
+    name: "Lao regulations in FAOLEX",
+    category: "governance",
+    description: "FAOLEX legal-text search for Lao PDR regulations.",
+  },
+  {
+    id: "FAOLEX:LAO:POLICY",
+    source: "faolex",
+    code: 'country:("LAO") typeOfTextEn:("Policy")',
+    name: "Lao policy texts in FAOLEX",
+    category: "governance",
+    description: "FAOLEX legal-text search for Lao PDR policy documents.",
+  },
+
+  ...KEY_UN_SDG_INDICATORS.map(
+    (indicator): CatalogEntry => ({
+      id: `UN_SDG:${indicator.code}`,
+      source: "un_sdg",
+      code: indicator.code,
+      name: indicator.name,
+      category: indicator.category,
+      unit: indicator.unit,
+      description: "UN Global SDG Indicators Database indicator for Lao PDR (area code 418).",
+    }),
+  ),
+
+  ...KEY_DATA360_INDICATORS.map(
+    (indicator): CatalogEntry => ({
+      id: `DATA360:${indicator.code}`,
+      source: "data360",
+      code: indicator.code,
+      name: indicator.name,
+      category: "governance",
+      unit: indicator.unit,
+      description: "World Bank Data360 governance indicator for Lao PDR.",
+    }),
+  ),
 
   ...LSB_SDG_INDICATORS.map(
     (indicator): CatalogEntry => ({

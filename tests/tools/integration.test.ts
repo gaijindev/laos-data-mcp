@@ -8,8 +8,11 @@ import type {
 } from "@modelcontextprotocol/sdk/types.js";
 import { cache } from "../../src/cache/manager.js";
 import { createConnectedClient, toolText } from "../helpers/mcp.js";
+import { data360Handler } from "../mocks/data360.mock.js";
+import { faolexHandler } from "../mocks/faolex.mock.js";
 import { lsbSdg311Handler, lsbSdgPingHandler } from "../mocks/lsbSdg.mock.js";
 import { MEKONG_SEARCH_URL } from "../mocks/mekong.mock.js";
+import { unSdgDataHandler } from "../mocks/unSdg.mock.js";
 import { unicefHandlers } from "../mocks/unicef.mock.js";
 
 const ADB_SEARCH_URL = "https://data.adb.org/api/3/action/package_search";
@@ -45,6 +48,9 @@ function pingHandlers() {
     http.get("https://overpass-api.de/api/status", () => HttpResponse.text("Connected as: 1")),
     http.get("https://portal.mrcmekong.org", () => HttpResponse.text("ok")),
     lsbSdgPingHandler(),
+    unSdgDataHandler(),
+    faolexHandler(),
+    data360Handler(),
   ];
 }
 
@@ -119,6 +125,51 @@ describe("get_laos_sdg_progress (integration)", () => {
     const text = toolText(res);
     expect(text).toContain("official LSB SDG record(s)");
     expect(text).toContain("Maternal mortality ratio");
+    await dispose();
+  });
+});
+
+describe("get_laos_global_sdg_data (integration)", () => {
+  it("returns UN global SDG records for Laos", async () => {
+    msw.use(unSdgDataHandler());
+    const { client, dispose } = await createConnectedClient();
+    const res = (await client.callTool({
+      name: "get_laos_global_sdg_data",
+      arguments: { indicatorCode: "11.1.1", startYear: 2018, endYear: 2020 },
+    })) as CallToolResult;
+    const text = toolText(res);
+    expect(text).toContain("UN global SDG record(s)");
+    expect(text).toContain("urban population living in slums");
+    await dispose();
+  });
+});
+
+describe("search_laos_legal_texts (integration)", () => {
+  it("returns FAOLEX legal text metadata", async () => {
+    msw.use(faolexHandler());
+    const { client, dispose } = await createConnectedClient();
+    const res = (await client.callTool({
+      name: "search_laos_legal_texts",
+      arguments: { query: "mining", type: "legislation", maxResults: 5 },
+    })) as CallToolResult;
+    const text = toolText(res);
+    expect(text).toContain("FAOLEX legal text(s)");
+    expect(text).toContain("Mining Law");
+    await dispose();
+  });
+});
+
+describe("get_laos_governance_data (integration)", () => {
+  it("returns Data360 governance records", async () => {
+    msw.use(data360Handler());
+    const { client, dispose } = await createConnectedClient();
+    const res = (await client.callTool({
+      name: "get_laos_governance_data",
+      arguments: { indicatorCode: "GOV_WGI_RL", startYear: 2023, endYear: 2024 },
+    })) as CallToolResult;
+    const text = toolText(res);
+    expect(text).toContain("Data360 governance record(s)");
+    expect(text).toContain("Rule of law");
     await dispose();
   });
 });

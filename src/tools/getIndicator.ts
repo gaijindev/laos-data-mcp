@@ -92,6 +92,7 @@ const SOURCE_TOOL_HINTS: Partial<Record<Source, string>> = {
   mrc: "use search_mekong_data for MRC datasets",
   census: "use get_laos_census_data for census figures",
   unodc: "use get_laos_crime_data for UNODC crime & justice datasets",
+  faolex: "use search_laos_legal_texts for FAOLEX laws, regulations, and policies",
 };
 
 export function unsupportedSourceHint(source: Source): string {
@@ -103,7 +104,7 @@ export function unsupportedSourceHint(source: Source): string {
 
 const DESCRIPTION =
   "Fetch time-series data for a specific development indicator for Lao PDR from " +
-  "international and official sources (World Bank, UNICEF, WHO, IMF, LSB SDG). Use this " +
+  "international and official sources (World Bank, UNICEF, WHO, IMF, LSB SDG, UN global SDG, Data360). Use this " +
   "when you need numeric trend data on population, economy, health, education, environment, or infrastructure. " +
   "Call list_available_indicators first if you do not know the code.";
 

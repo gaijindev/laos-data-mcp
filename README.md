@@ -6,14 +6,14 @@
 [![MCP](https://img.shields.io/badge/MCP-server-5E5CE6)](https://modelcontextprotocol.io)
 
 A [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server for Lao PDR
-data. It connects **18 international and national data sources**, normalizes their
+data. It connects **21 international and national data sources**, normalizes their
 responses, and exposes them as MCP tools, resources, and prompts that an AI assistant or
 MCP client can use directly.
 
 Instead of integrating World Bank, UNICEF, OD Mekong, ADB, Laosis, FAOSTAT, WHO, IMF,
-HDX, WFP, OpenStreetMap, MRC, Census, LSB SDG, UNESCO UIS, ILOSTAT, UN Comtrade, and
-UNODC one by one, this server gives researchers, government analysts, civic technologists,
-and AI agents one consistent interface for Laos data.
+HDX, WFP, OpenStreetMap, MRC, Census, LSB SDG, UNESCO UIS, ILOSTAT, UN Comtrade,
+UNODC, UN Global SDG, FAOLEX, and Data360 one by one, this server gives researchers,
+government analysts, civic technologists, and AI agents one consistent interface for Laos data.
 
 ## Contents
 
@@ -33,30 +33,43 @@ and AI agents one consistent interface for Laos data.
 ## Government use cases
 
 This project is meant to make public data usable at the point of decision. A ministry,
-province, donor coordination unit, or civic data team can use the MCP server to:
+province, donor coordination unit, or civic data team can ask an MCP-capable assistant for
+evidence and receive normalized records with source names, indicator codes, years, units,
+and caveats.
 
-- **Prepare policy briefs** with cited indicators from World Bank, UNICEF, WHO, IMF,
-  FAOSTAT, LSB SDG, and other sources.
-- **Track SDG progress** using official Lao Statistics Bureau SDG Platform data, including
-  national SDG 18 on UXO, while comparing against international sources where useful.
-- **Audit data gaps** by topic, source, latest year, and source reachability before a
-  report or planning cycle.
-- **Compare sectors** such as health, education, agriculture, labor, trade, and macro
-  conditions without writing one-off API integrations.
-- **Map service coverage** by combining OpenStreetMap infrastructure features with
-  population, census, health, and education indicators.
-- **Monitor food security and markets** through FAOSTAT, WFP VAM, HDX, and agriculture
-  indicators when credentials are available.
-- **Support trade and labor analysis** through UN Comtrade, ILOSTAT, IMF, and World Bank
-  indicators.
+- **National planning and SDG reporting:** identify which official Lao SDG indicators have
+  recent data, which are stale, and where international series can fill gaps. Useful tools:
+  `get_laos_sdg_progress`, `get_laos_global_sdg_data`, `compare_indicators`.
+- **Provincial service coverage:** compare mapped hospitals, clinics, schools, and markets
+  against population or sector indicators. Useful tools: `get_laos_infrastructure`,
+  `get_laos_indicator`, `get_laos_census_data`.
+- **Food security and agriculture monitoring:** track crop production, food-security
+  indicators, food prices, and humanitarian datasets. Useful tools:
+  `get_laos_agriculture_data`, `get_laos_global_sdg_data`, `get_laos_food_prices`.
+- **Housing, urban, and community planning:** inspect data on slums, public transport,
+  public space, urban policies, and disaster losses. Useful tools: `get_laos_global_sdg_data`,
+  `search_laos_humanitarian_datasets`.
+- **Laws, regulations, and policy review:** find Lao legal texts for topics such as mining,
+  land, food, forests, or water. Useful tools: `search_laos_legal_texts`,
+  `get_laos_governance_data`.
+- **Governance and institutional diagnostics:** monitor rule of law, regulatory quality,
+  corruption control, and voice/accountability indicators. Useful tools:
+  `get_laos_governance_data`, `get_laos_indicator`, `compare_indicators`.
+- **Trade, labor, and macroeconomic briefings:** compare trade flows, GDP growth,
+  inflation, labor participation, and employment. Useful tools: `get_laos_trade_data`,
+  `get_laos_macro_data`, `get_laos_labor_data`.
+- **Data readiness before a report or donor round:** check which sources are reachable,
+  which topics have no data, and which indicators need caveats. Useful tools:
+  `get_source_status`, `list_available_indicators`, `data_audit` prompt.
 
 The important design choice is normalization: every numeric source is converted into the
-same `IndicatorRecord` shape, so an assistant can compare records across agencies without
-guessing field names, country codes, or units.
+same `IndicatorRecord` shape, and every catalog/document source is converted into
+`DatasetMetadata`. An assistant can compare records across agencies without guessing field
+names, country codes, or units.
 
 ## What the server provides
 
-**Coverage:** 18 data sources, 21 tools, 2 resources, 4 prompts, and 201 catalog indicators.
+**Coverage:** 21 data sources, 24 tools, 2 resources, 4 prompts, and 236 catalog indicators.
 
 Every adapter returns one of two normalized schemas:
 
@@ -75,7 +88,7 @@ The server also includes:
 - stdio and streamable HTTP MCP transports.
 
 ```
-MCP client -> laos-data-mcp -> 18 adapters -> normalized records
+MCP client -> laos-data-mcp -> 21 adapters -> normalized records
                   |
                   +-> tools, resources, prompts
 ```
@@ -239,84 +252,151 @@ pnpm ask call compare_indicators '{"indicators":[{"code":"NY.GDP.PCAP.CD"},{"cod
 
 ## Example workflows
 
-### SDG progress briefing
+These examples use `pnpm ask` so they can run without a separate MCP client. In Claude,
+Codex, or another MCP client, ask for the same tool calls in plain language.
+
+### 1. National SDG briefing for a ministry
+
+Use official Lao Statistics Bureau SDG data first, then compare with fresher global SDG
+series where available.
 
 ```bash
 pnpm ask call get_laos_sdg_progress '{"goal":3,"latestOnly":true}'
+pnpm ask call get_laos_global_sdg_data '{"indicatorCode":"11.1.1","startYear":2020,"endYear":2024,"latestOnly":true}'
 ```
 
-Use this to brief health-sector SDG progress with official LSB SDG data. In an MCP client,
-combine it with the `sdg_progress_audit` prompt for a structured report.
+Government use: prepare a cabinet, ministry, or donor briefing that clearly separates
+official Lao SDG platform data from international SDG estimates and flags stale or missing
+series.
 
-### Provincial service coverage
+### 2. Provincial service coverage check
+
+Combine mapped infrastructure with population or sector indicators.
 
 ```bash
 pnpm ask call get_laos_infrastructure '{"featureType":"hospital","province":"Vientiane"}'
 pnpm ask call get_laos_indicator '{"indicatorCode":"SP.POP.TOTL","startYear":2020,"endYear":2024}'
+pnpm ask call get_laos_census_data '{"indicator":"URBAN_SHARE"}'
 ```
 
-Use this to compare mapped facilities with population trends. The OSM adapter uses fixed
+Government use: help a province or line ministry identify whether facility coverage,
+urbanization, and population trends point to service gaps. The OSM adapter uses fixed
 Overpass templates only; user input is sanitized and raw Overpass QL is never accepted.
 
-### Food security and agriculture scan
+### 3. Food security and agriculture scan
+
+Pull production records, SDG food-security indicators, and supporting humanitarian
+datasets.
 
 ```bash
 pnpm ask call get_laos_agriculture_data '{"domain":"QCL","item":"Rice","startYear":2020,"endYear":2023}'
+pnpm ask call get_laos_global_sdg_data '{"indicatorCode":"2.1.2","startYear":2018,"endYear":2024,"latestOnly":true}'
 pnpm ask call search_laos_humanitarian_datasets '{"query":"food security","maxResults":5}'
 ```
 
-Use this to gather agriculture production records and supporting humanitarian datasets.
+Government use: support early warning, market-monitoring, or agriculture planning notes.
 FAOSTAT can be slow or intermittently unavailable; the tool returns a clean source error
 instead of crashing.
 
-### Trade and economic context
+### 4. Housing, urban, and community planning
+
+Use UN global SDG indicators for housing/community measures and search for related raw
+datasets.
+
+```bash
+pnpm ask call list_available_indicators '{"source":"un_sdg","search":"housing"}'
+pnpm ask call get_laos_global_sdg_data '{"indicatorCode":"11.1.1","startYear":2010,"endYear":2024}'
+pnpm ask call search_laos_humanitarian_datasets '{"query":"shelter housing urban Laos","maxResults":5}'
+```
+
+Government use: prepare urban policy notes on slums, informal settlements, public
+transport, open space, or disaster impacts on housing and infrastructure.
+
+### 5. Legal and regulatory review
+
+Search Lao legal texts, then pair the law/policy review with governance indicators.
+
+```bash
+pnpm ask call search_laos_legal_texts '{"query":"mining","type":"legislation","maxResults":5}'
+pnpm ask call search_laos_legal_texts '{"query":"food","type":"all","maxResults":5}'
+pnpm ask call get_laos_governance_data '{"indicatorCode":"GOV_WGI_RQ","startYear":2015,"endYear":2024}'
+```
+
+Government use: support legal inventory work before drafting amendments, reviewing sector
+regulation, or comparing legal reforms with regulatory quality and rule-of-law indicators.
+
+### 6. Governance and institutional diagnostics
+
+Fetch Data360 governance indicators directly or compare several of them in one aligned
+table.
+
+```bash
+pnpm ask call get_laos_governance_data '{"indicatorCode":"GOV_WGI_RL","startYear":2015,"endYear":2024}'
+pnpm ask call compare_indicators '{"indicators":[{"code":"DATA360:GOV_WGI_RL","label":"Rule of law"},{"code":"DATA360:GOV_WGI_CC","label":"Control of corruption"},{"code":"DATA360:GOV_WGI_RQ","label":"Regulatory quality"}],"startYear":2015,"endYear":2024}'
+```
+
+Government use: brief public-administration reform, rule-of-law, or anti-corruption
+programs with comparable annual indicators and explicit caveats.
+
+### 7. Trade and economic context
+
+Combine trade, macroeconomic, and labor indicators for economic-planning notes.
 
 ```bash
 pnpm ask call get_laos_trade_data '{"flow":"exports","breakdown":"total","startYear":2018,"endYear":2024}'
 pnpm ask call get_laos_macro_data '{"indicator":"NGDP_RPCH","startYear":2015,"endYear":2024}'
+pnpm ask call get_laos_labor_data '{"indicator":"DF_UNE_DEAP_SEX_AGE_RT","startYear":2015,"endYear":2024}'
 ```
 
-Use this for economic planning, trade partner summaries, and macroeconomic context. UN
-Comtrade works through a keyless preview endpoint by default; set `COMTRADE_API_KEY` for
-the full endpoint once that integration path is enabled.
+Government use: prepare economic context for budget planning, donor discussions, or trade
+and labor-market analysis. UN Comtrade works through a keyless preview endpoint by
+default; set `COMTRADE_API_KEY` for the full endpoint once that integration path is
+enabled.
 
-### Data availability audit
+### 8. Data availability audit before publication
 
-In an MCP client, run the `data_audit` prompt with a topic such as:
+Before writing a report, check whether the topic has data and whether key sources are
+reachable.
 
-```text
-maternal health
+```bash
+pnpm ask call get_source_status '{}'
+pnpm ask call list_available_indicators '{"search":"maternal health"}'
+pnpm ask call search_laos_datasets '{"query":"maternal health","maxResults":5}'
 ```
 
-The prompt tells the model to discover indicators, inspect year coverage, search dataset
+In an MCP client, run the `data_audit` prompt with a topic such as `maternal health`. The
+prompt tells the model to discover indicators, inspect year coverage, search dataset
 catalogs, check source health, and separate "no data exists" from "source temporarily
 unreachable."
 
 ## Tools
 
-| Tool                                | Purpose                                                          |
-| ----------------------------------- | ---------------------------------------------------------------- |
-| `list_available_indicators`         | Discover valid indicator codes by source, category, or search.   |
-| `get_laos_indicator`                | Fetch one numeric time series from supported indicator sources.  |
-| `get_laos_welfare_data`             | Fetch UNICEF welfare data by topic and disaggregation.           |
-| `search_laos_datasets`              | Search OD Mekong and ADB dataset catalogs.                       |
-| `compare_indicators`                | Align 2-6 indicators into one comparison table.                  |
-| `get_source_status`                 | Check source reachability, cache stats, and circuit state.       |
-| `get_official_stats`                | List Lao Statistics Bureau official-statistics categories.       |
-| `get_laos_agriculture_data`         | Fetch FAOSTAT agriculture, food, land, and forestry indicators.  |
-| `get_laos_health_data`              | Fetch or search WHO Global Health Observatory indicators.        |
-| `get_laos_macro_data`               | Fetch IMF DataMapper WEO macroeconomic indicators.               |
-| `get_laos_humanitarian_data`        | Fetch HDX HAPI humanitarian indicators when `HDX_APP_ID` is set. |
-| `search_laos_humanitarian_datasets` | Search the public HDX dataset catalog.                           |
-| `get_laos_food_prices`              | Fetch WFP VAM food prices when WFP OAuth2 credentials are set.   |
-| `get_laos_infrastructure`           | Query OpenStreetMap infrastructure through Overpass templates.   |
-| `search_mekong_data`                | Browse the MRC catalog stub for hydrology and river datasets.    |
-| `get_laos_census_data`              | Return bundled Lao census summary figures.                       |
-| `get_laos_sdg_progress`             | Fetch official LSB SDG Platform indicators, including SDG 18.    |
-| `get_laos_education_data`           | Fetch or search UNESCO UIS education indicators.                 |
-| `get_laos_labor_data`               | Fetch or search ILOSTAT labor indicators.                        |
-| `get_laos_trade_data`               | Fetch UN Comtrade totals or partner breakdowns.                  |
-| `get_laos_crime_data`               | Browse the UNODC crime and justice catalog stub.                 |
+| Tool                                | Purpose                                                            |
+| ----------------------------------- | ------------------------------------------------------------------ |
+| `list_available_indicators`         | Discover valid indicator codes by source, category, or search.     |
+| `get_laos_indicator`                | Fetch one numeric time series from supported indicator sources.    |
+| `get_laos_welfare_data`             | Fetch UNICEF welfare data by topic and disaggregation.             |
+| `search_laos_datasets`              | Search OD Mekong, ADB, and optional FAOLEX dataset/legal catalogs. |
+| `compare_indicators`                | Align 2-6 indicators into one comparison table.                    |
+| `get_source_status`                 | Check source reachability, cache stats, and circuit state.         |
+| `get_official_stats`                | List Lao Statistics Bureau official-statistics categories.         |
+| `get_laos_agriculture_data`         | Fetch FAOSTAT agriculture, food, land, and forestry indicators.    |
+| `get_laos_health_data`              | Fetch or search WHO Global Health Observatory indicators.          |
+| `get_laos_macro_data`               | Fetch IMF DataMapper WEO macroeconomic indicators.                 |
+| `get_laos_humanitarian_data`        | Fetch HDX HAPI humanitarian indicators when `HDX_APP_ID` is set.   |
+| `search_laos_humanitarian_datasets` | Search the public HDX dataset catalog.                             |
+| `get_laos_food_prices`              | Fetch WFP VAM food prices when WFP OAuth2 credentials are set.     |
+| `get_laos_infrastructure`           | Query OpenStreetMap infrastructure through Overpass templates.     |
+| `search_mekong_data`                | Browse the MRC catalog stub for hydrology and river datasets.      |
+| `get_laos_census_data`              | Return bundled Lao census summary figures.                         |
+| `get_laos_sdg_progress`             | Fetch official LSB SDG Platform indicators, including SDG 18.      |
+| `get_laos_global_sdg_data`          | Fetch UN global SDG food, housing, community, law, and crime data. |
+| `search_laos_legal_texts`           | Search FAOLEX for Lao laws, regulations, policies, and agreements. |
+| `get_laos_governance_data`          | Fetch Data360 governance and rule-of-law indicators.               |
+| `get_laos_education_data`           | Fetch or search UNESCO UIS education indicators.                   |
+| `get_laos_labor_data`               | Fetch or search ILOSTAT labor indicators.                          |
+| `get_laos_trade_data`               | Fetch UN Comtrade totals or partner breakdowns.                    |
+| `get_laos_crime_data`               | Browse the UNODC crime and justice catalog stub.                   |
 
 Common discovery and fetch flow:
 
@@ -363,26 +443,29 @@ Prompts:
 
 ## Data sources
 
-| Source                         | Access       | Coverage                                                    |
-| ------------------------------ | ------------ | ----------------------------------------------------------- |
-| World Bank Indicators          | public       | Economy, demography, health, education, environment         |
-| UNICEF Data Warehouse          | public       | Child welfare, nutrition, health, education, gender, WASH   |
-| Open Development Mekong        | public       | Dataset files on agriculture, land, environment, investment |
-| ADB Data Library               | best-effort  | Dataset catalog; often blocked by Cloudflare                |
-| Laosis / Lao Statistics Bureau | credentialed | Official statistics categories; live API stubbed            |
-| FAOSTAT                        | public       | Crops, livestock, food balances, food security, land        |
-| WHO GHO                        | public       | Health indicators                                           |
-| IMF DataMapper                 | public       | WEO macroeconomic indicators                                |
-| HDX / HAPI                     | mixed        | Public dataset search; HAPI values need `HDX_APP_ID`        |
-| WFP VAM                        | credentialed | Market commodity prices                                     |
-| OpenStreetMap / Overpass       | public       | Infrastructure features                                     |
-| Mekong River Commission        | stub         | Static hydrology, fisheries, and river catalog              |
-| Lao Census                     | bundled      | 2015 census summary; 2025 path gated by env                 |
-| LSB SDG Platform               | public       | Official SDG indicators, including national SDG 18          |
-| UNESCO UIS                     | public       | Education indicators                                        |
-| ILOSTAT                        | public       | Labor indicators                                            |
-| UN Comtrade                    | public/opt   | Merchandise trade totals and partner breakdowns             |
-| UNODC                          | stub         | Crime and justice catalog links                             |
+| Source                         | Access       | Coverage                                                     |
+| ------------------------------ | ------------ | ------------------------------------------------------------ |
+| World Bank Indicators          | public       | Economy, demography, health, education, environment          |
+| UNICEF Data Warehouse          | public       | Child welfare, nutrition, health, education, gender, WASH    |
+| Open Development Mekong        | public       | Dataset files on agriculture, land, environment, investment  |
+| ADB Data Library               | best-effort  | Dataset catalog; often blocked by Cloudflare                 |
+| Laosis / Lao Statistics Bureau | credentialed | Official statistics categories; live API stubbed             |
+| FAOSTAT                        | public       | Crops, livestock, food balances, food security, land         |
+| WHO GHO                        | public       | Health indicators                                            |
+| IMF DataMapper                 | public       | WEO macroeconomic indicators                                 |
+| HDX / HAPI                     | mixed        | Public dataset search; HAPI values need `HDX_APP_ID`         |
+| WFP VAM                        | credentialed | Market commodity prices                                      |
+| OpenStreetMap / Overpass       | public       | Infrastructure features                                      |
+| Mekong River Commission        | stub         | Static hydrology, fisheries, and river catalog               |
+| Lao Census                     | bundled      | 2015 census summary; 2025 path gated by env                  |
+| LSB SDG Platform               | public       | Official SDG indicators, including national SDG 18           |
+| UNESCO UIS                     | public       | Education indicators                                         |
+| ILOSTAT                        | public       | Labor indicators                                             |
+| UN Comtrade                    | public/opt   | Merchandise trade totals and partner breakdowns              |
+| UNODC                          | stub         | Crime and justice catalog links                              |
+| UN Global SDG Indicators       | public       | Food, agriculture, housing, community, law, crime indicators |
+| FAOLEX                         | public       | Lao laws, regulations, policies, and legal-text metadata     |
+| World Bank Data360             | public       | Governance, rule-of-law, and institutional indicators        |
 
 Important source notes:
 
@@ -399,6 +482,12 @@ Important source notes:
 - UN Comtrade keyless preview responses are capped; Lao values from 2017 onward may be UN
   mirror estimates and are footnoted.
 - UNODC exposes bulk files, not a per-country API, so the adapter is a catalog stub.
+- UN Global SDG uses M49 area code `418` for Lao PDR; some indicators legitimately return
+  empty Lao data arrays.
+- FAOLEX is an official legal-text search backend but not a formally documented public API;
+  the adapter scopes every query to country `LAO`.
+- Data360 governance calls use ISO3 `LAO` and the curated WGI estimate breakdown; outputs
+  normalize back to country code `LA`.
 
 ## Configuration
 
