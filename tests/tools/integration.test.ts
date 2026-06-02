@@ -8,11 +8,15 @@ import type {
 } from "@modelcontextprotocol/sdk/types.js";
 import { cache } from "../../src/cache/manager.js";
 import { createConnectedClient, toolText } from "../helpers/mcp.js";
-import { data360Handler } from "../mocks/data360.mock.js";
-import { faolexHandler } from "../mocks/faolex.mock.js";
+import { DATA360_DATA_URL, data360EmptyHandler, data360Handler } from "../mocks/data360.mock.js";
+import { FAOLEX_QUERY_URL, faolexEmptyHandler, faolexHandler } from "../mocks/faolex.mock.js";
 import { lsbSdg311Handler, lsbSdgPingHandler } from "../mocks/lsbSdg.mock.js";
 import { MEKONG_SEARCH_URL } from "../mocks/mekong.mock.js";
-import { unSdgDataHandler } from "../mocks/unSdg.mock.js";
+import {
+  UN_SDG_INDICATOR_DATA_URL,
+  unSdgDataHandler,
+  unSdgEmptyHandler,
+} from "../mocks/unSdg.mock.js";
 import { unicefHandlers } from "../mocks/unicef.mock.js";
 
 const ADB_SEARCH_URL = "https://data.adb.org/api/3/action/package_search";
@@ -142,6 +146,41 @@ describe("get_laos_global_sdg_data (integration)", () => {
     expect(text).toContain("urban population living in slums");
     await dispose();
   });
+
+  it("lists curated UN global SDG indicators by search term", async () => {
+    const { client, dispose } = await createConnectedClient();
+    const res = (await client.callTool({
+      name: "get_laos_global_sdg_data",
+      arguments: { search: "housing" },
+    })) as CallToolResult;
+    const text = toolText(res);
+    expect(text).toContain("curated UN SDG indicator");
+    expect(text).toContain("11.1.1");
+    await dispose();
+  });
+
+  it("reports when UN global SDG has no Lao data for an indicator", async () => {
+    msw.use(unSdgEmptyHandler());
+    const { client, dispose } = await createConnectedClient();
+    const res = (await client.callTool({
+      name: "get_laos_global_sdg_data",
+      arguments: { indicatorCode: "16.1.1", startYear: 2020, endYear: 2024 },
+    })) as CallToolResult;
+    expect(toolText(res)).toContain("No UN global SDG data found");
+    await dispose();
+  });
+
+  it("returns a tool error when the UN global SDG API is unavailable", async () => {
+    msw.use(http.get(UN_SDG_INDICATOR_DATA_URL, () => new HttpResponse(null, { status: 503 })));
+    const { client, dispose } = await createConnectedClient();
+    const res = (await client.callTool({
+      name: "get_laos_global_sdg_data",
+      arguments: { indicatorCode: "11.1.1" },
+    })) as CallToolResult;
+    expect(res.isError).toBe(true);
+    expect(toolText(res)).toContain("un_sdg");
+    await dispose();
+  });
 });
 
 describe("search_laos_legal_texts (integration)", () => {
@@ -157,6 +196,31 @@ describe("search_laos_legal_texts (integration)", () => {
     expect(text).toContain("Mining Law");
     await dispose();
   });
+
+  it("reports when FAOLEX has no matching legal texts", async () => {
+    msw.use(faolexEmptyHandler());
+    const { client, dispose } = await createConnectedClient();
+    const res = (await client.callTool({
+      name: "search_laos_legal_texts",
+      arguments: { query: "zzznomatch", type: "policy", maxResults: 3 },
+    })) as CallToolResult;
+    const text = toolText(res);
+    expect(text).toContain("No FAOLEX legal texts found");
+    expect(text).toContain("(policy)");
+    await dispose();
+  });
+
+  it("returns a tool error when FAOLEX is unavailable", async () => {
+    msw.use(http.post(FAOLEX_QUERY_URL, () => new HttpResponse(null, { status: 503 })));
+    const { client, dispose } = await createConnectedClient();
+    const res = (await client.callTool({
+      name: "search_laos_legal_texts",
+      arguments: { query: "food", maxResults: 5 },
+    })) as CallToolResult;
+    expect(res.isError).toBe(true);
+    expect(toolText(res)).toContain("faolex");
+    await dispose();
+  });
 });
 
 describe("get_laos_governance_data (integration)", () => {
@@ -170,6 +234,41 @@ describe("get_laos_governance_data (integration)", () => {
     const text = toolText(res);
     expect(text).toContain("Data360 governance record(s)");
     expect(text).toContain("Rule of law");
+    await dispose();
+  });
+
+  it("lists curated Data360 governance indicators by search term", async () => {
+    const { client, dispose } = await createConnectedClient();
+    const res = (await client.callTool({
+      name: "get_laos_governance_data",
+      arguments: { search: "rule" },
+    })) as CallToolResult;
+    const text = toolText(res);
+    expect(text).toContain("curated Data360 governance indicator");
+    expect(text).toContain("GOV_WGI_RL");
+    await dispose();
+  });
+
+  it("reports when Data360 has no Lao governance rows", async () => {
+    msw.use(data360EmptyHandler());
+    const { client, dispose } = await createConnectedClient();
+    const res = (await client.callTool({
+      name: "get_laos_governance_data",
+      arguments: { indicatorCode: "GOV_WGI_RL", startYear: 2020, endYear: 2024 },
+    })) as CallToolResult;
+    expect(toolText(res)).toContain("No Data360 governance data found");
+    await dispose();
+  });
+
+  it("returns a tool error when Data360 is unavailable", async () => {
+    msw.use(http.get(DATA360_DATA_URL, () => new HttpResponse(null, { status: 503 })));
+    const { client, dispose } = await createConnectedClient();
+    const res = (await client.callTool({
+      name: "get_laos_governance_data",
+      arguments: { indicatorCode: "GOV_WGI_RL" },
+    })) as CallToolResult;
+    expect(res.isError).toBe(true);
+    expect(toolText(res)).toContain("data360");
     await dispose();
   });
 });
