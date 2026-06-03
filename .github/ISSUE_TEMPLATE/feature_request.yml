@@ -1,0 +1,70 @@
+name: Feature request
+description: Propose a new capability, workflow, or improvement.
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this for changes to tools, resources, prompts, catalog behavior, developer workflow, or documentation. If you want to add a data source, use the new data source template instead.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What Laos data workflow or user need would this solve?
+      placeholder: Researchers need to compare...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the behavior, API shape, output format, or docs change you have in mind.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - New MCP tool
+        - Existing MCP tool improvement
+        - Resource or prompt
+        - Indicator catalog
+        - Adapter behavior
+        - Documentation
+        - Developer experience
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Note any workaround or narrower version that might be enough.
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: What would count as done?
+      description: List concrete outcomes or checks that would make this feature complete.
+      placeholder: |
+        - A user can...
+        - Tests cover...
+        - Documentation includes...
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add links, example queries, MCP client behavior, or screenshots.
+    validations:
+      required: false
