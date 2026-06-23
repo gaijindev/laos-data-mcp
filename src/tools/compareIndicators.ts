@@ -10,6 +10,7 @@ import {
   type ComparisonSeriesInput,
 } from "../utils/normalize.js";
 import { jsonResult, textResult } from "../utils/result.js";
+import { hasOrderedOptionalRange, YEAR_RANGE_MESSAGE } from "../utils/validation.js";
 import { lookupIndicatorFetcher, resolveIndicator, unsupportedSourceHint } from "./getIndicator.js";
 
 const DESCRIPTION =
@@ -17,43 +18,50 @@ const DESCRIPTION =
   "multiple sources, into one aligned table. Use for trend analysis, correlation " +
   "exploration, or multi-dimensional policy assessment.";
 
+const InputSchema = z
+  .object({
+    indicators: z
+      .array(
+        z.object({
+          code: z.string().min(1).describe('Indicator code, e.g. "SP.POP.TOTL".'),
+          source: SourceEnum.optional().describe("Force a source (default: auto-detect)."),
+          label: z.string().optional().describe("Display label for this series."),
+        }),
+      )
+      .min(2)
+      .max(6)
+      .describe("2 to 6 indicators to compare."),
+    startYear: z
+      .number()
+      .int()
+      .min(1960)
+      .max(2030)
+      .optional()
+      .describe("First year (default 2010)."),
+    endYear: z
+      .number()
+      .int()
+      .min(1960)
+      .max(2030)
+      .optional()
+      .describe("Last year (default current year)."),
+    outputFormat: z
+      .enum(["table", "json", "markdown"])
+      .optional()
+      .describe('Output format (default "markdown").'),
+  })
+  .refine((value) => hasOrderedOptionalRange(value, "startYear", "endYear"), {
+    message: YEAR_RANGE_MESSAGE,
+    path: ["endYear"],
+  });
+
 export function registerCompareIndicatorsTool(server: McpServer): void {
   server.registerTool(
     "compare_indicators",
     {
       title: "Compare Laos indicators",
       description: DESCRIPTION,
-      inputSchema: {
-        indicators: z
-          .array(
-            z.object({
-              code: z.string().min(1).describe('Indicator code, e.g. "SP.POP.TOTL".'),
-              source: SourceEnum.optional().describe("Force a source (default: auto-detect)."),
-              label: z.string().optional().describe("Display label for this series."),
-            }),
-          )
-          .min(2)
-          .max(6)
-          .describe("2 to 6 indicators to compare."),
-        startYear: z
-          .number()
-          .int()
-          .min(1960)
-          .max(2030)
-          .optional()
-          .describe("First year (default 2010)."),
-        endYear: z
-          .number()
-          .int()
-          .min(1960)
-          .max(2030)
-          .optional()
-          .describe("Last year (default current year)."),
-        outputFormat: z
-          .enum(["table", "json", "markdown"])
-          .optional()
-          .describe('Output format (default "markdown").'),
-      },
+      inputSchema: InputSchema,
     },
     async ({ indicators, startYear, endYear, outputFormat }) => {
       const start = startYear ?? 2010;

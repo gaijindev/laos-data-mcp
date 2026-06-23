@@ -4,12 +4,42 @@ import { fetchLsbSdgGoal, fetchLsbSdgIndicator, listLsbSdgIndicators } from "../
 import type { IndicatorRecord } from "../schemas/indicator.js";
 import { toToolError } from "../utils/errors.js";
 import { jsonResult, textResult } from "../utils/result.js";
+import { hasOrderedOptionalRange, YEAR_RANGE_MESSAGE } from "../utils/validation.js";
 
 const DESCRIPTION =
   "Fetch official Lao PDR Sustainable Development Goal indicator data from the Lao " +
   "Statistics Bureau SDG Open Data Platform. Use `indicatorCode` for one SDG " +
   'indicator such as "3.1.1" or "18-1-1", `goal` for a whole SDG goal, or `search` ' +
   "to discover available official SDG indicators.";
+
+const InputSchema = z
+  .object({
+    indicatorCode: z
+      .string()
+      .optional()
+      .describe('Official SDG indicator code, e.g. "3.1.1", "3-1-1", or "18-1-1".'),
+    goal: z
+      .number()
+      .int()
+      .min(1)
+      .max(18)
+      .optional()
+      .describe("SDG goal number to fetch/list, including Lao national SDG 18 for UXO."),
+    search: z
+      .string()
+      .optional()
+      .describe('Search official SDG indicator names/codes, e.g. "poverty", "UXO".'),
+    startYear: z.number().int().min(1960).max(2030).optional().describe("First year."),
+    endYear: z.number().int().min(1960).max(2030).optional().describe("Last year."),
+    latestOnly: z
+      .boolean()
+      .optional()
+      .describe("Return only the latest observation per series/disaggregation."),
+  })
+  .refine((value) => hasOrderedOptionalRange(value, "startYear", "endYear"), {
+    message: YEAR_RANGE_MESSAGE,
+    path: ["endYear"],
+  });
 
 function latestBySeries(records: IndicatorRecord[]): IndicatorRecord[] {
   const latest = new Map<string, IndicatorRecord>();
@@ -43,29 +73,7 @@ export function registerGetSdgProgressTool(server: McpServer): void {
     {
       title: "Get Laos SDG progress",
       description: DESCRIPTION,
-      inputSchema: {
-        indicatorCode: z
-          .string()
-          .optional()
-          .describe('Official SDG indicator code, e.g. "3.1.1", "3-1-1", or "18-1-1".'),
-        goal: z
-          .number()
-          .int()
-          .min(1)
-          .max(18)
-          .optional()
-          .describe("SDG goal number to fetch/list, including Lao national SDG 18 for UXO."),
-        search: z
-          .string()
-          .optional()
-          .describe('Search official SDG indicator names/codes, e.g. "poverty", "UXO".'),
-        startYear: z.number().int().min(1960).max(2030).optional().describe("First year."),
-        endYear: z.number().int().min(1960).max(2030).optional().describe("Last year."),
-        latestOnly: z
-          .boolean()
-          .optional()
-          .describe("Return only the latest observation per series/disaggregation."),
-      },
+      inputSchema: InputSchema,
     },
     async ({ indicatorCode, goal, search, startYear, endYear, latestOnly }) => {
       const start = startYear ?? 1960;

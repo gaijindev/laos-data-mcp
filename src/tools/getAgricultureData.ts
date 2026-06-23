@@ -8,6 +8,7 @@ import {
 } from "../adapters/faostat.js";
 import { toToolError } from "../utils/errors.js";
 import { jsonResult, textResult } from "../utils/result.js";
+import { hasOrderedOptionalRange, YEAR_RANGE_MESSAGE } from "../utils/validation.js";
 
 const MAX_RECORDS = 1000;
 
@@ -16,37 +17,44 @@ const DESCRIPTION =
   "food balances (FBS), food security indicators (FS), land use (RL), or forestry (FO). " +
   "Optionally filter by item (name or FAOSTAT item code).";
 
+const InputSchema = z
+  .object({
+    domain: z
+      .enum(FAOSTAT_DOMAIN_IDS as [FaostatDomain, ...FaostatDomain[]])
+      .describe(
+        `FAOSTAT domain. ${FAOSTAT_DOMAIN_IDS.map((d) => `${d}=${FAOSTAT_DOMAINS[d].label}`).join("; ")}.`,
+      ),
+    item: z
+      .string()
+      .optional()
+      .describe('Filter by item name or FAOSTAT item code (e.g. "Rice" or "27").'),
+    startYear: z
+      .number()
+      .int()
+      .min(1960)
+      .max(2030)
+      .optional()
+      .describe("First year (default 2010)."),
+    endYear: z
+      .number()
+      .int()
+      .min(1960)
+      .max(2030)
+      .optional()
+      .describe("Last year (default current year)."),
+  })
+  .refine((value) => hasOrderedOptionalRange(value, "startYear", "endYear"), {
+    message: YEAR_RANGE_MESSAGE,
+    path: ["endYear"],
+  });
+
 export function registerGetAgricultureDataTool(server: McpServer): void {
   server.registerTool(
     "get_laos_agriculture_data",
     {
       title: "Get Laos agriculture data (FAOSTAT)",
       description: DESCRIPTION,
-      inputSchema: {
-        domain: z
-          .enum(FAOSTAT_DOMAIN_IDS as [FaostatDomain, ...FaostatDomain[]])
-          .describe(
-            `FAOSTAT domain. ${FAOSTAT_DOMAIN_IDS.map((d) => `${d}=${FAOSTAT_DOMAINS[d].label}`).join("; ")}.`,
-          ),
-        item: z
-          .string()
-          .optional()
-          .describe('Filter by item name or FAOSTAT item code (e.g. "Rice" or "27").'),
-        startYear: z
-          .number()
-          .int()
-          .min(1960)
-          .max(2030)
-          .optional()
-          .describe("First year (default 2010)."),
-        endYear: z
-          .number()
-          .int()
-          .min(1960)
-          .max(2030)
-          .optional()
-          .describe("Last year (default current year)."),
-      },
+      inputSchema: InputSchema,
     },
     async ({ domain, item, startYear, endYear }) => {
       const start = startYear ?? 2010;

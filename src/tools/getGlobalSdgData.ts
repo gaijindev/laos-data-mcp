@@ -8,12 +8,35 @@ import {
 import type { IndicatorRecord } from "../schemas/indicator.js";
 import { toToolError } from "../utils/errors.js";
 import { jsonResult, textResult } from "../utils/result.js";
+import { hasOrderedOptionalRange, YEAR_RANGE_MESSAGE } from "../utils/validation.js";
 
 const DESCRIPTION =
   "Fetch Lao PDR records from the UN Global SDG Indicators Database. This global " +
   "UNStats API covers food/agriculture (SDG 2), housing and community/urban " +
   "development (SDG 11), and law/crime/justice/governance (SDG 16). Use " +
   '`indicatorCode` for codes like "11.1.1" or "16.2.2", or `search` to discover curated codes.';
+
+const InputSchema = z
+  .object({
+    indicatorCode: z
+      .string()
+      .optional()
+      .describe('UN global SDG indicator or series code, e.g. "11.1.1" or "EN_LND_SLUM".'),
+    search: z
+      .string()
+      .optional()
+      .describe('Search curated UN SDG indicator names/codes/categories, e.g. "housing".'),
+    startYear: z.number().int().min(1960).max(2030).optional().describe("First year."),
+    endYear: z.number().int().min(1960).max(2030).optional().describe("Last year."),
+    latestOnly: z
+      .boolean()
+      .optional()
+      .describe("Return only the latest observation per series/disaggregation."),
+  })
+  .refine((value) => hasOrderedOptionalRange(value, "startYear", "endYear"), {
+    message: YEAR_RANGE_MESSAGE,
+    path: ["endYear"],
+  });
 
 function latestBySeries(records: IndicatorRecord[]): IndicatorRecord[] {
   const latest = new Map<string, IndicatorRecord>();
@@ -49,22 +72,7 @@ export function registerGetGlobalSdgDataTool(server: McpServer): void {
     {
       title: "Get Laos global SDG data",
       description: DESCRIPTION,
-      inputSchema: {
-        indicatorCode: z
-          .string()
-          .optional()
-          .describe('UN global SDG indicator or series code, e.g. "11.1.1" or "EN_LND_SLUM".'),
-        search: z
-          .string()
-          .optional()
-          .describe('Search curated UN SDG indicator names/codes/categories, e.g. "housing".'),
-        startYear: z.number().int().min(1960).max(2030).optional().describe("First year."),
-        endYear: z.number().int().min(1960).max(2030).optional().describe("Last year."),
-        latestOnly: z
-          .boolean()
-          .optional()
-          .describe("Return only the latest observation per series/disaggregation."),
-      },
+      inputSchema: InputSchema,
     },
     async ({ indicatorCode, search, startYear, endYear, latestOnly }) => {
       const start = startYear ?? 1960;
