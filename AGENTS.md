@@ -48,9 +48,9 @@ resources / prompts. See README.md for full architecture.
 20. FAOLEX (`faolex.ts`) — official legal-text search backend, no auth. Country `LAO`.
     Lao laws, regulations, policies, and agreements as normalized `DatasetMetadata`.
     Powers `search_laos_legal_texts`; also selectable in `search_laos_datasets`.
-21. World Bank Data360 (`data360.ts`) — REST JSON, no auth. REF*AREA `LAO`.
+21. World Bank Data360 (`data360.ts`) — REST JSON, no auth. REF_AREA `LAO`.
     Governance and rule-of-law indicators. Powers `get_laos_governance_data`
-    and resolves curated `GOV_WGI*\*`codes in`get_laos_indicator`.
+    and resolves curated `GOV_WGI*` codes in `get_laos_indicator`.
 
 Adding a source is additive: append it to `SOURCES`/`SOURCE_META`/`SOURCE_ID_PREFIX`
 in `src/schemas/source.ts`, add a `ping*` to `PINGS` in `getSourceStatus.ts`, and a
@@ -122,7 +122,8 @@ pnpm test:coverage
   `Accept: application/vnd.sdmx.data+json;version=1.0`; HTTP 404 means "no data" (treated
   as `[]`). Apply `UNIT_MULT` (×10^n) and map `UNIT_MEASURE`.
 - **UN Comtrade** uses the **keyless `/public/v1/preview` endpoint** by default (capped at
-  500 records/response; `COMTRADE_API_KEY` is optional). Reporter is **M49 `418`**; pass
+  500 records/response; `COMTRADE_API_KEY` is optional and sent as a subscription header
+  when configured). Reporter is **M49 `418`**; pass
   `motCode=0` or rows duplicate per transport mode; `primaryValue` is the USD value.
   **2017+ Lao values are UN mirror estimates** (`isReported=false`) — flagged in footnotes.
 - **UNODC has no per-country API** — crime stats are bulk Excel only, with date-stamped URLs.

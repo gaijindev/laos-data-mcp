@@ -68,7 +68,7 @@ full list and the per-source gotchas verified against the live APIs.
 ## Adding a data source (the 8-file recipe)
 
 Adding a source is **additive** — it appends to the registries and never modifies the
-existing 18 sources or the shared record schemas.
+existing sources or the shared record schemas.
 
 1. **Adapter** — create `src/adapters/<source>.ts`. Export typed async functions that fetch
    and **normalize** into `IndicatorRecord` / `DatasetMetadata`.

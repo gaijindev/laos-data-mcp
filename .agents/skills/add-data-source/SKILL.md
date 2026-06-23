@@ -2,10 +2,10 @@
 name: add-data-source
 description: >-
   Add a new external data source to laos-data-mcp end-to-end. Use when the user
-  wants to integrate a new API/dataset about Lao PDR (e.g. ILO, UNESCO UIS, ITU,
-  UNDP HDI, UN Comtrade, ReliefWeb) as an MCP tool, or says "add a source",
+  wants to integrate a new API/dataset about Lao PDR (e.g. ITU, UNDP HDI,
+  WorldPop, NASA POWER, ReliefWeb) as an MCP tool, or says "add a source",
   "wire up <provider>", or "expose <dataset>". Encodes the project's additive
-  8-file recipe and house conventions so the new source matches the existing 18.
+  8-file recipe and house conventions so the new source matches the existing source set.
 ---
 
 # Add a data source to laos-data-mcp
@@ -42,9 +42,9 @@ ask the user — or delegate research to the `source-scout` agent first.
 
 ## The recipe (8 touchpoints)
 
-Use the most recently added source as a live template (e.g. WHO:
-`src/adapters/who.ts`, `src/tools/getHealthData.ts`, `tests/adapters/who.test.ts`,
-`tests/mocks/who.mock.ts`).
+Use a recent source of the same kind as a live template: indicators such as
+Data360 (`src/adapters/data360.ts`, `src/tools/getGovernanceData.ts`), legal/dataset
+catalogs such as FAOLEX, or official-source flows such as LSB SDG.
 
 1. **`src/schemas/source.ts`** — add the id to `SOURCES`, a full entry to
    `SOURCE_META` (baseUrl, `cacheTtlSeconds`, `timeoutMs`, `auth`, `kind`,

@@ -4,7 +4,7 @@
 
 ## Quality gate
 
-- [ ] I ran `pnpm lint && pnpm typecheck && pnpm test && pnpm format:check`.
+- [ ] I ran `pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm format:check`.
 - [ ] I added or updated focused tests for the changed behavior, or this change is docs-only.
 - [ ] I updated README, CONTRIBUTING, catalog docs, or source notes when behavior changed.
 

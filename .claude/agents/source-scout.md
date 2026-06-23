@@ -2,8 +2,8 @@
 name: source-scout
 description: >-
   Use this agent to research a candidate external data API BEFORE integrating it
-  into laos-data-mcp. Give it a provider name or API URL (e.g. ILO, UNESCO UIS,
-  ITU, UNDP HDI, UN Comtrade, ReliefWeb) and it returns a concrete integration
+  into laos-data-mcp. Give it a provider name or API URL (e.g. ITU, UNDP HDI,
+  WorldPop, NASA POWER, ReliefWeb) and it returns a concrete integration
   spec — endpoints, auth, Lao country/area code, real response shape, a
   field-to-schema mapping, suggested cache/timeout settings, and gotchas — ready
   to hand to the /add-data-source skill. Use it proactively whenever the user

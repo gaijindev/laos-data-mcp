@@ -27,11 +27,15 @@ describe("logger redaction", () => {
 
   it("redacts known secret env values wherever they appear", () => {
     process.env.WFP_CLIENT_SECRET = "super-secret-value-123";
+    process.env.COMTRADE_API_KEY = "comtrade-secret-value-123";
     const { calls, restore } = capture();
-    logger.error("token exchange failed for super-secret-value-123 at /token");
+    logger.error(
+      "token exchange failed for super-secret-value-123 and comtrade-secret-value-123 at /token",
+    );
     restore();
     expect(calls[0]).toContain("***");
     expect(calls[0]).not.toContain("super-secret-value-123");
+    expect(calls[0]).not.toContain("comtrade-secret-value-123");
   });
 
   it("reduces Errors to message/stack and drops attached objects (e.g. axios config)", () => {

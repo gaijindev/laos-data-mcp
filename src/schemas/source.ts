@@ -216,7 +216,7 @@ export const SOURCE_META: Record<Source, SourceMeta> = {
     baseUrl: "https://comtradeapi.un.org/public/v1/preview",
     cacheTtlSeconds: 86_400, // 24h — annual data, Lao submissions lag 1–2 years
     timeoutMs: 12_000,
-    auth: "optional", // keyless preview works; COMTRADE_API_KEY unlocks the full data endpoint
+    auth: "optional", // keyless preview works; COMTRADE_API_KEY is sent when configured
     kind: "indicators",
     docsUrl: "https://comtrade.un.org/",
   },

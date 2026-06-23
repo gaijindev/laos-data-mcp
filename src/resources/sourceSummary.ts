@@ -10,7 +10,7 @@ export function registerSourceSummaryResource(server: McpServer): void {
     {
       title: "Laos data source status",
       description:
-        "Live connectivity status, last-fetch time, and cache hit rate for each of the connected data sources (World Bank, UNICEF, OD Mekong, ADB, Laosis).",
+        "Live connectivity status, last-fetch time, cache hit rate, and source-specific notes for each connected Lao PDR data source.",
       mimeType: "application/json",
     },
     async (uri) => {

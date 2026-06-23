@@ -9,7 +9,7 @@ const BASE = SOURCE_META.comtrade.baseUrl;
 /** Laos M49 numeric reporter code. */
 const REPORTER_CODE = 418;
 
-/** Optional API key for the full (non-preview) endpoint. */
+/** Optional subscription key; keyless preview calls still work without it. */
 const API_KEY = process.env.COMTRADE_API_KEY;
 
 /** Curated key UN Comtrade indicators for Lao PDR. */
@@ -20,7 +20,7 @@ export const KEY_TRADE_INDICATORS: Array<{ code: string; name: string }> = [
   { code: "LA_IMPORTS_BY_PARTNER", name: "Merchandise imports by partner, Lao PDR (USD)" },
 ];
 
-/** Raw row shape returned by UN Comtrade preview endpoint. */
+/** Raw row shape returned by the UN Comtrade endpoint. */
 interface ComtradeRow {
   refYear?: number;
   period?: string;
