@@ -8,6 +8,7 @@ import {
 } from "../adapters/unicef.js";
 import { toToolError } from "../utils/errors.js";
 import { jsonResult, textResult } from "../utils/result.js";
+import { hasOrderedOptionalRange, YEAR_RANGE_MESSAGE } from "../utils/validation.js";
 
 const MAX_RECORDS = 800;
 
@@ -17,35 +18,42 @@ const DESCRIPTION =
   "available (by sex, area, or wealth quintile). Use this for UNICEF welfare indicators; " +
   "use get_laos_indicator for World Bank economic/demographic series.";
 
+const InputSchema = z
+  .object({
+    topic: z
+      .enum(WELFARE_TOPICS as [WelfareTopic, ...WelfareTopic[]])
+      .describe("Welfare topic to fetch."),
+    startYear: z
+      .number()
+      .int()
+      .min(1960)
+      .max(2030)
+      .optional()
+      .describe("First year (default 2000)."),
+    endYear: z
+      .number()
+      .int()
+      .min(1960)
+      .max(2030)
+      .optional()
+      .describe("Last year (default current year)."),
+    disaggregation: z
+      .enum(["sex", "area", "wealth", "none"])
+      .optional()
+      .describe('Disaggregation dimension (default "none" = national totals).'),
+  })
+  .refine((value) => hasOrderedOptionalRange(value, "startYear", "endYear"), {
+    message: YEAR_RANGE_MESSAGE,
+    path: ["endYear"],
+  });
+
 export function registerGetWelfareDataTool(server: McpServer): void {
   server.registerTool(
     "get_laos_welfare_data",
     {
       title: "Get Laos welfare data (UNICEF)",
       description: DESCRIPTION,
-      inputSchema: {
-        topic: z
-          .enum(WELFARE_TOPICS as [WelfareTopic, ...WelfareTopic[]])
-          .describe("Welfare topic to fetch."),
-        startYear: z
-          .number()
-          .int()
-          .min(1960)
-          .max(2030)
-          .optional()
-          .describe("First year (default 2000)."),
-        endYear: z
-          .number()
-          .int()
-          .min(1960)
-          .max(2030)
-          .optional()
-          .describe("Last year (default current year)."),
-        disaggregation: z
-          .enum(["sex", "area", "wealth", "none"])
-          .optional()
-          .describe('Disaggregation dimension (default "none" = national totals).'),
-      },
+      inputSchema: InputSchema,
     },
     async ({ topic, startYear, endYear, disaggregation }) => {
       const start = startYear ?? 2000;

@@ -7,10 +7,26 @@ import {
 } from "../adapters/data360.js";
 import { toToolError } from "../utils/errors.js";
 import { jsonResult, textResult } from "../utils/result.js";
+import { hasOrderedOptionalRange, YEAR_RANGE_MESSAGE } from "../utils/validation.js";
 
 const DESCRIPTION =
   "Fetch Lao PDR governance and rule-of-law indicators from the World Bank Data360 API. " +
   'Use `indicatorCode` for curated WGI codes such as "GOV_WGI_RL" or `search` to discover codes.';
+
+const InputSchema = z
+  .object({
+    indicatorCode: z
+      .string()
+      .optional()
+      .describe('Data360 governance indicator code, e.g. "GOV_WGI_RL".'),
+    search: z.string().optional().describe('Search curated codes, e.g. "rule".'),
+    startYear: z.number().int().min(1960).max(2030).optional().describe("First year."),
+    endYear: z.number().int().min(1960).max(2030).optional().describe("Last year."),
+  })
+  .refine((value) => hasOrderedOptionalRange(value, "startYear", "endYear"), {
+    message: YEAR_RANGE_MESSAGE,
+    path: ["endYear"],
+  });
 
 function indicatorList(search?: string): string {
   const indicators = search ? searchData360Indicators(search) : KEY_DATA360_INDICATORS;
@@ -30,15 +46,7 @@ export function registerGetGovernanceDataTool(server: McpServer): void {
     {
       title: "Get Laos governance data",
       description: DESCRIPTION,
-      inputSchema: {
-        indicatorCode: z
-          .string()
-          .optional()
-          .describe('Data360 governance indicator code, e.g. "GOV_WGI_RL".'),
-        search: z.string().optional().describe('Search curated codes, e.g. "rule".'),
-        startYear: z.number().int().min(1960).max(2030).optional().describe("First year."),
-        endYear: z.number().int().min(1960).max(2030).optional().describe("Last year."),
-      },
+      inputSchema: InputSchema,
     },
     async ({ indicatorCode, search, startYear, endYear }) => {
       const start = startYear ?? 2000;

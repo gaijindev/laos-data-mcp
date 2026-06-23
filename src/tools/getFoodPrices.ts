@@ -3,6 +3,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { fetchWfpFoodPrices } from "../adapters/wfp.js";
 import { toToolError } from "../utils/errors.js";
 import { jsonResult, textResult } from "../utils/result.js";
+import { DATE_RANGE_MESSAGE, hasOrderedOptionalStringRange } from "../utils/validation.js";
 
 const MAX_RECORDS = 1000;
 
@@ -11,18 +12,25 @@ const DESCRIPTION =
   "filter by commodity, market, or date range (YYYY-MM-DD). Requires WFP OAuth2 " +
   "credentials (WFP_CLIENT_ID / WFP_CLIENT_SECRET).";
 
+const InputSchema = z
+  .object({
+    commodity: z.string().optional().describe('Filter by commodity name (e.g. "Rice").'),
+    market: z.string().optional().describe('Filter by market name (e.g. "Vientiane").'),
+    startDate: z.iso.date().optional().describe("Start date YYYY-MM-DD."),
+    endDate: z.iso.date().optional().describe("End date YYYY-MM-DD."),
+  })
+  .refine((value) => hasOrderedOptionalStringRange(value, "startDate", "endDate"), {
+    message: DATE_RANGE_MESSAGE,
+    path: ["endDate"],
+  });
+
 export function registerGetFoodPricesTool(server: McpServer): void {
   server.registerTool(
     "get_laos_food_prices",
     {
       title: "Get Laos food prices (WFP VAM)",
       description: DESCRIPTION,
-      inputSchema: {
-        commodity: z.string().optional().describe('Filter by commodity name (e.g. "Rice").'),
-        market: z.string().optional().describe('Filter by market name (e.g. "Vientiane").'),
-        startDate: z.string().optional().describe("Start date YYYY-MM-DD."),
-        endDate: z.string().optional().describe("End date YYYY-MM-DD."),
-      },
+      inputSchema: InputSchema,
     },
     async ({ commodity, market, startDate, endDate }) => {
       try {

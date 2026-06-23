@@ -6,6 +6,7 @@ import type { IndicatorRecord } from "../schemas/indicator.js";
 import { SOURCE_ID_PREFIX, SOURCES, SourceEnum, type Source } from "../schemas/source.js";
 import { toToolError } from "../utils/errors.js";
 import { jsonResult, textResult } from "../utils/result.js";
+import { hasOrderedOptionalRange, YEAR_RANGE_MESSAGE } from "../utils/validation.js";
 
 type IndicatorFetcher = (
   code: string,
@@ -108,39 +109,44 @@ const DESCRIPTION =
   "when you need numeric trend data on population, economy, health, education, environment, or infrastructure. " +
   "Call list_available_indicators first if you do not know the code.";
 
+const InputSchema = z
+  .object({
+    indicatorCode: z
+      .string()
+      .min(1)
+      .describe('Indicator code, e.g. "SP.POP.TOTL". May be prefixed, e.g. "WB:SP.POP.TOTL".'),
+    source: SourceEnum.optional().describe("Force a source. Default: auto-detected from the code."),
+    startYear: z
+      .number()
+      .int()
+      .min(1960)
+      .max(2030)
+      .optional()
+      .describe("First year (default 2000)."),
+    endYear: z
+      .number()
+      .int()
+      .min(1960)
+      .max(2030)
+      .optional()
+      .describe("Last year (default current year)."),
+    format: z
+      .enum(["records", "timeseries"])
+      .optional()
+      .describe('Output shape: "records" (default) or "timeseries".'),
+  })
+  .refine((value) => hasOrderedOptionalRange(value, "startYear", "endYear"), {
+    message: YEAR_RANGE_MESSAGE,
+    path: ["endYear"],
+  });
+
 export function registerGetIndicatorTool(server: McpServer): void {
   server.registerTool(
     "get_laos_indicator",
     {
       title: "Get Laos indicator",
       description: DESCRIPTION,
-      inputSchema: {
-        indicatorCode: z
-          .string()
-          .min(1)
-          .describe('Indicator code, e.g. "SP.POP.TOTL". May be prefixed, e.g. "WB:SP.POP.TOTL".'),
-        source: SourceEnum.optional().describe(
-          "Force a source. Default: auto-detected from the code.",
-        ),
-        startYear: z
-          .number()
-          .int()
-          .min(1960)
-          .max(2030)
-          .optional()
-          .describe("First year (default 2000)."),
-        endYear: z
-          .number()
-          .int()
-          .min(1960)
-          .max(2030)
-          .optional()
-          .describe("Last year (default current year)."),
-        format: z
-          .enum(["records", "timeseries"])
-          .optional()
-          .describe('Output shape: "records" (default) or "timeseries".'),
-      },
+      inputSchema: InputSchema,
     },
     async ({ indicatorCode, source, startYear, endYear, format }) => {
       const start = startYear ?? 2000;

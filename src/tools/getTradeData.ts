@@ -7,6 +7,7 @@ import {
 } from "../adapters/comtrade.js";
 import { toToolError } from "../utils/errors.js";
 import { jsonResult, textResult } from "../utils/result.js";
+import { hasOrderedOptionalRange, YEAR_RANGE_MESSAGE } from "../utils/validation.js";
 
 const DESCRIPTION =
   "Fetch trade data for Lao PDR from the UN Comtrade International Trade Statistics database. " +
@@ -16,6 +17,47 @@ const DESCRIPTION =
 
 /** Most recent year with reliable Comtrade data (submissions lag 1-2 years). */
 const DEFAULT_PARTNER_YEAR = 2022;
+
+const InputSchema = z
+  .object({
+    flow: z
+      .enum(["exports", "imports"])
+      .optional()
+      .describe('Trade flow direction: "exports" or "imports" (default: exports).'),
+    breakdown: z
+      .enum(["total", "partner"])
+      .optional()
+      .describe(
+        '"total" for annual time series, "partner" for top-15 partner breakdown (default: total).',
+      ),
+    year: z
+      .number()
+      .int()
+      .min(1990)
+      .max(2030)
+      .optional()
+      .describe(
+        "Reference year for partner breakdown (required when breakdown=partner; default: 2022).",
+      ),
+    startYear: z
+      .number()
+      .int()
+      .min(1990)
+      .max(2030)
+      .optional()
+      .describe("First year of the total time series (default: 2010)."),
+    endYear: z
+      .number()
+      .int()
+      .min(1990)
+      .max(2030)
+      .optional()
+      .describe("Last year of the total time series (default: current year)."),
+  })
+  .refine((value) => hasOrderedOptionalRange(value, "startYear", "endYear"), {
+    message: YEAR_RANGE_MESSAGE,
+    path: ["endYear"],
+  });
 
 function keyIndicatorList(): string {
   return [
@@ -35,41 +77,7 @@ export function registerGetTradeDataTool(server: McpServer): void {
     {
       title: "Get Laos trade data (UN Comtrade)",
       description: DESCRIPTION,
-      inputSchema: {
-        flow: z
-          .enum(["exports", "imports"])
-          .optional()
-          .describe('Trade flow direction: "exports" or "imports" (default: exports).'),
-        breakdown: z
-          .enum(["total", "partner"])
-          .optional()
-          .describe(
-            '"total" for annual time series, "partner" for top-15 partner breakdown (default: total).',
-          ),
-        year: z
-          .number()
-          .int()
-          .min(1990)
-          .max(2030)
-          .optional()
-          .describe(
-            "Reference year for partner breakdown (required when breakdown=partner; default: 2022).",
-          ),
-        startYear: z
-          .number()
-          .int()
-          .min(1990)
-          .max(2030)
-          .optional()
-          .describe("First year of the total time series (default: 2010)."),
-        endYear: z
-          .number()
-          .int()
-          .min(1990)
-          .max(2030)
-          .optional()
-          .describe("Last year of the total time series (default: current year)."),
-      },
+      inputSchema: InputSchema,
     },
     async ({ flow, breakdown, year, startYear, endYear }) => {
       if (
