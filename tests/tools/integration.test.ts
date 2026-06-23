@@ -286,8 +286,22 @@ describe("get_official_stats (integration)", () => {
   });
 });
 
+describe("get_laos_trade_data (integration)", () => {
+  it("lists key trade indicators when called with no inputs", async () => {
+    const { client, dispose } = await createConnectedClient();
+    const res = (await client.callTool({
+      name: "get_laos_trade_data",
+      arguments: {},
+    })) as CallToolResult;
+    const text = toolText(res);
+    expect(text).toContain("Key UN Comtrade trade indicators");
+    expect(text).toContain("LA_TOTAL_EXPORTS");
+    await dispose();
+  });
+});
+
 describe("prompts (integration)", () => {
-  it("registers and renders all three prompts", async () => {
+  it("registers and renders all four prompts", async () => {
     const { client, dispose } = await createConnectedClient();
     const { prompts } = await client.listPrompts();
     expect(prompts.map((p) => p.name).sort()).toEqual([
@@ -330,6 +344,22 @@ describe("prompts (integration)", () => {
     expect(sdgText && sdgText.type === "text" ? sdgText.text : "").toContain(
       "get_laos_sdg_progress",
     );
+
+    await dispose();
+  });
+});
+
+describe("feature metadata (integration)", () => {
+  it("describes source status as the full connected source set", async () => {
+    const { client, dispose } = await createConnectedClient();
+
+    const { tools } = await client.listTools();
+    const statusTool = tools.find((tool) => tool.name === "get_source_status");
+    expect(statusTool?.description).toContain("all connected Lao PDR data sources");
+
+    const { resources } = await client.listResources();
+    const statusResource = resources.find((resource) => resource.uri === "laos://sources/status");
+    expect(statusResource?.description).toContain("each connected Lao PDR data source");
 
     await dispose();
   });

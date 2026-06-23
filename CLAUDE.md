@@ -2,7 +2,7 @@
 
 ## What this project does
 
-MCP server exposing 18 external data sources about Lao PDR as unified tools /
+MCP server exposing 21 external data sources about Lao PDR as unified tools /
 resources / prompts. See README.md for full architecture.
 
 ## Key conventions
@@ -34,12 +34,23 @@ resources / prompts. See README.md for full architecture.
 11. OpenStreetMap (`osm.ts`) — Overpass POST, no auth. Infrastructure POIs; fixed templates only.
 12. MRC (`mrc.ts`) — STUB, static catalog; activate with `MRC_SESSION_TOKEN`.
 13. Census (`census.ts`) — STUB, bundled 2015 figures; 2025 via `CENSUS_2025_AVAILABLE`.
-14. LSB SDG (`lsbSdg.ts`) — Open SDG static CSV/JSON export, no auth. Official SDG indicators.
+14. LSB SDG Platform (`lsbSdg.ts`) — official Open SDG CSV export, no auth. Country `LA`.
+    Powers `get_laos_sdg_progress` + the `sdg_progress_audit` prompt; resolves dotted
+    SDG codes (e.g. `3.1.1`) in `get_laos_indicator`. **Stale: export last updated 2021-06-26.**
 15. UNESCO UIS (`uis.ts`) — REST JSON, no auth. Country `LAO`. Education indicators.
 16. ILOSTAT (`ilostat.ts`) — SDMX-JSON, no auth. REF_AREA `LAO`. Labor indicators.
 17. UN Comtrade (`comtrade.ts`) — REST JSON, keyless preview (optional `COMTRADE_API_KEY`).
     Reporter `418`. Trade exports/imports.
 18. UNODC (`unodc.ts`) — STUB, static catalog; no per-country API (bulk Excel only). Crime/justice.
+19. UN Global SDG (`unSdg.ts`) — REST JSON, no auth. M49 area code `418`.
+    Food/agriculture, housing/community, law/crime/justice SDG indicators. Powers
+    `get_laos_global_sdg_data` and resolves curated SDG codes in `get_laos_indicator`.
+20. FAOLEX (`faolex.ts`) — official legal-text search backend, no auth. Country `LAO`.
+    Lao laws, regulations, policies, and agreements as normalized `DatasetMetadata`.
+    Powers `search_laos_legal_texts`; also selectable in `search_laos_datasets`.
+21. World Bank Data360 (`data360.ts`) — REST JSON, no auth. REF_AREA `LAO`.
+    Governance and rule-of-law indicators. Powers `get_laos_governance_data`
+    and resolves curated `GOV_WGI*` codes in `get_laos_indicator`.
 
 Adding a source is additive: append it to `SOURCES`/`SOURCE_META`/`SOURCE_ID_PREFIX`
 in `src/schemas/source.ts`, add a `ping*` to `PINGS` in `getSourceStatus.ts`, and a
@@ -98,20 +109,40 @@ pnpm test:coverage
   User-Agent or Brotli (`br`) compression. The shared HTTP client uses the project URL as
   User-Agent, and `osm.ts` overrides `Accept-Encoding` to `gzip, deflate`. Only fixed query
   templates are used; province input is sanitized.
+- **LSB SDG** is an Open SDG CSV export served from GitHub Pages. Indicator codes are
+  dotted on the platform (`3.1.1`) but stored dash-normalized in records (`3-1-1`); both
+  forms resolve. The export is **official but stale — last updated 2021-06-26** per the
+  homepage, so prefer fresher sources for recent years where they exist.
 - **UNESCO UIS** uses ISO3 `LAO`; envelope is `{ records, hints, indicatorMetadata }`.
-  Codes are UPPERCASE/case-sensitive; an unknown code returns **HTTP 200 with `hints`**, not a
-  4xx. There is **no `unit` field** — parse it from the trailing `(...)` of the metadata name.
+  Codes are uppercase/case-sensitive; an unknown code returns **HTTP 200 with `hints`**, not
+  a 4xx. There is **no `unit` field** — parse it from the trailing `(...)` of the metadata name.
 - **ILOSTAT** is SDMX-JSON but has **no `INDICATOR` dimension** (the dataflow id is the indicator),
-  so the shared `utils/sdmx.ts` decoder does not apply — `ilostat.ts` has its own decoder. REF_AREA
-  is `LAO` (normalize to `LA`); requires `Accept: application/vnd.sdmx.data+json;version=1.0`;
-  HTTP 404 means "no data" (treated as `[]`). Apply `UNIT_MULT` (×10^n) and map `UNIT_MEASURE`.
-- **UN Comtrade**: use the **keyless `/public/v1/preview` endpoint** (capped at 500 records/response;
-  `COMTRADE_API_KEY` unlocks the full endpoint). Reporter is **M49 `418`**; pass `motCode=0` or rows
-  duplicate per transport mode; `primaryValue` is the USD value. **2017+ Lao values are UN mirror
-  estimates** (`isReported=false`) — flagged in the footnote.
+  so the shared `utils/sdmx.ts` decoder does not apply — `ilostat.ts` has its own decoder.
+  REF_AREA is `LAO` (normalize to `LA`); requires
+  `Accept: application/vnd.sdmx.data+json;version=1.0`; HTTP 404 means "no data" (treated
+  as `[]`). Apply `UNIT_MULT` (×10^n) and map `UNIT_MEASURE`.
+- **UN Comtrade** uses the **keyless `/public/v1/preview` endpoint** by default (capped at
+  500 records/response; `COMTRADE_API_KEY` is optional and sent as a subscription header
+  when configured). Reporter is **M49 `418`**; pass
+  `motCode=0` or rows duplicate per transport mode; `primaryValue` is the USD value.
+  **2017+ Lao values are UN mirror estimates** (`isReported=false`) — flagged in footnotes.
 - **UNODC has no per-country API** — crime stats are bulk Excel only, with date-stamped URLs.
-  `unodc.ts` is a static-catalog stub. Lao coverage is thin: trafficking (GLOTIP), prison (CTS),
-  and drug treatment (WDR annex) only — **no homicide or violent-crime data for Laos**.
+  `unodc.ts` is a static-catalog stub. Lao coverage is thin: trafficking (GLOTIP), prison
+  (CTS), and drug treatment (WDR annex) only — **no homicide or violent-crime data for Laos**.
+- **UN Global SDG** uses **M49 `418`**, not `LA`/`LAO`; normalize back to `LA`.
+  `/Indicator/Data` and `/Series/Data` envelopes are paginated and values are strings.
+  Some Lao indicators legitimately return `totalElements: 0`; treat that as `[]`, not an
+  error. Units live in `attributes.Units`, and response-level attribute/dimension lookup
+  tables must be decoded for human-readable units/footnotes.
+- **FAOLEX** is an official FAOLEX search backend but **not a formally documented public API**.
+  It requires `POST` with `Content-Type: text/plain` and a JSON-string body containing the
+  embedded `searchApplicationId`. Query construction must stay scoped to `country:("LAO")`.
+  Metadata arrives as arrays of `{ name, textValues }`; prefer English fields (`*En`), join
+  multi-part abstracts, and build direct PDFs as `https://faolex.fao.org/docs/pdf/<file>`.
+- **World Bank Data360** is separate from the existing World Bank Indicators API.
+  Governance calls use `REF_AREA=LAO`; WGI indicators need `COMP_BREAKDOWN_1=WGI_EST` to
+  avoid duplicate estimate/standard-error/percentile rows. `/data` returns `{ count, value }`,
+  `OBS_VALUE` is usually a numeric string, and `UNIT_MULT` must be applied.
 
 ## Files to never modify without discussion
 

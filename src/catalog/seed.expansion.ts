@@ -4,10 +4,10 @@ import { KEY_UN_SDG_INDICATORS } from "../adapters/unSdg.js";
 import type { CatalogEntry } from "./types.js";
 
 /**
- * Catalog entries for the expansion sources (FAOSTAT, WHO, IMF, HDX, WFP, OSM,
- * MRC, Census). These are for discovery via list_available_indicators. WHO/IMF
- * codes also resolve through get_laos_indicator; the rest point at their own
- * dedicated tools (see the unsupported-source hint).
+ * Catalog entries for non-World-Bank expansion sources. These are for discovery
+ * via list_available_indicators. Sources with registered fetchers also resolve
+ * through get_laos_indicator; dataset/catalog sources point at their dedicated
+ * tools (see the unsupported-source hint).
  */
 export const EXPANSION_SEED: CatalogEntry[] = [
   // FAOSTAT domains (query via get_laos_agriculture_data)

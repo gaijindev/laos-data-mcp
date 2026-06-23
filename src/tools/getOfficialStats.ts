@@ -1,6 +1,7 @@
 import { z } from "zod";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { getLaosisCategories, laosisHasApiKey, laosisIsAvailable } from "../adapters/laosis.js";
+import { toToolError } from "../utils/errors.js";
 import { textResult } from "../utils/result.js";
 
 const DESCRIPTION =
@@ -22,31 +23,35 @@ export function registerGetOfficialStatsTool(server: McpServer): void {
       },
     },
     async ({ category }) => {
-      const all = getLaosisCategories();
-      const filtered = category
-        ? all.filter((c) => c.toLowerCase().includes(category.toLowerCase()))
-        : all;
-      const hasKey = laosisHasApiKey();
-      const reachable = await laosisIsAvailable();
+      try {
+        const all = getLaosisCategories();
+        const filtered = category
+          ? all.filter((c) => c.toLowerCase().includes(category.toLowerCase()))
+          : all;
+        const hasKey = laosisHasApiKey();
+        const reachable = await laosisIsAvailable();
 
-      const statusNote = hasKey
-        ? "A LAOSIS_API_KEY is set, but Laosis exposes no documented public REST API yet, so live data retrieval is not implemented (stub). See the README for how to request access from LSB."
-        : "Laosis has no public API. This lists known statistical categories only. Set LAOSIS_API_KEY once LSB grants access to enable live data.";
+        const statusNote = hasKey
+          ? "A LAOSIS_API_KEY is set, but Laosis exposes no documented public REST API yet, so live data retrieval is not implemented (stub). See the README for how to request access from LSB."
+          : "Laosis has no public API. This lists known statistical categories only. Set LAOSIS_API_KEY once LSB grants access to enable live data.";
 
-      const lines = [
-        "Lao Statistics Bureau (Laosis) — official statistics.",
-        `Site reachable: ${reachable ? "yes" : "no"}. API key configured: ${hasKey ? "yes" : "no"}.`,
-        statusNote,
-        "",
-        `Categories (${filtered.length}${category ? ` matching "${category}"` : ""}):`,
-        ...filtered.map((c) => `- ${c}`),
-      ];
-      if (filtered.length === 0) {
-        lines.push(
-          `(No category matched "${category}". Omit the filter to see all ${all.length}.)`,
-        );
+        const lines = [
+          "Lao Statistics Bureau (Laosis) — official statistics.",
+          `Site reachable: ${reachable ? "yes" : "no"}. API key configured: ${hasKey ? "yes" : "no"}.`,
+          statusNote,
+          "",
+          `Categories (${filtered.length}${category ? ` matching "${category}"` : ""}):`,
+          ...filtered.map((c) => `- ${c}`),
+        ];
+        if (filtered.length === 0) {
+          lines.push(
+            `(No category matched "${category}". Omit the filter to see all ${all.length}.)`,
+          );
+        }
+        return textResult(lines.join("\n"));
+      } catch (err) {
+        return toToolError(err, { subject: category ?? "Laosis official statistics" });
       }
-      return textResult(lines.join("\n"));
     },
   );
 }

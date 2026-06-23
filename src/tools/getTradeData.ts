@@ -72,6 +72,16 @@ export function registerGetTradeDataTool(server: McpServer): void {
       },
     },
     async ({ flow, breakdown, year, startYear, endYear }) => {
+      if (
+        flow === undefined &&
+        breakdown === undefined &&
+        year === undefined &&
+        startYear === undefined &&
+        endYear === undefined
+      ) {
+        return textResult(keyIndicatorList());
+      }
+
       const resolvedFlow = flow ?? "exports";
       const resolvedBreakdown = breakdown ?? "total";
 
@@ -115,10 +125,6 @@ export function registerGetTradeDataTool(server: McpServer): void {
       }
     },
   );
-
-  // No-input call → list key indicators (handled above; this branch unreachable via normal path)
-  // but provide a passthrough if someone calls the tool with no inputs
-  // (the tool handler already falls through to the total branch by defaults).
 }
 
 /** Register a zero-input variant listing key indicators — follows getHealthData pattern. */

@@ -60,7 +60,7 @@ const NOTES: Partial<Record<Source, string>> = {
   lsb_sdg:
     "Official LSB SDG Open Data Platform CSV export; site currently reports data last updated Jun 26, 2021.",
   comtrade:
-    "Keyless preview endpoint (capped at 500 records/response). Set COMTRADE_API_KEY for the full data endpoint. 2017+ Lao values are UN mirror estimates.",
+    "Keyless preview endpoint (capped at 500 records/response). COMTRADE_API_KEY is optional and sent as a subscription header when configured. 2017+ Lao values are UN mirror estimates.",
   unodc:
     "Stub: portal reachability only. UNODC has no per-country API — values are bulk Excel; Laos covers trafficking, prison, and drug treatment (no homicide/violent crime).",
   un_sdg:
@@ -130,8 +130,8 @@ export async function collectSourceStatus(): Promise<SourceStatusReport> {
 }
 
 const DESCRIPTION =
-  "Check the health and availability of all connected data sources (World Bank, UNICEF, " +
-  "OD Mekong, ADB, Laosis), with last-fetch time and cache hit rates. Use before making " +
+  "Check the health and availability of all connected Lao PDR data sources, with " +
+  "last-fetch time, cache hit rates, and source-specific notes. Use before making " +
   "data requests if you suspect connectivity problems.";
 
 export function registerGetSourceStatusTool(server: McpServer): void {

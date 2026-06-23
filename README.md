@@ -21,7 +21,9 @@ government analysts, civic technologists, and AI agents one consistent interface
 - [What the server provides](#what-the-server-provides)
 - [Quick start](#quick-start)
 - [Run the MCP server](#run-the-mcp-server)
+- [Tool selection map](#tool-selection-map)
 - [Example workflows](#example-workflows)
+- [Feature audit and verification](#feature-audit-and-verification)
 - [Tools](#tools)
 - [Resources and prompts](#resources-and-prompts)
 - [Data sources](#data-sources)
@@ -87,10 +89,25 @@ The server also includes:
 - human-readable tool errors instead of raw stack traces,
 - stdio and streamable HTTP MCP transports.
 
-```
-MCP client -> laos-data-mcp -> 21 adapters -> normalized records
-                  |
-                  +-> tools, resources, prompts
+### Architecture at a glance
+
+```mermaid
+flowchart LR
+  client["MCP clients<br/>Claude, Codex, pnpm ask"] --> transport["stdio or HTTP transport"]
+  transport --> server["laos-data-mcp<br/>server.ts"]
+
+  server --> tools["24 tools"]
+  server --> resources["2 resources"]
+  server --> prompts["4 prompts"]
+
+  tools --> adapters["21 source adapters"]
+  resources --> catalog["Catalog and source status JSON"]
+  prompts --> workflows["Guided analysis workflows"]
+
+  adapters --> reliability["Cache, retry, circuit breaker"]
+  reliability --> sources["External Lao PDR data sources"]
+  sources --> normalized["IndicatorRecord<br/>DatasetMetadata"]
+  normalized --> client
 ```
 
 ## Quick start
@@ -250,6 +267,34 @@ pnpm ask call list_available_indicators '{"category":"health"}'
 pnpm ask call compare_indicators '{"indicators":[{"code":"NY.GDP.PCAP.CD"},{"code":"SE.ADT.LITR.ZS"}],"startYear":2010,"endYear":2024}'
 ```
 
+## Tool selection map
+
+```mermaid
+flowchart TD
+  need["Need Lao PDR data"] --> discover["Discover indicators"]
+  discover --> list["list_available_indicators"]
+  list --> generic["get_laos_indicator"]
+  generic --> compare["compare_indicators"]
+
+  need --> domain["Use a domain-specific data tool"]
+  domain --> welfare["UNICEF welfare"]
+  domain --> sector["Health, education, labor, macro, agriculture, trade, governance, SDG"]
+  welfare --> compare
+  sector --> compare
+
+  need --> files["Need files, catalogs, or laws"]
+  files --> datasets["search_laos_datasets"]
+  files --> hdx["search_laos_humanitarian_datasets"]
+  files --> legal["search_laos_legal_texts"]
+
+  need --> places["Need mapped facilities or places"]
+  places --> osm["get_laos_infrastructure"]
+
+  need --> readiness["Need source readiness or caveats"]
+  readiness --> status["get_source_status"]
+  readiness --> audit["data_audit or sdg_progress_audit"]
+```
+
 ## Example workflows
 
 These examples use `pnpm ask` so they can run without a separate MCP client. In Claude,
@@ -276,7 +321,7 @@ Combine mapped infrastructure with population or sector indicators.
 ```bash
 pnpm ask call get_laos_infrastructure '{"featureType":"hospital","province":"Vientiane"}'
 pnpm ask call get_laos_indicator '{"indicatorCode":"SP.POP.TOTL","startYear":2020,"endYear":2024}'
-pnpm ask call get_laos_census_data '{"indicator":"URBAN_SHARE"}'
+pnpm ask call get_laos_census_data '{"topic":"urban"}'
 ```
 
 Government use: help a province or line ministry identify whether facility coverage,
@@ -349,9 +394,9 @@ pnpm ask call get_laos_labor_data '{"indicator":"DF_UNE_DEAP_SEX_AGE_RT","startY
 ```
 
 Government use: prepare economic context for budget planning, donor discussions, or trade
-and labor-market analysis. UN Comtrade works through a keyless preview endpoint by
-default; set `COMTRADE_API_KEY` for the full endpoint once that integration path is
-enabled.
+and labor-market analysis. UN Comtrade works through the preview endpoint, which is capped
+at 500 records per response; `COMTRADE_API_KEY` is optional and sent as a subscription
+header when configured.
 
 ### 8. Data availability audit before publication
 
@@ -368,6 +413,50 @@ In an MCP client, run the `data_audit` prompt with a topic such as `maternal hea
 prompt tells the model to discover indicators, inspect year coverage, search dataset
 catalogs, check source health, and separate "no data exists" from "source temporarily
 unreachable."
+
+## Feature audit and verification
+
+A full feature pass was run against the current codebase. The detailed canonical tracker
+for that pass records one user story and expected behavior row for every public feature:
+
+| Surface            | Count | Audit coverage                                               |
+| ------------------ | ----: | ------------------------------------------------------------ |
+| MCP tools          |    24 | Discovery, fetch, search, comparison, health, and stub paths |
+| MCP resources      |     2 | Indicator catalog and live source-status JSON                |
+| MCP prompts        |     4 | Policy brief, sector comparison, data audit, SDG audit       |
+| Runtime transports |     2 | stdio and streamable HTTP `/mcp`                             |
+| Total stories      |    32 | One user story plus expected behavior per feature            |
+
+The audit loop was:
+
+| Phase            | Result                                                                   |
+| ---------------- | ------------------------------------------------------------------------ |
+| Inventory        | Every tool, resource, prompt, and transport was mapped from code.        |
+| Baseline testing | Existing suite passed before fixes: 34 files, 230 tests.                 |
+| Error logging    | Four logistical/UX issues were documented from the feature pass.         |
+| Fix pass         | All four issues were fixed with focused implementation and test updates. |
+| Retest           | Post-fix suite passed: 34 files, 232 tests.                              |
+
+Issues fixed during that pass:
+
+- `get_laos_trade_data` now honors its documented no-input discovery mode and lists key
+  trade indicators instead of making a default Comtrade request.
+- `get_source_status` and `laos://sources/status` descriptions now describe all connected
+  Lao PDR sources instead of the original five-source surface.
+- `get_official_stats` now follows the project convention of wrapping handler failures with
+  `toToolError()`.
+- Prompt integration test wording now reflects all four registered prompts.
+
+Current validation commands:
+
+```bash
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm build
+pnpm format:check
+pnpm test:coverage
+```
 
 ## Tools
 
@@ -494,25 +583,25 @@ Important source notes:
 Copy `.env.example` to `.env` only when you need credentials or non-default transport
 settings.
 
-| Variable                   | Purpose                                                      |
-| -------------------------- | ------------------------------------------------------------ |
-| `LAOSIS_API_KEY`           | Enables future Laosis live API calls once access is granted. |
-| `HDX_APP_ID`               | Enables HDX HAPI indicator values.                           |
-| `WFP_CLIENT_ID`            | WFP VAM OAuth2 client id.                                    |
-| `WFP_CLIENT_SECRET`        | WFP VAM OAuth2 client secret.                                |
-| `MRC_SESSION_TOKEN`        | MRC portal token for future raw-data access.                 |
-| `COMTRADE_API_KEY`         | Optional key for the full UN Comtrade endpoint.              |
-| `CENSUS_2025_AVAILABLE`    | Set `true` only after 2025 census data is available.         |
-| `CACHE_ENABLED`            | Set `false` to disable in-memory caching.                    |
-| `CACHE_MAX_KEYS`           | Maximum in-memory cache keys.                                |
-| `CIRCUIT_BREAKER_ENABLED`  | Set `false` to disable per-source circuit breakers.          |
-| `MCP_TRANSPORT`            | `stdio` or `http`.                                           |
-| `MCP_HTTP_HOST`            | HTTP bind host; defaults to loopback.                        |
-| `MCP_HTTP_PORT`            | HTTP port; defaults to `3000`.                               |
-| `MCP_HTTP_AUTH_TOKEN`      | Bearer token required by HTTP clients when set.              |
-| `MCP_HTTP_ALLOWED_HOSTS`   | Comma-separated Host allowlist for HTTP transport.           |
-| `MCP_HTTP_ALLOWED_ORIGINS` | Comma-separated Origin allowlist for HTTP transport.         |
-| `LOG_LEVEL`                | `debug`, `info`, `warn`, or `error`; logs go to stderr.      |
+| Variable                   | Purpose                                                                  |
+| -------------------------- | ------------------------------------------------------------------------ |
+| `LAOSIS_API_KEY`           | Enables future Laosis live API calls once access is granted.             |
+| `HDX_APP_ID`               | Enables HDX HAPI indicator values.                                       |
+| `WFP_CLIENT_ID`            | WFP VAM OAuth2 client id.                                                |
+| `WFP_CLIENT_SECRET`        | WFP VAM OAuth2 client secret.                                            |
+| `MRC_SESSION_TOKEN`        | MRC portal token for future raw-data access.                             |
+| `COMTRADE_API_KEY`         | Optional UN Comtrade subscription key; preview calls still work keyless. |
+| `CENSUS_2025_AVAILABLE`    | Set `true` only after 2025 census data is available.                     |
+| `CACHE_ENABLED`            | Set `false` to disable in-memory caching.                                |
+| `CACHE_MAX_KEYS`           | Maximum in-memory cache keys.                                            |
+| `CIRCUIT_BREAKER_ENABLED`  | Set `false` to disable per-source circuit breakers.                      |
+| `MCP_TRANSPORT`            | `stdio` or `http`.                                                       |
+| `MCP_HTTP_HOST`            | HTTP bind host; defaults to loopback.                                    |
+| `MCP_HTTP_PORT`            | HTTP port; defaults to `3000`.                                           |
+| `MCP_HTTP_AUTH_TOKEN`      | Bearer token required by HTTP clients when set.                          |
+| `MCP_HTTP_ALLOWED_HOSTS`   | Comma-separated Host allowlist for HTTP transport.                       |
+| `MCP_HTTP_ALLOWED_ORIGINS` | Comma-separated Origin allowlist for HTTP transport.                     |
+| `LOG_LEVEL`                | `debug`, `info`, `warn`, or `error`; logs go to stderr.                  |
 
 Public/no-auth sources work without `.env`, subject to upstream availability.
 
